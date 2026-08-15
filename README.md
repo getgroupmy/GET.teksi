@@ -52,6 +52,27 @@ Phone + OTP auth · profile and ratings · wallet with top-ups and transaction l
 
 **Huawei support is real, not incidental.** The usual thing that breaks a Flutter ride-hailing app on Huawei is `google_maps_flutter`, which needs Google Play Services. This app uses `flutter_map` over OpenStreetMap tiles instead — no Google SDK, no API key, no GMS anywhere in the dependency graph. That isn't a claim you have to take on faith: CI unpacks the release APK's dex bytecode on every push and fails the build if a single `com.google.android.gms`, `com.google.firebase`, or `com.huawei.hms` class descriptor shows up. The same release build you ship to Play runs on Huawei and passes AppGallery review on that axis.
 
+---
+
+## Backend
+
+The app runs with no backend at all — on-device transport, simulated
+marketplace, local persistence — which is what lets the whole demo work with
+nothing to provision. Supply two `--dart-define`s and the same build talks to a
+Supabase project instead, with rides, bids and chat travelling between real
+devices.
+
+The schema is in [`supabase/`](supabase/), and the marketplace rules are
+enforced there rather than in the client: a driver cannot see a rival's bid, a
+passenger cannot lower the ask once drivers have bid or assign themselves a
+driver, a driver cannot move the fare after winning it, and exactly one bid can
+ever win a ride. Every one of those is a test that runs on each push against a
+real PostgreSQL — including a concurrency test that races two accepts of the
+same ride and fails if the lock protecting it is ever weakened.
+
+**[supabase/README.md](supabase/README.md)** covers the design, the full rule
+table, how to run the suite locally, and what is still missing.
+
 **[docs/PLATFORMS.md](docs/PLATFORMS.md)** has the full picture: exact build commands per target, what was and wasn't verified here, the HarmonyOS NEXT toolchain steps, and the map-tile and CanvasKit changes you need before shipping into mainland China.
 
 ---

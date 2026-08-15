@@ -64,7 +64,7 @@ class PriceSheet extends StatelessWidget {
     void publish() {
       rides.publishRide(
         Ride(
-          id: uid('ride'),
+          id: uuid4(),
           passengerId: user.id,
           passengerName: user.name,
           passengerAvatarColor: user.avatarColor,

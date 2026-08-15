@@ -167,7 +167,7 @@ class SessionStore extends ChangeNotifier {
     // Returning to the same number keeps the profile, rating and history.
     if (existing != null && existing.phone == phone) return existing;
     final created = AppUser(
-      id: uid('usr'),
+      id: uuid4(),
       phone: phone,
       name: (name ?? '').trim().isEmpty ? 'Guest' : name!.trim(),
       avatarColor: pickAvatarColor(phone),

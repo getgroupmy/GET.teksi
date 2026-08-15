@@ -69,7 +69,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       if (profile == null) return;
       rides.createOffer(
         Offer(
-          id: uid('ofr'),
+          id: uuid4(),
           rideId: ride.id,
           driverId: user.id,
           driverName: user.name,

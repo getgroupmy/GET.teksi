@@ -36,6 +36,47 @@ jobs:
       - name: Test
         run: flutter test --reporter expanded
 
+  database:
+    name: Migration and security policies
+    runs-on: ubuntu-latest
+    # A stock Postgres, not a Supabase project: supabase/tests/harness.sql
+    # supplies the handful of objects the migration builds on, so the schema
+    # and every policy in it are exercised without provisioning anything.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the Postgres client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+
+      # Proves the marketplace rules are enforced by the database rather than
+      # by the client: a driver cannot see a rival's bid, a passenger cannot
+      # lower the ask after bidding or assign themselves a driver, a driver
+      # cannot move the fare after winning, and a stranger sees nothing.
+      - name: Apply the migration and run the policy suite
+        run: supabase/tests/run.sh
+
+      # Races two accepts of different bids on the same ride, repeatedly.
+      # Exactly one may ever win; this fails on the first round if the
+      # `for update` lock in accept_offer() is ever weakened.
+      - name: Race concurrent accepts
+        run: supabase/tests/concurrency.sh
+
   build-web:
     name: Build web
     runs-on: ubuntu-latest

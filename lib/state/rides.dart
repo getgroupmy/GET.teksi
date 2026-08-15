@@ -372,7 +372,7 @@ class RidesStore extends ChangeNotifier {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
     final message = ChatMessage(
-      id: uid('msg'),
+      id: uuid4(),
       rideId: rideId,
       from: from,
       text: trimmed,

@@ -84,5 +84,23 @@ class LocalTransport implements RealtimeTransport {
   void dispose() => _controller.close();
 }
 
+RealtimeTransport _bus = LocalTransport();
+
 /// Process-wide transport instance.
-final RealtimeTransport bus = LocalTransport();
+///
+/// Defaults to [LocalTransport] so the app is fully usable with nothing
+/// configured; `main()` swaps in a backend-backed transport when one is
+/// available. This stays a plain global rather than a provider because the
+/// stores subscribe once at construction and never rebuild against it.
+RealtimeTransport get bus => _bus;
+
+/// Replaces the transport, disposing the one being retired.
+///
+/// Must run before any store subscribes — a store holds the stream it was
+/// given, so swapping underneath a live subscription would leave it listening
+/// to a transport nothing publishes to.
+void setTransport(RealtimeTransport transport) {
+  if (identical(transport, _bus)) return;
+  _bus.dispose();
+  _bus = transport;
+}

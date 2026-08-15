@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'core/backend.dart';
 import 'core/storage.dart';
 import 'router.dart';
 import 'services/simulation.dart';
@@ -13,6 +14,10 @@ import 'theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Store.init();
+  // Connects to the backend if one is configured at build time, and otherwise
+  // leaves the app on its on-device transport. Never throws: a backend that is
+  // unreachable degrades to the local marketplace rather than a blank screen.
+  await Backend.init();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

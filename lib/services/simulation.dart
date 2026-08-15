@@ -82,7 +82,7 @@ class MarketplaceSimulation {
   NearbyDriver _makeBot(LatLng center, int index) {
     final name = driverNames[index % driverNames.length];
     return NearbyDriver(
-      id: uid('bot'),
+      id: uuid4(),
       name: name,
       avatarColor: pickAvatarColor(name),
       rating: double.parse(_between(4.3, 5).toStringAsFixed(2)),
@@ -196,7 +196,7 @@ class MarketplaceSimulation {
     bidders.add(driver.id);
     _rides.createOffer(
       Offer(
-        id: uid('ofr'),
+        id: uuid4(),
         rideId: ride.id,
         driverId: driver.id,
         driverName: driver.name,
@@ -390,7 +390,7 @@ class MarketplaceSimulation {
 
     _rides.publishRide(
       Ride(
-        id: uid('ride'),
+        id: uuid4(),
         passengerId: uid('bp'),
         passengerName: name,
         passengerAvatarColor: pickAvatarColor(name),
