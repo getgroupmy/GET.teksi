@@ -33,10 +33,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     if (!_valid) return;
     final session = context.read<SessionStore>();
     final user = session.signIn(widget.phone, name: _name.text.trim());
-    session.updateUser(user.copyWith(
-      name: _name.text.trim(),
-      email: _email.text.trim().isEmpty ? null : _email.text.trim(),
-    ));
+    session.updateUser(
+      user.copyWith(
+        name: _name.text.trim(),
+        email: _email.text.trim().isEmpty ? null : _email.text.trim(),
+      ),
+    );
     context.go('/p');
   }
 
@@ -60,7 +62,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             children: [
               const Text(
                 'What should we call you?',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, height: 1.2),
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -71,21 +77,31 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               Center(
                 child: Avatar(
                   name: display,
-                  color: pickAvatarColor(display == '?' ? widget.phone : display),
+                  color: pickAvatarColor(
+                    display == '?' ? widget.phone : display,
+                  ),
                   size: 92,
                 ),
               ),
               const SizedBox(height: 28),
-              const SectionLabel('Full name', padding: EdgeInsets.only(bottom: 8)),
+              const SectionLabel(
+                'Full name',
+                padding: EdgeInsets.only(bottom: 8),
+              ),
               TextField(
                 controller: _name,
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 onChanged: (_) => setState(() {}),
                 onSubmitted: (_) => _finish(),
-                decoration: const InputDecoration(hintText: 'e.g. Aiman Rahman'),
+                decoration: const InputDecoration(
+                  hintText: 'e.g. Aiman Rahman',
+                ),
               ),
-              const SectionLabel('Email (optional)', padding: EdgeInsets.only(top: 20, bottom: 8)),
+              const SectionLabel(
+                'Email (optional)',
+                padding: EdgeInsets.only(top: 20, bottom: 8),
+              ),
               TextField(
                 controller: _email,
                 keyboardType: TextInputType.emailAddress,

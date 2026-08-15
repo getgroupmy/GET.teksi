@@ -56,10 +56,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   NotificationKind.system => Icons.info_outline_rounded,
                 };
                 return InkWell(
-                  onTap: n.rideId == null ? null : () => context.push('/ride/${n.rideId}'),
+                  onTap: n.rideId == null
+                      ? null
+                      : () => context.push('/ride/${n.rideId}'),
                   child: Container(
                     color: n.read ? null : c.brand.withValues(alpha: 0.05),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 13,
+                    ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -74,7 +79,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           child: Icon(
                             icon,
                             size: 17,
-                            color: n.kind == NotificationKind.safety ? c.danger : c.accent,
+                            color: n.kind == NotificationKind.safety
+                                ? c.danger
+                                : c.accent,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -101,7 +108,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               const SizedBox(height: 4),
                               Text(
                                 timeAgo(n.createdAt),
-                                style: TextStyle(fontSize: 11.5, color: c.textMute),
+                                style: TextStyle(
+                                  fontSize: 11.5,
+                                  color: c.textMute,
+                                ),
                               ),
                             ],
                           ),

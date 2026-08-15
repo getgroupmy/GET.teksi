@@ -36,8 +36,11 @@ const _serviceMultiplier = <ServiceType, double>{
 double demandFactor([DateTime? at]) {
   final now = at ?? DateTime.now();
   final hour = now.hour;
-  final weekend = now.weekday == DateTime.saturday || now.weekday == DateTime.sunday;
-  if (!weekend && ((hour >= 7 && hour < 10) || (hour >= 17 && hour < 20))) return 1.22;
+  final weekend =
+      now.weekday == DateTime.saturday || now.weekday == DateTime.sunday;
+  if (!weekend && ((hour >= 7 && hour < 10) || (hour >= 17 && hour < 20))) {
+    return 1.22;
+  }
   if (hour >= 23 || hour < 5) return 1.15;
   if (weekend && hour >= 18 && hour < 23) return 1.12;
   return 1;
@@ -51,7 +54,8 @@ int recommendedPrice({
   DateTime? at,
 }) {
   final tariff = _tariffs[vehicleClass]!;
-  final raw = tariff.base + tariff.perKm * distanceKm + tariff.perMin * durationMinutes;
+  final raw =
+      tariff.base + tariff.perKm * distanceKm + tariff.perMin * durationMinutes;
   final adjusted = raw * _serviceMultiplier[service]! * demandFactor(at);
   return roundFare(math.max(tariff.minimum.toDouble(), adjusted));
 }

@@ -40,7 +40,8 @@ class PlacesScreen extends StatelessWidget {
           AppRow(
             icon: Icons.home_rounded,
             title: user.homePlace?.name ?? 'Add home',
-            subtitle: user.homePlace?.address ??
+            subtitle:
+                user.homePlace?.address ??
                 'Set your home address for one-tap booking',
             onTap: () => user.homePlace == null
                 ? _pick(context, session, home: true)
@@ -48,7 +49,11 @@ class PlacesScreen extends StatelessWidget {
             trailing: user.homePlace == null
                 ? null
                 : IconButton(
-                    icon: Icon(Icons.close_rounded, size: 17, color: c.textMute),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      size: 17,
+                      color: c.textMute,
+                    ),
                     tooltip: 'Remove home',
                     onPressed: () => session.clearShortcut(home: true),
                   ),
@@ -56,7 +61,8 @@ class PlacesScreen extends StatelessWidget {
           AppRow(
             icon: Icons.work_outline_rounded,
             title: user.workPlace?.name ?? 'Add work',
-            subtitle: user.workPlace?.address ??
+            subtitle:
+                user.workPlace?.address ??
                 'Set your work address for one-tap booking',
             onTap: () => user.workPlace == null
                 ? _pick(context, session, home: false)
@@ -64,7 +70,11 @@ class PlacesScreen extends StatelessWidget {
             trailing: user.workPlace == null
                 ? null
                 : IconButton(
-                    icon: Icon(Icons.close_rounded, size: 17, color: c.textMute),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      size: 17,
+                      color: c.textMute,
+                    ),
                     tooltip: 'Remove work',
                     onPressed: () => session.clearShortcut(home: false),
                   ),
@@ -135,8 +145,9 @@ class _PlacePickerState extends State<_PlacePicker> {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
-    final results =
-        _query.trim().isEmpty ? allPlaces.take(12).toList() : fuzzySearch(_query, limit: 12);
+    final results = _query.trim().isEmpty
+        ? allPlaces.take(12).toList()
+        : fuzzySearch(_query, limit: 12);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +175,11 @@ class _PlacePickerState extends State<_PlacePicker> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Row(
                         children: [
-                          Icon(Icons.place_outlined, size: 17, color: c.textDim),
+                          Icon(
+                            Icons.place_outlined,
+                            size: 17,
+                            color: c.textDim,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -183,7 +198,10 @@ class _PlacePickerState extends State<_PlacePicker> {
                                   results[i].address,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 12.5, color: c.textDim),
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    color: c.textDim,
+                                  ),
                                 ),
                               ],
                             ),

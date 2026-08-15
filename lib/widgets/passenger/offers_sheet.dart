@@ -67,7 +67,10 @@ class _OffersSheetState extends State<OffersSheet> {
                       pending.isEmpty
                           ? 'Looking for drivers…'
                           : '${plural(pending.length, 'offer')} received',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
@@ -130,14 +133,19 @@ class _OffersSheetState extends State<OffersSheet> {
               backgroundColor: c.surface3,
               foregroundColor: c.text,
               minimumSize: const Size.fromHeight(50),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.trending_up_rounded, size: 18),
                 SizedBox(width: 8),
-                Text('Raise your price', style: TextStyle(fontWeight: FontWeight.w700)),
+                Text(
+                  'Raise your price',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
               ],
             ),
           ),
@@ -172,12 +180,19 @@ class _OffersSheetState extends State<OffersSheet> {
                     Navigator.of(sheetContext).pop();
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     decoration: BoxDecoration(
-                      color: i == 1 ? c.brand.withValues(alpha: 0.14) : c.surface2,
+                      color: i == 1
+                          ? c.brand.withValues(alpha: 0.14)
+                          : c.surface2,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: i == 1 ? c.brand.withValues(alpha: 0.35) : Colors.transparent,
+                        color: i == 1
+                            ? c.brand.withValues(alpha: 0.35)
+                            : Colors.transparent,
                       ),
                     ),
                     child: Row(
@@ -185,7 +200,10 @@ class _OffersSheetState extends State<OffersSheet> {
                       children: [
                         Text(
                           money(suggestions[i], decimals: false),
-                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                         Text(
                           '+${money(suggestions[i] - ride.askingPrice, decimals: false)}'
@@ -259,7 +277,10 @@ class _OfferCardState extends State<_OfferCard> {
   void initState() {
     super.initState();
     _update();
-    _ticker = Timer.periodic(const Duration(milliseconds: 500), (_) => _update());
+    _ticker = Timer.periodic(
+      const Duration(milliseconds: 500),
+      (_) => _update(),
+    );
   }
 
   void _update() {
@@ -286,14 +307,20 @@ class _OfferCardState extends State<_OfferCard> {
         color: c.surface2,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: offer.matchedAskingPrice ? c.brand.withValues(alpha: 0.45) : c.line,
+          color: offer.matchedAskingPrice
+              ? c.brand.withValues(alpha: 0.45)
+              : c.line,
         ),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              Avatar(name: offer.driverName, color: offer.driverAvatarColor, size: 42),
+              Avatar(
+                name: offer.driverName,
+                color: offer.driverAvatarColor,
+                size: 42,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -306,7 +333,10 @@ class _OfferCardState extends State<_OfferCard> {
                             offer.driverName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -316,7 +346,11 @@ class _OfferCardState extends State<_OfferCard> {
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        Icon(Icons.directions_car_rounded, size: 13, color: c.textDim),
+                        Icon(
+                          Icons.directions_car_rounded,
+                          size: 13,
+                          color: c.textDim,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -348,8 +382,8 @@ class _OfferCardState extends State<_OfferCard> {
                     diff == 0
                         ? 'Your price'
                         : diff > 0
-                            ? '+${money(diff, decimals: false)}'
-                            : '−${money(-diff, decimals: false)}',
+                        ? '+${money(diff, decimals: false)}'
+                        : '−${money(-diff, decimals: false)}',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -385,7 +419,9 @@ class _OfferCardState extends State<_OfferCard> {
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(0, 48),
                   padding: const EdgeInsets.symmetric(horizontal: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(11),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -416,13 +452,13 @@ class _OfferSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.c;
     Widget bar(double width, double height) => Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            color: c.surface2,
-            borderRadius: BorderRadius.circular(6),
-          ),
-        );
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: c.surface2,
+        borderRadius: BorderRadius.circular(6),
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -430,7 +466,10 @@ class _OfferSkeleton extends StatelessWidget {
           Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(color: c.surface2, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: c.surface2,
+              shape: BoxShape.circle,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(

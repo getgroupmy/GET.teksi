@@ -44,39 +44,53 @@ class GoRouterConfig {
         ),
         GoRoute(
           path: '/auth/profile',
-          builder: (_, state) => ProfileSetupScreen(phone: state.extra as String? ?? ''),
+          builder: (_, state) =>
+              ProfileSetupScreen(phone: state.extra as String? ?? ''),
         ),
 
         GoRoute(path: '/p', builder: (_, _) => const PassengerHomeScreen()),
-        GoRoute(path: '/p/search', builder: (_, _) => const DestinationSearchScreen()),
+        GoRoute(
+          path: '/p/search',
+          builder: (_, _) => const DestinationSearchScreen(),
+        ),
 
         GoRoute(path: '/d', builder: (_, _) => const DriverHomeScreen()),
-        GoRoute(path: '/d/onboarding', builder: (_, _) => const DriverOnboardingScreen()),
+        GoRoute(
+          path: '/d/onboarding',
+          builder: (_, _) => const DriverOnboardingScreen(),
+        ),
         GoRoute(path: '/d/earnings', builder: (_, _) => const EarningsScreen()),
         GoRoute(path: '/d/vehicle', builder: (_, _) => const VehicleScreen()),
         GoRoute(
           path: '/d/order/:rideId',
-          builder: (_, state) => OrderDetailScreen(rideId: state.pathParameters['rideId']!),
+          builder: (_, state) =>
+              OrderDetailScreen(rideId: state.pathParameters['rideId']!),
         ),
 
         GoRoute(
           path: '/chat/:rideId',
-          builder: (_, state) => ChatScreen(rideId: state.pathParameters['rideId']!),
+          builder: (_, state) =>
+              ChatScreen(rideId: state.pathParameters['rideId']!),
         ),
         GoRoute(
           path: '/rate/:rideId',
-          builder: (_, state) => RateScreen(rideId: state.pathParameters['rideId']!),
+          builder: (_, state) =>
+              RateScreen(rideId: state.pathParameters['rideId']!),
         ),
         GoRoute(
           path: '/ride/:rideId',
-          builder: (_, state) => RideDetailScreen(rideId: state.pathParameters['rideId']!),
+          builder: (_, state) =>
+              RideDetailScreen(rideId: state.pathParameters['rideId']!),
         ),
 
         GoRoute(path: '/menu', builder: (_, _) => const MenuScreen()),
         GoRoute(path: '/history', builder: (_, _) => const HistoryScreen()),
         GoRoute(path: '/wallet', builder: (_, _) => const WalletScreen()),
         GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
-        GoRoute(path: '/notifications', builder: (_, _) => const NotificationsScreen()),
+        GoRoute(
+          path: '/notifications',
+          builder: (_, _) => const NotificationsScreen(),
+        ),
         GoRoute(
           path: '/safety',
           builder: (_, state) => SafetyScreen(rideId: state.extra as String?),

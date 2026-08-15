@@ -82,7 +82,11 @@ class MapSheet extends StatelessWidget {
         color: c.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 30, offset: const Offset(0, -8)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 30,
+            offset: const Offset(0, -8),
+          ),
         ],
       ),
       child: SafeArea(
@@ -153,7 +157,10 @@ class FabButton extends StatelessWidget {
                     top: 6,
                     right: 6,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 1,
+                      ),
                       constraints: const BoxConstraints(minWidth: 17),
                       decoration: BoxDecoration(
                         color: c.danger,
@@ -224,7 +231,10 @@ class ActionTile extends StatelessWidget {
                           top: -5,
                           right: -8,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 1,
+                            ),
                             constraints: const BoxConstraints(minWidth: 15),
                             decoration: BoxDecoration(
                               color: c.danger,
@@ -283,32 +293,32 @@ class RouteStops extends StatelessWidget {
     final size = compact ? 13.0 : 14.0;
 
     Widget dot(Color color, {bool square = false}) => Container(
-          width: square ? 9 : 10,
-          height: square ? 9 : 10,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(square ? 2 : 999),
-          ),
-        );
+      width: square ? 9 : 10,
+      height: square ? 9 : 10,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(square ? 2 : 999),
+      ),
+    );
 
     Widget line() => Expanded(
-          child: Container(
-            width: 2,
-            margin: const EdgeInsets.symmetric(vertical: 3),
-            color: c.surface3,
-          ),
-        );
+      child: Container(
+        width: 2,
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        color: c.surface3,
+      ),
+    );
 
     Widget label(String text, {bool dim = false}) => Text(
-          text,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: size,
-            fontWeight: dim ? FontWeight.w500 : FontWeight.w600,
-            color: dim ? c.textDim : c.text,
-          ),
-        );
+      text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: size,
+        fontWeight: dim ? FontWeight.w500 : FontWeight.w600,
+        color: dim ? c.textDim : c.text,
+      ),
+    );
 
     return IntrinsicHeight(
       child: Row(
@@ -332,7 +342,10 @@ class RouteStops extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 label(pickup),
-                if (stop != null) ...[const SizedBox(height: 8), label(stop!, dim: true)],
+                if (stop != null) ...[
+                  const SizedBox(height: 8),
+                  label(stop!, dim: true),
+                ],
                 const SizedBox(height: 8),
                 label(dropoff),
               ],
@@ -368,7 +381,13 @@ class SectionLabel extends StatelessWidget {
 }
 
 class AppCard extends StatelessWidget {
-  const AppCard({super.key, required this.child, this.padding, this.onTap, this.border});
+  const AppCard({
+    super.key,
+    required this.child,
+    this.padding,
+    this.onTap,
+    this.border,
+  });
 
   final Widget child;
   final EdgeInsets? padding;
@@ -434,7 +453,11 @@ class AppRow extends StatelessWidget {
                   color: c.surface2,
                   borderRadius: BorderRadius.circular(11),
                 ),
-                child: Icon(icon, size: 18, color: danger ? c.danger : c.textDim),
+                child: Icon(
+                  icon,
+                  size: 18,
+                  color: danger ? c.danger : c.textDim,
+                ),
               ),
               const SizedBox(width: 12),
             ],
@@ -446,7 +469,11 @@ class AppRow extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: color),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: color,
+                    ),
                   ),
                   if (subtitle != null)
                     Padding(
@@ -494,13 +521,21 @@ class InfoBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      child: Text(text, style: TextStyle(fontSize: 13, height: 1.35, color: color)),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 13, height: 1.35, color: color),
+      ),
     );
   }
 }
 
 class StatBox extends StatelessWidget {
-  const StatBox({super.key, required this.label, required this.value, this.tone});
+  const StatBox({
+    super.key,
+    required this.label,
+    required this.value,
+    this.tone,
+  });
 
   final String label;
   final String value;
@@ -664,7 +699,9 @@ class AppChip extends StatelessWidget {
           color: selected ? c.brand.withValues(alpha: 0.18) : c.surface2,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
-            color: selected ? c.accent.withValues(alpha: 0.55) : Colors.transparent,
+            color: selected
+                ? c.accent.withValues(alpha: 0.55)
+                : Colors.transparent,
           ),
         ),
         child: Row(
@@ -697,7 +734,8 @@ class RadarBar extends StatefulWidget {
   State<RadarBar> createState() => _RadarBarState();
 }
 
-class _RadarBarState extends State<RadarBar> with SingleTickerProviderStateMixin {
+class _RadarBarState extends State<RadarBar>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1500),
@@ -741,7 +779,11 @@ class _RadarBarState extends State<RadarBar> with SingleTickerProviderStateMixin
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.transparent, c.accent, Colors.transparent],
+                        colors: [
+                          Colors.transparent,
+                          c.accent,
+                          Colors.transparent,
+                        ],
                       ),
                     ),
                   ),
@@ -792,7 +834,10 @@ Future<T?> showAppSheet<T>(
                     Expanded(
                       child: Text(
                         title,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
                     IconButton(
@@ -818,7 +863,11 @@ Future<T?> showAppSheet<T>(
 }
 
 /// A list of tappable reasons, used for cancellations and reports.
-Widget reasonList(BuildContext context, List<String> reasons, ValueChanged<String> onPick) {
+Widget reasonList(
+  BuildContext context,
+  List<String> reasons,
+  ValueChanged<String> onPick,
+) {
   final c = context.c;
   return Column(
     children: [
@@ -831,7 +880,10 @@ Widget reasonList(BuildContext context, List<String> reasons, ValueChanged<Strin
             decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: c.line)),
             ),
-            child: Text(reason, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+            child: Text(
+              reason,
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            ),
           ),
         ),
     ],

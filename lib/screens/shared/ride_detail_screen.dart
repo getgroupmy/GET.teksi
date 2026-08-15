@@ -89,7 +89,10 @@ class RideDetailScreen extends StatelessWidget {
                     Expanded(
                       child: Text(
                         money(asDriver ? net : ride.fare),
-                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ),
                     Text(
@@ -170,7 +173,11 @@ class RideDetailScreen extends StatelessWidget {
                             muted: true,
                           ),
                           Divider(height: 18, color: c.line),
-                          _Line(label: 'You earned', value: money(net), bold: true),
+                          _Line(
+                            label: 'You earned',
+                            value: money(net),
+                            bold: true,
+                          ),
                         ] else ...[
                           if (ride.tip != null && ride.tip! > 0)
                             _Line(label: 'Tip', value: money(ride.tip!)),
@@ -219,14 +226,18 @@ class RideDetailScreen extends StatelessWidget {
                             Row(
                               children: [
                                 RatingChip(value: other.$3),
-                                if (!asDriver && ride.driverVehicle != null) ...[
+                                if (!asDriver &&
+                                    ride.driverVehicle != null) ...[
                                   const SizedBox(width: 8),
                                   Flexible(
                                     child: Text(
                                       ride.driverVehicle!.plate,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 12.5, color: c.textDim),
+                                      style: TextStyle(
+                                        fontSize: 12.5,
+                                        color: c.textDim,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -238,47 +249,57 @@ class RideDetailScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Builder(builder: (_) {
-                  final mine = asDriver ? ride.ratingByDriver : ride.ratingByPassenger;
-                  if (mine == null) return const SizedBox.shrink();
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: AppCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SectionLabel(
-                            'Your rating',
-                            padding: EdgeInsets.only(bottom: 8),
-                          ),
-                          Row(
-                            children: [
-                              for (var n = 1; n <= 5; n++)
-                                Icon(
-                                  n <= mine.stars
-                                      ? Icons.star_rounded
-                                      : Icons.star_border_rounded,
-                                  size: 18,
-                                  color: n <= mine.stars ? c.accent : c.surface3,
-                                ),
-                            ],
-                          ),
-                          if (mine.tags.isNotEmpty) ...[
-                            const SizedBox(height: 10),
-                            Wrap(
-                              spacing: 6,
-                              runSpacing: 6,
+                Builder(
+                  builder: (_) {
+                    final mine = asDriver
+                        ? ride.ratingByDriver
+                        : ride.ratingByPassenger;
+                    if (mine == null) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: AppCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SectionLabel(
+                              'Your rating',
+                              padding: EdgeInsets.only(bottom: 8),
+                            ),
+                            Row(
                               children: [
-                                for (final tag in mine.tags)
-                                  AppChip(label: tag, selected: false, onTap: () {}),
+                                for (var n = 1; n <= 5; n++)
+                                  Icon(
+                                    n <= mine.stars
+                                        ? Icons.star_rounded
+                                        : Icons.star_border_rounded,
+                                    size: 18,
+                                    color: n <= mine.stars
+                                        ? c.accent
+                                        : c.surface3,
+                                  ),
                               ],
                             ),
+                            if (mine.tags.isNotEmpty) ...[
+                              const SizedBox(height: 10),
+                              Wrap(
+                                spacing: 6,
+                                runSpacing: 6,
+                                children: [
+                                  for (final tag in mine.tags)
+                                    AppChip(
+                                      label: tag,
+                                      selected: false,
+                                      onTap: () {},
+                                    ),
+                                ],
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  },
+                ),
                 const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,

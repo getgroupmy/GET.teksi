@@ -9,7 +9,9 @@ final _twoDp = NumberFormat('#,##0.00', 'en');
 
 String money(int minor, {bool decimals = true, bool symbol = true}) {
   final major = minor / 100;
-  final text = decimals ? _twoDp.format(major) : _thousands.format(major.round());
+  final text = decimals
+      ? _twoDp.format(major)
+      : _thousands.format(major.round());
   return symbol ? '$currencySymbol$text' : text;
 }
 
@@ -67,7 +69,11 @@ String phoneDisplay(String raw) {
 }
 
 String initials(String name) {
-  final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+  final parts = name
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((p) => p.isNotEmpty)
+      .toList();
   if (parts.isEmpty) return '?';
   return parts.take(2).map((p) => p[0].toUpperCase()).join();
 }

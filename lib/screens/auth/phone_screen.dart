@@ -48,7 +48,11 @@ class _PhoneScreenState extends State<PhoneScreen> {
             children: [
               const Text(
                 'Enter your phone number',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, height: 1.2),
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -87,7 +91,10 @@ class _PhoneScreenState extends State<PhoneScreen> {
                         ],
                         onChanged: (v) => setState(() => _digits = v),
                         onSubmitted: (_) => _continue(),
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
                         decoration: const InputDecoration(
                           hintText: '12 345 6789',
                           filled: false,

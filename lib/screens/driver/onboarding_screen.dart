@@ -53,15 +53,17 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
   void _finish() {
     if (!_valid) return;
     final session = context.read<SessionStore>();
-    session.becomeDriver(Vehicle(
-      make: _make.text.trim(),
-      model: _model.text.trim(),
-      year: int.parse(_year.text),
-      color: _color.text.trim().isEmpty ? 'Silver' : _color.text.trim(),
-      plate: _plate.text.trim().toUpperCase(),
-      vehicleClass: _class,
-      seats: _classHints[_class]!.$2,
-    ));
+    session.becomeDriver(
+      Vehicle(
+        make: _make.text.trim(),
+        model: _model.text.trim(),
+        year: int.parse(_year.text),
+        color: _color.text.trim().isEmpty ? 'Silver' : _color.text.trim(),
+        plate: _plate.text.trim().toUpperCase(),
+        vehicleClass: _class,
+        seats: _classHints[_class]!.$2,
+      ),
+    );
     session.setPrefs(
       session.prefs.copyWith(role: Role.driver, driverOnline: true),
     );
@@ -70,7 +72,9 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _onVehicleStep ? _buildVehicleStep(context) : _buildIntroStep(context);
+    return _onVehicleStep
+        ? _buildVehicleStep(context)
+        : _buildIntroStep(context);
   }
 
   Widget _buildIntroStep(BuildContext context) {
@@ -92,19 +96,29 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                 children: [
                   const Text(
                     'Start earning with your car',
-                    style: TextStyle(fontSize: 27, fontWeight: FontWeight.w800, height: 1.2),
+                    style: TextStyle(
+                      fontSize: 27,
+                      fontWeight: FontWeight.w800,
+                      height: 1.2,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     'See ride requests near you, choose the ones worth your time, '
                     'and set your own price on every trip.',
-                    style: TextStyle(fontSize: 14.5, color: c.textDim, height: 1.5),
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      color: c.textDim,
+                      height: 1.5,
+                    ),
                   ),
                   const SizedBox(height: 28),
                   _Perk(
                     icon: Icons.account_balance_wallet_outlined,
-                    title: 'Keep ${((1 - commissionRate) * 100).round()}% of every fare',
-                    body: 'Our service fee is ${(commissionRate * 100).toStringAsFixed(1)}% '
+                    title:
+                        'Keep ${((1 - commissionRate) * 100).round()}% of every fare',
+                    body:
+                        'Our service fee is ${(commissionRate * 100).toStringAsFixed(1)}% '
                         '— no surge splits, no hidden cuts.',
                   ),
                   const _Perk(
@@ -220,12 +234,17 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                         borderRadius: BorderRadius.circular(14),
                         onTap: () => setState(() => _class = option),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
                           decoration: BoxDecoration(
                             color: c.surface2,
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: _class == option ? c.accent : Colors.transparent,
+                              color: _class == option
+                                  ? c.accent
+                                  : Colors.transparent,
                               width: 1.5,
                             ),
                           ),
@@ -244,13 +263,20 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                                     ),
                                     Text(
                                       '${_classHints[option]!.$1} · ${_classHints[option]!.$2} seats',
-                                      style: TextStyle(fontSize: 12.5, color: c.textDim),
+                                      style: TextStyle(
+                                        fontSize: 12.5,
+                                        color: c.textDim,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
                               if (_class == option)
-                                Icon(Icons.check_rounded, color: c.accent, size: 20),
+                                Icon(
+                                  Icons.check_rounded,
+                                  color: c.accent,
+                                  size: 20,
+                                ),
                             ],
                           ),
                         ),
@@ -303,9 +329,22 @@ class _Perk extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(body, style: TextStyle(fontSize: 13, color: c.textDim, height: 1.35)),
+                Text(
+                  body,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: c.textDim,
+                    height: 1.35,
+                  ),
+                ),
               ],
             ),
           ),
@@ -344,20 +383,25 @@ class _Field extends StatelessWidget {
           controller: controller,
           autofocus: autofocus,
           keyboardType: numeric ? TextInputType.number : TextInputType.text,
-          textCapitalization:
-              uppercase ? TextCapitalization.characters : TextCapitalization.words,
+          textCapitalization: uppercase
+              ? TextCapitalization.characters
+              : TextCapitalization.words,
           inputFormatters: [
             if (numeric) FilteringTextInputFormatter.digitsOnly,
             if (numeric) LengthLimitingTextInputFormatter(4),
-            if (uppercase) TextInputFormatter.withFunction(
-              (_, next) => next.copyWith(text: next.text.toUpperCase()),
-            ),
+            if (uppercase)
+              TextInputFormatter.withFunction(
+                (_, next) => next.copyWith(text: next.text.toUpperCase()),
+              ),
           ],
           onChanged: (_) => onChanged(),
           style: const TextStyle(fontSize: 15),
           decoration: InputDecoration(
             hintText: hint,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
           ),
         ),
       ],

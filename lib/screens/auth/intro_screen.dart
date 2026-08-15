@@ -104,7 +104,11 @@ class _IntroScreenState extends State<IntroScreen> {
                         Text(
                           slide.body,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 15, color: c.textDim, height: 1.5),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: c.textDim,
+                            height: 1.5,
+                          ),
                         ),
                       ],
                     ),

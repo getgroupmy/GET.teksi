@@ -101,19 +101,28 @@ extension AppColorsX on BuildContext {
 
 ThemeData buildTheme({required bool dark}) {
   final colors = dark ? AppColors.dark : AppColors.light;
-  final scheme = ColorScheme.fromSeed(
-    seedColor: colors.brand,
-    brightness: dark ? Brightness.dark : Brightness.light,
-  ).copyWith(
-    primary: colors.brand,
-    onPrimary: colors.brandInk,
-    surface: colors.surface,
-    onSurface: colors.text,
-    error: colors.danger,
-  );
+  final scheme =
+      ColorScheme.fromSeed(
+        seedColor: colors.brand,
+        brightness: dark ? Brightness.dark : Brightness.light,
+      ).copyWith(
+        primary: colors.brand,
+        onPrimary: colors.brandInk,
+        surface: colors.surface,
+        onSurface: colors.text,
+        error: colors.danger,
+      );
 
-  TextStyle body(double size, {FontWeight weight = FontWeight.w400, Color? color}) =>
-      TextStyle(fontSize: size, fontWeight: weight, color: color ?? colors.text, height: 1.3);
+  TextStyle body(
+    double size, {
+    FontWeight weight = FontWeight.w400,
+    Color? color,
+  }) => TextStyle(
+    fontSize: size,
+    fontWeight: weight,
+    color: color ?? colors.text,
+    height: 1.3,
+  );
 
   return ThemeData(
     useMaterial3: true,
@@ -191,10 +200,14 @@ ThemeData buildTheme({required bool dark}) {
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith(
-        (states) => states.contains(WidgetState.selected) ? colors.brandInk : Colors.white,
+        (states) => states.contains(WidgetState.selected)
+            ? colors.brandInk
+            : Colors.white,
       ),
       trackColor: WidgetStateProperty.resolveWith(
-        (states) => states.contains(WidgetState.selected) ? colors.brand : colors.surface3,
+        (states) => states.contains(WidgetState.selected)
+            ? colors.brand
+            : colors.surface3,
       ),
       trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
     ),

@@ -16,7 +16,8 @@ class DestinationSearchScreen extends StatefulWidget {
   const DestinationSearchScreen({super.key});
 
   @override
-  State<DestinationSearchScreen> createState() => _DestinationSearchScreenState();
+  State<DestinationSearchScreen> createState() =>
+      _DestinationSearchScreenState();
 }
 
 class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
@@ -55,8 +56,10 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
         _dropoffFocus.requestFocus();
     }
     final controller = _controllerFor(field);
-    controller.selection =
-        TextSelection(baseOffset: 0, extentOffset: controller.text.length);
+    controller.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: controller.text.length,
+    );
   }
 
   @override
@@ -71,10 +74,10 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
   }
 
   TextEditingController _controllerFor(DraftField field) => switch (field) {
-        DraftField.pickup => _pickupController,
-        DraftField.stop => _stopController,
-        DraftField.dropoff => _dropoffController,
-      };
+    DraftField.pickup => _pickupController,
+    DraftField.stop => _stopController,
+    DraftField.dropoff => _dropoffController,
+  };
 
   void _choose(Place place) {
     final draft = context.read<DraftStore>();
@@ -106,13 +109,13 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
   }
 
   IconData _iconFor(Place place) => switch (place.category) {
-        PlaceCategory.airport => Icons.flight_rounded,
-        PlaceCategory.transit => Icons.directions_transit_rounded,
-        PlaceCategory.mall => Icons.storefront_rounded,
-        PlaceCategory.recent => Icons.history_rounded,
-        PlaceCategory.saved => Icons.star_rounded,
-        _ => Icons.place_rounded,
-      };
+    PlaceCategory.airport => Icons.flight_rounded,
+    PlaceCategory.transit => Icons.directions_transit_rounded,
+    PlaceCategory.mall => Icons.storefront_rounded,
+    PlaceCategory.recent => Icons.history_rounded,
+    PlaceCategory.saved => Icons.star_rounded,
+    _ => Icons.place_rounded,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +125,9 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
     final rides = context.watch<RidesStore>();
     final user = session.requireUser;
 
-    final pool = draft.service == ServiceType.intercity ? intercityPlaces : allPlaces;
+    final pool = draft.service == ServiceType.intercity
+        ? intercityPlaces
+        : allPlaces;
 
     final recents = <Place>[];
     final seen = <String>{};
@@ -134,10 +139,16 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
       if (recents.length >= 6) break;
     }
 
-    final base = draft.service == ServiceType.intercity ? intercityPlaces : places;
+    final base = draft.service == ServiceType.intercity
+        ? intercityPlaces
+        : places;
     final suggestions = [...base]
-      ..sort((a, b) => haversineKm(a.coord, session.myLocation)
-          .compareTo(haversineKm(b.coord, session.myLocation)));
+      ..sort(
+        (a, b) => haversineKm(
+          a.coord,
+          session.myLocation,
+        ).compareTo(haversineKm(b.coord, session.myLocation)),
+      );
 
     final results = _query.trim().isNotEmpty
         ? fuzzySearch(_query, pool: pool)
@@ -223,7 +234,10 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                       _focusActiveField();
                     },
                     icon: Icon(Icons.add_rounded, size: 18, color: c.accent),
-                    label: Text('Add a stop', style: TextStyle(color: c.accent)),
+                    label: Text(
+                      'Add a stop',
+                      style: TextStyle(color: c.accent),
+                    ),
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   ),
               ],
@@ -239,13 +253,17 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                   )
                 : ListView.separated(
                     itemCount: results.length,
-                    separatorBuilder: (_, _) => Divider(height: 1, color: c.line),
+                    separatorBuilder: (_, _) =>
+                        Divider(height: 1, color: c.line),
                     itemBuilder: (_, i) {
                       final place = results[i];
                       return InkWell(
                         onTap: () => _choose(place),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 13,
+                          ),
                           child: Row(
                             children: [
                               Container(
@@ -256,7 +274,11 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                                   color: c.surface2,
                                   shape: BoxShape.circle,
                                 ),
-                                child: Icon(_iconFor(place), size: 17, color: c.textDim),
+                                child: Icon(
+                                  _iconFor(place),
+                                  size: 17,
+                                  color: c.textDim,
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -276,15 +298,23 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                                       place.address,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: 13, color: c.textDim),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: c.textDim,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                distanceLabel(haversineKm(place.coord, session.myLocation)),
-                                style: TextStyle(fontSize: 12, color: c.textMute),
+                                distanceLabel(
+                                  haversineKm(place.coord, session.myLocation),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: c.textMute,
+                                ),
                               ),
                             ],
                           ),
@@ -327,18 +357,26 @@ class _Field extends StatelessWidget {
       onTap: () {
         // Select the existing place name so typing replaces it rather than
         // appending to it — otherwise editing a set field never matches.
-        controller.selection =
-            TextSelection(baseOffset: 0, extentOffset: controller.text.length);
+        controller.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: controller.text.length,
+        );
         onFocus();
       },
       onChanged: onChanged,
       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         hintText: hint,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: active ? c.accent : Colors.transparent, width: 1.5),
+          borderSide: BorderSide(
+            color: active ? c.accent : Colors.transparent,
+            width: 1.5,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

@@ -67,23 +67,25 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     void send() {
       final profile = user.driverProfile;
       if (profile == null) return;
-      rides.createOffer(Offer(
-        id: uid('ofr'),
-        rideId: ride.id,
-        driverId: user.id,
-        driverName: user.name,
-        driverAvatarColor: user.avatarColor,
-        driverRating: profile.rating,
-        driverRidesGiven: profile.ridesGiven,
-        vehicle: profile.vehicle,
-        price: bid,
-        etaMinutes: pickupEta,
-        distanceKm: double.parse(pickupKm.toStringAsFixed(2)),
-        createdAt: DateTime.now(),
-        expiresAt: DateTime.now().add(offerTtl),
-        status: OfferStatus.pending,
-        matchedAskingPrice: !isCounter,
-      ));
+      rides.createOffer(
+        Offer(
+          id: uid('ofr'),
+          rideId: ride.id,
+          driverId: user.id,
+          driverName: user.name,
+          driverAvatarColor: user.avatarColor,
+          driverRating: profile.rating,
+          driverRidesGiven: profile.ridesGiven,
+          vehicle: profile.vehicle,
+          price: bid,
+          etaMinutes: pickupEta,
+          distanceKm: double.parse(pickupKm.toStringAsFixed(2)),
+          createdAt: DateTime.now(),
+          expiresAt: DateTime.now().add(offerTtl),
+          status: OfferStatus.pending,
+          matchedAskingPrice: !isCounter,
+        ),
+      );
       context.pop();
     }
 
@@ -102,7 +104,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           children: [
             Row(
               children: [
-                Avatar(name: ride.passengerName, color: ride.passengerAvatarColor, size: 46),
+                Avatar(
+                  name: ride.passengerName,
+                  color: ride.passengerAvatarColor,
+                  size: 46,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -115,7 +121,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               ride.passengerName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -149,7 +158,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     children: [
                       _Meta(
                         label: 'To pickup',
-                        value: '${distanceLabel(pickupKm)} · ${durationLabel(pickupEta)}',
+                        value:
+                            '${distanceLabel(pickupKm)} · ${durationLabel(pickupEta)}',
                       ),
                       _Meta(
                         label: 'Trip length',
@@ -167,8 +177,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         value: ride.paymentMethod == PaymentMethod.card
                             ? 'Card'
                             : ride.paymentMethod == PaymentMethod.wallet
-                                ? 'Wallet'
-                                : 'Cash',
+                            ? 'Wallet'
+                            : 'Cash',
                       ),
                     ],
                   ),
@@ -195,7 +205,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         text: ride.options.map((o) => o.label).join(', '),
                       ),
                     if (ride.comment != null)
-                      _Detail(icon: Icons.sticky_note_2_outlined, text: ride.comment!),
+                      _Detail(
+                        icon: Icons.sticky_note_2_outlined,
+                        text: ride.comment!,
+                      ),
                   ],
                 ),
               ),
@@ -213,7 +226,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 padding: const EdgeInsets.all(18),
                 child: Column(
                   children: [
-                    const SectionLabel('Your offer', padding: EdgeInsets.only(bottom: 8)),
+                    const SectionLabel(
+                      'Your offer',
+                      padding: EdgeInsets.only(bottom: 8),
+                    ),
                     Text(
                       money(myOffer.price, decimals: false),
                       style: const TextStyle(
@@ -244,7 +260,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     backgroundColor: c.danger.withValues(alpha: 0.14),
                     foregroundColor: c.danger,
                     minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                   child: const Text('Withdraw offer'),
                 ),
@@ -257,7 +275,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SectionLabel('Passenger offers', padding: EdgeInsets.zero),
+                        const SectionLabel(
+                          'Passenger offers',
+                          padding: EdgeInsets.zero,
+                        ),
                         Text(
                           'Market ${money(ride.recommendedPrice, decimals: false)}',
                           style: TextStyle(fontSize: 12, color: c.textDim),
@@ -288,7 +309,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 'You keep ${money(driverNet(bid))} after '
                                 '${money(commissionOn(bid))} fee',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12, color: c.textDim),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: c.textDim,
+                                ),
                               ),
                             ],
                           ),
@@ -330,7 +354,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ),
               TextButton(
                 onPressed: () => context.pop(),
-                child: Text('Skip this order', style: TextStyle(color: c.textDim)),
+                child: Text(
+                  'Skip this order',
+                  style: TextStyle(color: c.textDim),
+                ),
               ),
             ],
           ],
@@ -352,9 +379,15 @@ class _Meta extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontSize: 11.5, color: context.c.textMute)),
+          Text(
+            label,
+            style: TextStyle(fontSize: 11.5, color: context.c.textMute),
+          ),
           const SizedBox(height: 2),
-          Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );
@@ -377,7 +410,10 @@ class _Detail extends StatelessWidget {
           Icon(icon, size: 16, color: context.c.textDim),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(text, style: const TextStyle(fontSize: 13.5, height: 1.35)),
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 13.5, height: 1.35),
+            ),
           ),
         ],
       ),
@@ -386,7 +422,11 @@ class _Detail extends StatelessWidget {
 }
 
 class _Round extends StatelessWidget {
-  const _Round({required this.icon, required this.onTap, required this.tooltip});
+  const _Round({
+    required this.icon,
+    required this.onTap,
+    required this.tooltip,
+  });
 
   final IconData icon;
   final VoidCallback? onTap;

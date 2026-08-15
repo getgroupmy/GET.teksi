@@ -46,7 +46,10 @@ class MenuScreen extends StatelessWidget {
                           user.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Row(
@@ -64,7 +67,10 @@ class MenuScreen extends StatelessWidget {
                                     : '${user.ridesTaken} trips taken',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 13, color: c.textDim),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: c.textDim,
+                                ),
                               ),
                             ),
                           ],
@@ -97,7 +103,9 @@ class MenuScreen extends StatelessWidget {
                   backgroundColor: c.surface3,
                   foregroundColor: c.text,
                   minimumSize: const Size.fromHeight(50),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +121,9 @@ class MenuScreen extends StatelessWidget {
                     Text(
                       isDriver
                           ? 'Switch to passenger'
-                          : (user.isDriver ? 'Switch to driver' : 'Become a driver'),
+                          : (user.isDriver
+                                ? 'Switch to driver'
+                                : 'Become a driver'),
                       style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ],

@@ -80,10 +80,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final other = viewer == Role.driver
         ? (ride.passengerName, ride.passengerAvatarColor, 'Passenger')
-        : (ride.driverName ?? 'Driver', ride.driverAvatarColor ?? 0xFF9AA39D, 'Your driver');
+        : (
+            ride.driverName ?? 'Driver',
+            ride.driverAvatarColor ?? 0xFF9AA39D,
+            'Your driver',
+          );
 
     final messages = rides.chatFor(widget.rideId);
-    final phrases = viewer == Role.driver ? quickPhrasesDriver : quickPhrasesPassenger;
+    final phrases = viewer == Role.driver
+        ? quickPhrasesDriver
+        : quickPhrasesPassenger;
 
     return Scaffold(
       appBar: AppBar(
@@ -104,7 +110,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     other.$1,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   Text(
                     '${other.$3} · trip to ${ride.dropoff.name}',
@@ -143,14 +152,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   )
                 : ListView.builder(
                     controller: _scroll,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     itemCount: messages.length,
                     itemBuilder: (_, i) {
                       final m = messages[i];
                       final mine = m.from == viewer;
                       return Align(
-                        alignment:
-                            mine ? Alignment.centerRight : Alignment.centerLeft,
+                        alignment: mine
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 8),
                           padding: const EdgeInsets.fromLTRB(14, 10, 14, 8),
@@ -227,8 +240,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       onSubmitted: (v) => _send(v, viewer),
                       decoration: const InputDecoration(
                         hintText: 'Message…',
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ),
@@ -245,7 +260,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: SizedBox(
                           width: 48,
                           height: 48,
-                          child: Icon(Icons.send_rounded, size: 19, color: c.brandInk),
+                          child: Icon(
+                            Icons.send_rounded,
+                            size: 19,
+                            color: c.brandInk,
+                          ),
                         ),
                       ),
                     ),

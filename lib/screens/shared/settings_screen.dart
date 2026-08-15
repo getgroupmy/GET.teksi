@@ -29,7 +29,9 @@ class SettingsScreen extends StatelessWidget {
         children: [
           const SectionLabel('Appearance'),
           AppRow(
-            icon: prefs.darkTheme ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+            icon: prefs.darkTheme
+                ? Icons.dark_mode_rounded
+                : Icons.light_mode_rounded,
             title: 'Dark theme',
             subtitle: prefs.darkTheme ? 'On' : 'Off',
             trailing: Switch(
@@ -52,17 +54,20 @@ class SettingsScreen extends StatelessWidget {
             subtitle: prefs.soundEnabled ? 'On' : 'Off',
             trailing: Switch(
               value: prefs.soundEnabled,
-              onChanged: (v) => session.setPrefs(prefs.copyWith(soundEnabled: v)),
+              onChanged: (v) =>
+                  session.setPrefs(prefs.copyWith(soundEnabled: v)),
             ),
           ),
           const SectionLabel('Demo'),
           AppRow(
             icon: Icons.smart_toy_outlined,
             title: 'Simulated marketplace',
-            subtitle: 'Bot drivers bid on your orders and bot passengers post rides',
+            subtitle:
+                'Bot drivers bid on your orders and bot passengers post rides',
             trailing: Switch(
               value: prefs.simulationEnabled,
-              onChanged: (v) => session.setPrefs(prefs.copyWith(simulationEnabled: v)),
+              onChanged: (v) =>
+                  session.setPrefs(prefs.copyWith(simulationEnabled: v)),
             ),
           ),
           const Padding(
@@ -74,8 +79,14 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SectionLabel('About'),
-          const AppRow(icon: Icons.description_outlined, title: 'Terms of service'),
-          const AppRow(icon: Icons.privacy_tip_outlined, title: 'Privacy policy'),
+          const AppRow(
+            icon: Icons.description_outlined,
+            title: 'Terms of service',
+          ),
+          const AppRow(
+            icon: Icons.privacy_tip_outlined,
+            title: 'Privacy policy',
+          ),
           const AppRow(
             icon: Icons.info_outline_rounded,
             title: 'Version',

@@ -114,7 +114,9 @@ class _MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
     final c = context.c;
     final interaction = widget.interactive
-        ? const InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate)
+        ? const InteractionOptions(
+            flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+          )
         : const InteractionOptions(flags: InteractiveFlag.none);
 
     return FlutterMap(
@@ -142,8 +144,7 @@ class _MapViewState extends State<MapView> {
           errorTileCallback: (_, _, _) {},
         ),
         // Dark mode wash so the light raster tiles sit in the app's key.
-        if (c.mapTint.a > 0)
-          IgnorePointer(child: Container(color: c.mapTint)),
+        if (c.mapTint.a > 0) IgnorePointer(child: Container(color: c.mapTint)),
 
         if (widget.approach != null && widget.approach!.length > 1)
           PolylineLayer(
@@ -161,7 +162,11 @@ class _MapViewState extends State<MapView> {
           PolylineLayer(
             polylines: [
               // Dark casing under the brand line, for contrast on any tile.
-              Polyline(points: widget.route!, strokeWidth: 9, color: const Color(0xCC0B0D0C)),
+              Polyline(
+                points: widget.route!,
+                strokeWidth: 9,
+                color: const Color(0xCC0B0D0C),
+              ),
               Polyline(points: widget.route!, strokeWidth: 5, color: c.brand),
             ],
           ),
@@ -257,7 +262,9 @@ class _PinMarker extends StatelessWidget {
           color: c.info,
           shape: BoxShape.circle,
           border: Border.all(color: c.bg, width: 3),
-          boxShadow: [BoxShadow(color: c.info.withValues(alpha: 0.4), blurRadius: 8)],
+          boxShadow: [
+            BoxShadow(color: c.info.withValues(alpha: 0.4), blurRadius: 8),
+          ],
         ),
       );
     }
@@ -284,7 +291,11 @@ class _PinMarker extends StatelessWidget {
               label!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.text),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: c.text,
+              ),
             ),
           ),
         Container(

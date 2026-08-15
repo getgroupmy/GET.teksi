@@ -15,7 +15,11 @@ import '../ui.dart';
 /// The driver's job card. One primary button always drives the trip forward:
 /// on my way → arrived → start → finish.
 class ActiveRideSheet extends StatelessWidget {
-  const ActiveRideSheet({super.key, required this.ride, required this.driverAt});
+  const ActiveRideSheet({
+    super.key,
+    required this.ride,
+    required this.driverAt,
+  });
 
   final Ride ride;
   final LatLng driverAt;
@@ -26,23 +30,25 @@ class ActiveRideSheet extends StatelessWidget {
     final rides = context.watch<RidesStore>();
     final unread = rides.unreadChat(ride.id, Role.driver);
 
-    final heading = ride.status == RideStatus.inProgress ? ride.dropoff : ride.pickup;
+    final heading = ride.status == RideStatus.inProgress
+        ? ride.dropoff
+        : ride.pickup;
     final km = haversineKm(driverAt, heading.coord) * 1.35;
     final eta = driveMinutes(km);
 
     final (primaryLabel, primaryAction) = switch (ride.status) {
       RideStatus.accepted || RideStatus.arriving => (
-          "I've arrived",
-          () => rides.setRideStatus(ride.id, RideStatus.waiting),
-        ),
+        "I've arrived",
+        () => rides.setRideStatus(ride.id, RideStatus.waiting),
+      ),
       RideStatus.waiting => (
-          'Start the trip',
-          () => rides.setRideStatus(ride.id, RideStatus.inProgress),
-        ),
+        'Start the trip',
+        () => rides.setRideStatus(ride.id, RideStatus.inProgress),
+      ),
       RideStatus.inProgress => (
-          'Finish trip · ${money(ride.fare, decimals: false)}',
-          () => rides.completeRide(ride.id),
-        ),
+        'Finish trip · ${money(ride.fare, decimals: false)}',
+        () => rides.completeRide(ride.id),
+      ),
       _ => (null, null),
     };
 
@@ -63,12 +69,19 @@ class ActiveRideSheet extends StatelessWidget {
                   title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               Text(
                 '${durationLabel(eta)} · ${distanceLabel(km)}',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: c.accent),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: c.accent,
+                ),
               ),
             ],
           ),
@@ -82,7 +95,11 @@ class ActiveRideSheet extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Avatar(name: ride.passengerName, color: ride.passengerAvatarColor, size: 44),
+                Avatar(
+                  name: ride.passengerName,
+                  color: ride.passengerAvatarColor,
+                  size: 44,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -95,7 +112,10 @@ class ActiveRideSheet extends StatelessWidget {
                               ride.passengerName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -105,7 +125,11 @@ class ActiveRideSheet extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         '${plural(ride.passengerCount, 'passenger')} · '
-                        '${ride.paymentMethod == PaymentMethod.cash ? 'Cash' : ride.paymentMethod == PaymentMethod.card ? 'Card' : 'Wallet'}',
+                        '${ride.paymentMethod == PaymentMethod.cash
+                            ? 'Cash'
+                            : ride.paymentMethod == PaymentMethod.card
+                            ? 'Card'
+                            : 'Wallet'}',
                         style: TextStyle(fontSize: 12.5, color: c.textDim),
                       ),
                     ],
@@ -144,12 +168,20 @@ class ActiveRideSheet extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.sticky_note_2_outlined, size: 15, color: c.textDim),
+                  Icon(
+                    Icons.sticky_note_2_outlined,
+                    size: 15,
+                    color: c.textDim,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       ride.comment!,
-                      style: TextStyle(fontSize: 13, color: c.textDim, height: 1.35),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: c.textDim,
+                        height: 1.35,
+                      ),
                     ),
                   ),
                 ],
@@ -238,7 +270,10 @@ class ActiveRideSheet extends StatelessWidget {
           if (ride.status != RideStatus.inProgress)
             TextButton(
               onPressed: () => _confirmCancel(context, rides),
-              child: Text('Cancel this order', style: TextStyle(color: c.danger)),
+              child: Text(
+                'Cancel this order',
+                style: TextStyle(color: c.danger),
+              ),
             ),
         ],
       ),

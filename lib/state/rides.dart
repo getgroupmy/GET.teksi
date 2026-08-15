@@ -95,12 +95,21 @@ class RidesStore extends ChangeNotifier {
   }
 
   void _persist() {
-    Store.instance.writeJson(_ridesKey, _rides.map((k, v) => MapEntry(k, v.toJson())));
-    Store.instance.writeJson(_offersKey, _offers.map((k, v) => MapEntry(k, v.toJson())));
+    Store.instance.writeJson(
+      _ridesKey,
+      _rides.map((k, v) => MapEntry(k, v.toJson())),
+    );
+    Store.instance.writeJson(
+      _offersKey,
+      _offers.map((k, v) => MapEntry(k, v.toJson())),
+    );
     Store.instance.writeJson(
       _chatKey,
       _messages.length > 300
-          ? _messages.sublist(_messages.length - 300).map((m) => m.toJson()).toList()
+          ? _messages
+                .sublist(_messages.length - 300)
+                .map((m) => m.toJson())
+                .toList()
           : _messages.map((m) => m.toJson()).toList(),
     );
     Store.instance.writeJson(
@@ -125,7 +134,12 @@ class RidesStore extends ChangeNotifier {
   Ride publishRide(Ride ride) {
     final withRoute = ride.routeGeometry == null
         ? ride.copyWith(
-            routeGeometry: syntheticRoute(ride.pickup.coord, ride.dropoff.coord, 3))
+            routeGeometry: syntheticRoute(
+              ride.pickup.coord,
+              ride.dropoff.coord,
+              3,
+            ),
+          )
         : ride;
     _rides = {..._rides, withRoute.id: withRoute};
     _commit();
@@ -133,7 +147,11 @@ class RidesStore extends ChangeNotifier {
     return withRoute;
   }
 
-  Ride? updateRide(String id, Ride Function(Ride) patch, {bool silent = false}) {
+  Ride? updateRide(
+    String id,
+    Ride Function(Ride) patch, {
+    bool silent = false,
+  }) {
     final current = _rides[id];
     if (current == null) return null;
     final next = patch(current).copyWith(updatedAt: DateTime.now());
@@ -146,7 +164,10 @@ class RidesStore extends ChangeNotifier {
   void raisePrice(String rideId, int price) {
     final ride = _rides[rideId];
     if (ride == null || ride.status != RideStatus.searching) return;
-    updateRide(rideId, (r) => r.copyWith(askingPrice: price, priceRaises: r.priceRaises + 1));
+    updateRide(
+      rideId,
+      (r) => r.copyWith(askingPrice: price, priceRaises: r.priceRaises + 1),
+    );
     notify(
       kind: NotificationKind.ride,
       title: 'Price raised',
@@ -202,14 +223,20 @@ class RidesStore extends ChangeNotifier {
     final ride = _rides[rideId];
     if (ride == null || ride.status == RideStatus.completed) return;
     final fare = ride.fare;
-    updateRide(rideId, (r) => r.copyWith(status: RideStatus.completed, completedAt: DateTime.now()));
+    updateRide(
+      rideId,
+      (r) =>
+          r.copyWith(status: RideStatus.completed, completedAt: DateTime.now()),
+    );
 
     final me = _session.user;
     if (me == null) return;
 
     if (ride.passengerId == me.id) {
       _session.recordPassengerTrip();
-      if (ride.paymentMethod == PaymentMethod.wallet) _session.debitWallet(fare);
+      if (ride.paymentMethod == PaymentMethod.wallet) {
+        _session.debitWallet(fare);
+      }
       addTransaction(
         kind: TransactionKind.ridePayment,
         amount: -fare,
@@ -243,7 +270,8 @@ class RidesStore extends ChangeNotifier {
       notify(
         kind: NotificationKind.ride,
         title: '${offer.driverName} offered a price',
-        body: '${offer.vehicle.make} ${offer.vehicle.model} · ${offer.etaMinutes} min away',
+        body:
+            '${offer.vehicle.make} ${offer.vehicle.model} · ${offer.etaMinutes} min away',
         rideId: ride.id,
       );
     }
@@ -267,8 +295,11 @@ class RidesStore extends ChangeNotifier {
     _commit();
     bus.publish(OfferUpdated(next[offerId]!));
 
-    final driverStart = _nearbyDrivers[offer.driverId]?.coord ??
-        (offer.driverId == _session.user?.id ? _session.myLocation : ride.pickup.coord);
+    final driverStart =
+        _nearbyDrivers[offer.driverId]?.coord ??
+        (offer.driverId == _session.user?.id
+            ? _session.myLocation
+            : ride.pickup.coord);
 
     updateRide(
       offer.rideId,
@@ -295,9 +326,11 @@ class RidesStore extends ChangeNotifier {
     bus.publish(OfferUpdated(next));
   }
 
-  void declineOffer(String offerId) => _setOfferStatus(offerId, OfferStatus.declined);
+  void declineOffer(String offerId) =>
+      _setOfferStatus(offerId, OfferStatus.declined);
 
-  void withdrawOffer(String offerId) => _setOfferStatus(offerId, OfferStatus.withdrawn);
+  void withdrawOffer(String offerId) =>
+      _setOfferStatus(offerId, OfferStatus.withdrawn);
 
   /* ---------------------------------------------------------------- */
   /* Live positions                                                   */
@@ -485,7 +518,9 @@ class RidesStore extends ChangeNotifier {
       case RideUpdated(:final ride):
         final existing = _rides[ride.id];
         // Last-write-wins on the update stamp keeps participants convergent.
-        if (existing != null && existing.updatedAt.isAfter(ride.updatedAt)) return;
+        if (existing != null && existing.updatedAt.isAfter(ride.updatedAt)) {
+          return;
+        }
         if (existing != null && identical(existing, ride)) return;
         _rides = {..._rides, ride.id: ride};
         _commit();
@@ -522,7 +557,9 @@ class RidesStore extends ChangeNotifier {
 
   Ride? activeRideFor(String userId, Role role) {
     final mine = _rides.values.where(
-      (r) => role == Role.passenger ? r.passengerId == userId : r.driverId == userId,
+      (r) => role == Role.passenger
+          ? r.passengerId == userId
+          : r.driverId == userId,
     );
     final live = mine.where((r) => r.isLive).toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -531,15 +568,25 @@ class RidesStore extends ChangeNotifier {
 
   /// The most recent finished ride awaiting a rating from this side.
   Ride? rideAwaitingRating(String userId, Role role) {
-    final done = _rides.values
-        .where((r) => r.status == RideStatus.completed)
-        .where((r) => role == Role.passenger ? r.passengerId == userId : r.driverId == userId)
-        .where((r) => role == Role.passenger
-            ? r.ratingByPassenger == null
-            : r.ratingByDriver == null)
-        .toList()
-      ..sort((a, b) =>
-          (b.completedAt ?? b.createdAt).compareTo(a.completedAt ?? a.createdAt));
+    final done =
+        _rides.values
+            .where((r) => r.status == RideStatus.completed)
+            .where(
+              (r) => role == Role.passenger
+                  ? r.passengerId == userId
+                  : r.driverId == userId,
+            )
+            .where(
+              (r) => role == Role.passenger
+                  ? r.ratingByPassenger == null
+                  : r.ratingByDriver == null,
+            )
+            .toList()
+          ..sort(
+            (a, b) => (b.completedAt ?? b.createdAt).compareTo(
+              a.completedAt ?? a.createdAt,
+            ),
+          );
     return done.isEmpty ? null : done.first;
   }
 
@@ -553,14 +600,20 @@ class RidesStore extends ChangeNotifier {
   }
 
   List<Offer> pendingOffersForRide(String rideId) =>
-      offersForRide(rideId).where((o) => o.status == OfferStatus.pending).toList();
+      offersForRide(rideId)
+          .where((o) => o.status == OfferStatus.pending)
+          .toList();
 
   /// Open orders a driver may bid on, newest first.
   List<Ride> openOrders(String driverId) {
-    final list = _rides.values
-        .where((r) => r.status == RideStatus.searching && r.passengerId != driverId)
-        .toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    final list =
+        _rides.values
+            .where(
+              (r) =>
+                  r.status == RideStatus.searching && r.passengerId != driverId,
+            )
+            .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return list;
   }
 
@@ -581,14 +634,20 @@ class RidesStore extends ChangeNotifier {
       .toSet();
 
   List<Ride> historyFor(String userId, Role role) {
-    final list = _rides.values
-        .where((r) => role == Role.passenger ? r.passengerId == userId : r.driverId == userId)
-        .where((r) => r.isFinished)
-        .toList()
-      ..sort((a, b) {
-        DateTime at(Ride r) => r.completedAt ?? r.cancelledAt ?? r.createdAt;
-        return at(b).compareTo(at(a));
-      });
+    final list =
+        _rides.values
+            .where(
+              (r) => role == Role.passenger
+                  ? r.passengerId == userId
+                  : r.driverId == userId,
+            )
+            .where((r) => r.isFinished)
+            .toList()
+          ..sort((a, b) {
+            DateTime at(Ride r) =>
+                r.completedAt ?? r.cancelledAt ?? r.createdAt;
+            return at(b).compareTo(at(a));
+          });
     return list;
   }
 

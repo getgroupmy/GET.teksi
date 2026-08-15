@@ -49,7 +49,8 @@ class _EarningsScreenState extends State<EarningsScreen> {
     final rated = trips.where((r) => r.ratingByPassenger != null).toList();
     final avgRating = rated.isEmpty
         ? (user.driverProfile?.rating ?? 5)
-        : rated.fold(0, (sum, r) => sum + r.ratingByPassenger!.stars) / rated.length;
+        : rated.fold(0, (sum, r) => sum + r.ratingByPassenger!.stars) /
+              rated.length;
 
     final grouped = <String, List<Ride>>{};
     for (final ride in trips) {
@@ -82,7 +83,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                const SectionLabel('Net earnings', padding: EdgeInsets.only(bottom: 8)),
+                const SectionLabel(
+                  'Net earnings',
+                  padding: EdgeInsets.only(bottom: 8),
+                ),
                 Text(
                   money(net),
                   style: const TextStyle(
@@ -143,7 +147,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
             )
           else
             for (final entry in grouped.entries) ...[
-              SectionLabel(entry.key, padding: const EdgeInsets.only(bottom: 8)),
+              SectionLabel(
+                entry.key,
+                padding: const EdgeInsets.only(bottom: 8),
+              ),
               AppCard(
                 padding: EdgeInsets.zero,
                 child: Column(
@@ -156,9 +163,13 @@ class _EarningsScreenState extends State<EarningsScreen> {
                               : Border(top: BorderSide(color: c.line)),
                         ),
                         child: InkWell(
-                          onTap: () => context.push('/ride/${entry.value[i].id}'),
+                          onTap: () =>
+                              context.push('/ride/${entry.value[i].id}'),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
                             child: Row(
                               children: [
                                 Container(
@@ -178,7 +189,8 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         entry.value[i].dropoff.name,
@@ -193,13 +205,19 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                         '${clockTime(entry.value[i].completedAt ?? entry.value[i].createdAt)} · '
                                         '${distanceLabel(entry.value[i].distanceKm)}'
                                         '${entry.value[i].ratingByPassenger != null ? ' · ★ ${entry.value[i].ratingByPassenger!.stars}' : ''}',
-                                        style: TextStyle(fontSize: 12, color: c.textDim),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: c.textDim,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
                                 Text(
-                                  money(driverNet(entry.value[i].fare), decimals: false),
+                                  money(
+                                    driverNet(entry.value[i].fare),
+                                    decimals: false,
+                                  ),
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,

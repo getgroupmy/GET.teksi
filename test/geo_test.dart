@@ -34,18 +34,30 @@ void main() {
 
   group('bearingBetween', () {
     test('reads due north', () {
-      expect(bearingBetween(const LatLng(0, 0), const LatLng(1, 0)), closeTo(0, 0.5));
+      expect(
+        bearingBetween(const LatLng(0, 0), const LatLng(1, 0)),
+        closeTo(0, 0.5),
+      );
     });
 
     test('reads due east', () {
-      expect(bearingBetween(const LatLng(0, 0), const LatLng(0, 1)), closeTo(90, 0.5));
+      expect(
+        bearingBetween(const LatLng(0, 0), const LatLng(0, 1)),
+        closeTo(90, 0.5),
+      );
     });
 
     test('always returns a value inside 0..360', () {
       final rng = Random(7);
       for (var i = 0; i < 50; i++) {
-        final a = LatLng(rng.nextDouble() * 160 - 80, rng.nextDouble() * 360 - 180);
-        final b = LatLng(rng.nextDouble() * 160 - 80, rng.nextDouble() * 360 - 180);
+        final a = LatLng(
+          rng.nextDouble() * 160 - 80,
+          rng.nextDouble() * 360 - 180,
+        );
+        final b = LatLng(
+          rng.nextDouble() * 160 - 80,
+          rng.nextDouble() * 360 - 180,
+        );
         final result = bearingBetween(a, b);
         expect(result, inInclusiveRange(0, 360));
       }
@@ -70,7 +82,10 @@ void main() {
     test('handles a zero-length route without dividing by zero', () {
       final path = syntheticRoute(_klcc, _klcc);
       expect(path, isNotEmpty);
-      expect(path.every((p) => p.latitude.isFinite && p.longitude.isFinite), isTrue);
+      expect(
+        path.every((p) => p.latitude.isFinite && p.longitude.isFinite),
+        isTrue,
+      );
     });
   });
 
@@ -78,7 +93,10 @@ void main() {
     final path = syntheticRoute(_klcc, _midValley);
 
     test('fraction 0 is the start and 1 is the end', () {
-      expect(pointAlongPath(path, 0).coord.latitude, closeTo(_klcc.latitude, 0.001));
+      expect(
+        pointAlongPath(path, 0).coord.latitude,
+        closeTo(_klcc.latitude, 0.001),
+      );
       expect(
         pointAlongPath(path, 1).coord.latitude,
         closeTo(_midValley.latitude, 0.001),
@@ -86,7 +104,10 @@ void main() {
     });
 
     test('clamps out-of-range fractions', () {
-      expect(pointAlongPath(path, -5).coord.latitude, closeTo(_klcc.latitude, 0.001));
+      expect(
+        pointAlongPath(path, -5).coord.latitude,
+        closeTo(_klcc.latitude, 0.001),
+      );
       expect(
         pointAlongPath(path, 5).coord.latitude,
         closeTo(_midValley.latitude, 0.001),
@@ -96,7 +117,10 @@ void main() {
     test('advances monotonically along the path', () {
       var previous = 0.0;
       for (var t = 0.0; t <= 1.0; t += 0.1) {
-        final travelled = haversineKm(path.first, pointAlongPath(path, t).coord);
+        final travelled = haversineKm(
+          path.first,
+          pointAlongPath(path, t).coord,
+        );
         expect(travelled, greaterThanOrEqualTo(previous - 0.01));
         previous = travelled;
       }

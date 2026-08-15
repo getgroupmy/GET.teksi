@@ -53,7 +53,10 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   user.name,
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 Text(
                   phoneDisplay(user.phone),
@@ -102,7 +105,11 @@ class ProfileScreen extends StatelessWidget {
                           color: c.brand.withValues(alpha: 0.14),
                           borderRadius: BorderRadius.circular(13),
                         ),
-                        child: Icon(Icons.directions_car_rounded, size: 20, color: c.accent),
+                        child: Icon(
+                          Icons.directions_car_rounded,
+                          size: 20,
+                          color: c.accent,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -122,7 +129,10 @@ class ProfileScreen extends StatelessWidget {
                             Text(
                               '${user.driverProfile!.vehicle.plate} · '
                               '${user.driverProfile!.vehicle.color}',
-                              style: TextStyle(fontSize: 12.5, color: c.textDim),
+                              style: TextStyle(
+                                fontSize: 12.5,
+                                color: c.textDim,
+                              ),
                             ),
                           ],
                         ),
@@ -155,12 +165,16 @@ class ProfileScreen extends StatelessWidget {
                       const SizedBox(width: 8),
                       StatBox(
                         label: 'Trips given',
-                        value: '${asDriver == 0 ? user.driverProfile!.ridesGiven : asDriver}',
+                        value:
+                            '${asDriver == 0 ? user.driverProfile!.ridesGiven : asDriver}',
                       ),
                       const SizedBox(width: 8),
                       StatBox(
                         label: 'Earned',
-                        value: money(user.driverProfile!.earnings, decimals: false),
+                        value: money(
+                          user.driverProfile!.earnings,
+                          decimals: false,
+                        ),
                       ),
                     ],
                   ),
@@ -204,19 +218,30 @@ class ProfileScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionLabel('Full name', padding: EdgeInsets.only(bottom: 6)),
-          TextField(controller: name, textCapitalization: TextCapitalization.words),
-          const SectionLabel('Email', padding: EdgeInsets.only(top: 16, bottom: 6)),
-          TextField(controller: email, keyboardType: TextInputType.emailAddress),
+          TextField(
+            controller: name,
+            textCapitalization: TextCapitalization.words,
+          ),
+          const SectionLabel(
+            'Email',
+            padding: EdgeInsets.only(top: 16, bottom: 6),
+          ),
+          TextField(
+            controller: email,
+            keyboardType: TextInputType.emailAddress,
+          ),
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
                 if (name.text.trim().length < 2) return;
-                session.updateUser(user.copyWith(
-                  name: name.text.trim(),
-                  email: email.text.trim().isEmpty ? null : email.text.trim(),
-                ));
+                session.updateUser(
+                  user.copyWith(
+                    name: name.text.trim(),
+                    email: email.text.trim().isEmpty ? null : email.text.trim(),
+                  ),
+                );
                 Navigator.of(sheetContext).pop();
               },
               child: const Text('Save'),

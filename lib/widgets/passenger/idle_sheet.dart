@@ -138,7 +138,11 @@ class IdleSheet extends StatelessWidget {
                           color: c.surface2,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.history_rounded, size: 17, color: c.textDim),
+                        child: Icon(
+                          Icons.history_rounded,
+                          size: 17,
+                          color: c.textDim,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -149,7 +153,10 @@ class IdleSheet extends StatelessWidget {
                               place.name,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             Text(
                               place.address,
@@ -206,7 +213,10 @@ class _Shortcut extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               if (sub != null)
                 Text(

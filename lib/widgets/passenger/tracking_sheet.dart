@@ -12,9 +12,18 @@ import '../../theme.dart';
 import '../ui.dart';
 
 const _copy = <RideStatus, (String, String)>{
-  RideStatus.accepted: ('Driver is on the way', 'Meet your driver at the pickup point'),
-  RideStatus.arriving: ('Driver is arriving', 'Please start heading to the pickup point'),
-  RideStatus.waiting: ('Your driver is waiting', 'They can wait a few minutes free of charge'),
+  RideStatus.accepted: (
+    'Driver is on the way',
+    'Meet your driver at the pickup point',
+  ),
+  RideStatus.arriving: (
+    'Driver is arriving',
+    'Please start heading to the pickup point',
+  ),
+  RideStatus.waiting: (
+    'Your driver is waiting',
+    'They can wait a few minutes free of charge',
+  ),
   RideStatus.inProgress: ('On the way to your destination', 'Enjoy the ride'),
 };
 
@@ -53,7 +62,10 @@ class TrackingSheet extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               if (ride.status != RideStatus.waiting)
@@ -97,7 +109,10 @@ class TrackingSheet extends StatelessWidget {
                               ride.driverName ?? 'Driver',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -108,14 +123,21 @@ class TrackingSheet extends StatelessWidget {
                         const SizedBox(height: 2),
                         Row(
                           children: [
-                            Icon(Icons.directions_car_rounded, size: 13, color: c.textDim),
+                            Icon(
+                              Icons.directions_car_rounded,
+                              size: 13,
+                              color: c.textDim,
+                            ),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
                                 ride.driverVehicle!.describe,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 12.5, color: c.textDim),
+                                style: TextStyle(
+                                  fontSize: 12.5,
+                                  color: c.textDim,
+                                ),
                               ),
                             ),
                           ],
@@ -126,7 +148,10 @@ class TrackingSheet extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: c.surface3,
                     borderRadius: BorderRadius.circular(9),
@@ -202,7 +227,10 @@ class TrackingSheet extends StatelessWidget {
                     ),
                     Text(
                       money(ride.fare, decimals: false),
-                      style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
+                      style: const TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ],
                 ),
@@ -223,12 +251,15 @@ class TrackingSheet extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: TextButton(
-                onPressed: () => _confirmCancel(context, context.read<RidesStore>()),
+                onPressed: () =>
+                    _confirmCancel(context, context.read<RidesStore>()),
                 style: TextButton.styleFrom(
                   backgroundColor: c.danger.withValues(alpha: 0.14),
                   foregroundColor: c.danger,
                   minimumSize: const Size.fromHeight(46),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text('Cancel ride'),
               ),
@@ -240,7 +271,8 @@ class TrackingSheet extends StatelessWidget {
   }
 
   void _snack(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _share(BuildContext context) {
@@ -262,7 +294,10 @@ class TrackingSheet extends StatelessWidget {
               color: sheetContext.c.surface2,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(_shareText, style: const TextStyle(fontSize: 13.5, height: 1.45)),
+            child: Text(
+              _shareText,
+              style: const TextStyle(fontSize: 13.5, height: 1.45),
+            ),
           ),
           const SizedBox(height: 12),
           FilledButton(

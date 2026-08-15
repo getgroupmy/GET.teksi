@@ -1,0 +1,183 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+# A newer push supersedes an in-flight run on the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.47.0'
+
+jobs:
+  analyze:
+    name: Analyze, format and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      - name: Test
+        run: flutter test --reporter expanded
+
+  build-web:
+    name: Build web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      # --no-web-resources-cdn bundles CanvasKit rather than fetching it from
+      # gstatic, which is blocked on some networks and in mainland China.
+      - name: Build
+        run: flutter build web --release --no-web-resources-cdn
+
+      - name: Assert CanvasKit is bundled, not remote
+        run: |
+          test -f build/web/canvaskit/canvaskit.wasm \
+            || { echo "::error::CanvasKit was not bundled locally"; exit 1; }
+          if grep -rq "gstatic.com/flutter-canvaskit" build/web/*.js; then
+            echo "::error::Build still references the gstatic CanvasKit CDN"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/web
+          retention-days: 14
+
+  build-android:
+    name: Build Android (APK + AAB)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          retention-days: 14
+
+  huawei-compatibility:
+    name: Verify the build is GMS-free
+    needs: build-android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: android
+          path: artifacts
+
+      # Huawei devices ship without Google Play Services. This app is only
+      # installable there because nothing in the dependency graph touches GMS,
+      # so that property is asserted on every build rather than trusted.
+      - name: Scan the APK for Google Play Services
+        run: |
+          APK=$(find artifacts -name '*.apk' | head -1)
+          echo "Scanning $APK"
+
+          # Classes live inside classes*.dex, not as separate zip entries, so
+          # the archive listing alone would never see them. Extract the dex and
+          # look for the class descriptors the runtime would actually load.
+          unzip -o -q "$APK" 'classes*.dex' -d /tmp/dex
+          ls -la /tmp/dex
+          cat /tmp/dex/classes*.dex > /tmp/all.dex
+          strings -a /tmp/all.dex > /tmp/dex-strings.txt
+          echo "dex strings extracted: $(wc -l < /tmp/dex-strings.txt)"
+
+          fail=0
+          for marker in \
+            'Lcom/google/android/gms' \
+            'Lcom/google/firebase' \
+            'Lcom/huawei/hms'
+          do
+            if grep -q "$marker" /tmp/dex-strings.txt; then
+              echo "::error::APK bytecode references $marker — no longer GMS-free"
+              grep -m3 "$marker" /tmp/dex-strings.txt
+              fail=1
+            fi
+          done
+
+          # Sanity-check the scan itself: our own classes must be findable, or
+          # the extraction silently failed and the whole check is meaningless.
+          if ! grep -q 'Lmy/getgroup/get_teksi' /tmp/dex-strings.txt; then
+            echo "::error::Scan self-check failed — app classes not found in dex"
+            exit 1
+          fi
+
+          # google-services.json would pull GMS in via the Gradle plugin.
+          if [ -f android/app/google-services.json ]; then
+            echo "::error::android/app/google-services.json is present"
+            fail=1
+          fi
+
+          if [ "$fail" -eq 0 ]; then
+            echo "✅ No GMS, Firebase or HMS classes in the APK bytecode."
+          fi
+          exit $fail
+
+      - name: Scan the source tree for Google SDK references
+        run: |
+          if grep -rIn -E 'com\.google\.android\.gms|com\.google\.firebase|google-services' android/ ios/; then
+            echo "::error::Google SDK reference found in the platform folders"
+            exit 1
+          fi
+          echo "✅ Platform folders are clean."
+
+  build-ios:
+    name: Build iOS (unsigned)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      # --no-codesign compiles the app without needing signing certificates,
+      # which is enough to prove the iOS target actually builds.
+      - name: Build
+        run: flutter build ios --release --no-codesign

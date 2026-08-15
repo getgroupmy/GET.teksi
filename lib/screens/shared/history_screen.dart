@@ -30,7 +30,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final list = rides.historyFor(user.id, role);
     final grouped = <String, List<Ride>>{};
     for (final ride in list) {
-      final key = dateLabel(ride.completedAt ?? ride.cancelledAt ?? ride.createdAt);
+      final key = dateLabel(
+        ride.completedAt ?? ride.cancelledAt ?? ride.createdAt,
+      );
       grouped.putIfAbsent(key, () => []).add(ride);
     }
 
@@ -112,7 +114,9 @@ class _HistoryCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      cancelled ? Icons.cancel_outlined : Icons.schedule_rounded,
+                      cancelled
+                          ? Icons.cancel_outlined
+                          : Icons.schedule_rounded,
                       size: 14,
                       color: cancelled ? c.danger : c.textDim,
                     ),
@@ -122,7 +126,7 @@ class _HistoryCard extends StatelessWidget {
                         cancelled
                             ? 'Cancelled'
                             : '${clockTime(ride.completedAt ?? ride.createdAt)} · '
-                                '${distanceLabel(ride.distanceKm)}',
+                                  '${distanceLabel(ride.distanceKm)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

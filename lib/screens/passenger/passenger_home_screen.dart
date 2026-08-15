@@ -38,12 +38,14 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     final draft = context.read<DraftStore>();
     if (draft.pickup != null) return;
     final session = context.read<SessionStore>();
-    draft.setPickup(Place(
-      id: uid('pin'),
-      name: 'Current location',
-      address: streets[DateTime.now().microsecond % streets.length],
-      coord: session.myLocation,
-    ));
+    draft.setPickup(
+      Place(
+        id: uid('pin'),
+        name: 'Current location',
+        address: streets[DateTime.now().microsecond % streets.length],
+        coord: session.myLocation,
+      ),
+    );
   }
 
   @override
@@ -74,49 +76,70 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     final drivers = activeRide?.driverId == null
         ? rides.nearbyDrivers.values.toList()
         : rides.nearbyDrivers.values
-            .where((d) => d.id == activeRide!.driverId)
-            .toList();
+              .where((d) => d.id == activeRide!.driverId)
+              .toList();
 
     final pins = <MapPin>[];
     if (activeRide != null) {
-      pins.add(MapPin('pickup', activeRide.pickup.coord, PinKind.pickup, label: 'Pickup'));
+      pins.add(
+        MapPin(
+          'pickup',
+          activeRide.pickup.coord,
+          PinKind.pickup,
+          label: 'Pickup',
+        ),
+      );
       if (activeRide.stop != null) {
         pins.add(MapPin('stop', activeRide.stop!.coord, PinKind.stop));
       }
-      pins.add(MapPin(
-        'dropoff',
-        activeRide.dropoff.coord,
-        PinKind.dropoff,
-        label: activeRide.dropoff.name,
-      ));
+      pins.add(
+        MapPin(
+          'dropoff',
+          activeRide.dropoff.coord,
+          PinKind.dropoff,
+          label: activeRide.dropoff.name,
+        ),
+      );
     } else {
       if (draft.pickup != null) {
-        pins.add(MapPin('pickup', draft.pickup!.coord, PinKind.pickup, label: 'Pickup'));
+        pins.add(
+          MapPin(
+            'pickup',
+            draft.pickup!.coord,
+            PinKind.pickup,
+            label: 'Pickup',
+          ),
+        );
       } else {
         pins.add(MapPin('me', session.myLocation, PinKind.me));
       }
-      if (draft.stop != null) pins.add(MapPin('stop', draft.stop!.coord, PinKind.stop));
+      if (draft.stop != null) {
+        pins.add(MapPin('stop', draft.stop!.coord, PinKind.stop));
+      }
       if (draft.dropoff != null) {
-        pins.add(MapPin(
-          'dropoff',
-          draft.dropoff!.coord,
-          PinKind.dropoff,
-          label: draft.dropoff!.name,
-        ));
+        pins.add(
+          MapPin(
+            'dropoff',
+            draft.dropoff!.coord,
+            PinKind.dropoff,
+            label: draft.dropoff!.name,
+          ),
+        );
       }
     }
 
     final route = activeRide != null
         ? (activeRide.status == RideStatus.inProgress ||
-                activeRide.status == RideStatus.searching
-            ? activeRide.routeGeometry
-            : null)
+                  activeRide.status == RideStatus.searching
+              ? activeRide.routeGeometry
+              : null)
         : (draft.pickup != null && draft.dropoff != null
-            ? syntheticRoute(draft.pickup!.coord, draft.dropoff!.coord, 3)
-            : null);
+              ? syntheticRoute(draft.pickup!.coord, draft.dropoff!.coord, 3)
+              : null);
 
     // Dashed line from the driver's live position to where they're headed.
-    final approach = (activeRide?.driverCoord != null &&
+    final approach =
+        (activeRide?.driverCoord != null &&
             (activeRide!.status == RideStatus.accepted ||
                 activeRide.status == RideStatus.arriving))
         ? syntheticRoute(activeRide.driverCoord!, activeRide.pickup.coord, 1)
@@ -125,8 +148,8 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
     final fitToken = activeRide != null
         ? '${activeRide.id}:${activeRide.status.name}'
         : (draft.pickup != null && draft.dropoff != null
-            ? 'draft:${draft.pickup!.id}:${draft.dropoff!.id}'
-            : null);
+              ? 'draft:${draft.pickup!.id}:${draft.dropoff!.id}'
+              : null);
 
     final sheetHeight = activeRide != null
         ? 360.0
@@ -183,11 +206,11 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             alignment: Alignment.bottomCenter,
             child: activeRide != null
                 ? (activeRide.status == RideStatus.searching
-                    ? OffersSheet(ride: activeRide)
-                    : TrackingSheet(ride: activeRide))
+                      ? OffersSheet(ride: activeRide)
+                      : TrackingSheet(ride: activeRide))
                 : (draft.step == DraftStep.price && draft.dropoff != null
-                    ? const PriceSheet()
-                    : const IdleSheet()),
+                      ? const PriceSheet()
+                      : const IdleSheet()),
           ),
         ],
       ),
@@ -196,7 +219,11 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
 }
 
 class _RoleSwitch extends StatelessWidget {
-  const _RoleSwitch({required this.icon, required this.label, required this.onTap});
+  const _RoleSwitch({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String label;
@@ -226,7 +253,10 @@ class _RoleSwitch extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 label,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),

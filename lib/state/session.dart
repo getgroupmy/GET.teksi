@@ -37,36 +37,35 @@ class Prefs {
     bool? soundEnabled,
     bool? simulationEnabled,
     bool? hasSeenIntro,
-  }) =>
-      Prefs(
-        role: role ?? this.role,
-        darkTheme: darkTheme ?? this.darkTheme,
-        driverOnline: driverOnline ?? this.driverOnline,
-        language: language ?? this.language,
-        soundEnabled: soundEnabled ?? this.soundEnabled,
-        simulationEnabled: simulationEnabled ?? this.simulationEnabled,
-        hasSeenIntro: hasSeenIntro ?? this.hasSeenIntro,
-      );
+  }) => Prefs(
+    role: role ?? this.role,
+    darkTheme: darkTheme ?? this.darkTheme,
+    driverOnline: driverOnline ?? this.driverOnline,
+    language: language ?? this.language,
+    soundEnabled: soundEnabled ?? this.soundEnabled,
+    simulationEnabled: simulationEnabled ?? this.simulationEnabled,
+    hasSeenIntro: hasSeenIntro ?? this.hasSeenIntro,
+  );
 
   Map<String, dynamic> toJson() => {
-        'role': role.name,
-        'darkTheme': darkTheme,
-        'driverOnline': driverOnline,
-        'language': language,
-        'soundEnabled': soundEnabled,
-        'simulationEnabled': simulationEnabled,
-        'hasSeenIntro': hasSeenIntro,
-      };
+    'role': role.name,
+    'darkTheme': darkTheme,
+    'driverOnline': driverOnline,
+    'language': language,
+    'soundEnabled': soundEnabled,
+    'simulationEnabled': simulationEnabled,
+    'hasSeenIntro': hasSeenIntro,
+  };
 
   factory Prefs.fromJson(Map<String, dynamic> json) => Prefs(
-        role: json['role'] == 'driver' ? Role.driver : Role.passenger,
-        darkTheme: json['darkTheme'] as bool? ?? true,
-        driverOnline: json['driverOnline'] as bool? ?? false,
-        language: json['language'] as String? ?? 'en',
-        soundEnabled: json['soundEnabled'] as bool? ?? true,
-        simulationEnabled: json['simulationEnabled'] as bool? ?? true,
-        hasSeenIntro: json['hasSeenIntro'] as bool? ?? false,
-      );
+    role: json['role'] == 'driver' ? Role.driver : Role.passenger,
+    darkTheme: json['darkTheme'] as bool? ?? true,
+    driverOnline: json['driverOnline'] as bool? ?? false,
+    language: json['language'] as String? ?? 'en',
+    soundEnabled: json['soundEnabled'] as bool? ?? true,
+    simulationEnabled: json['simulationEnabled'] as bool? ?? true,
+    hasSeenIntro: json['hasSeenIntro'] as bool? ?? false,
+  );
 }
 
 /// Where the device is.
@@ -129,39 +128,39 @@ class SessionStore extends ChangeNotifier {
   }
 
   List<DriverDocument> _starterDocuments() => [
-        DriverDocument(
-          id: uid('doc'),
-          kind: DocumentKind.license,
-          label: 'Driving licence',
-          status: DocumentStatus.approved,
-          expiresAt: DateTime.now().add(const Duration(days: 400)),
-        ),
-        DriverDocument(
-          id: uid('doc'),
-          kind: DocumentKind.registration,
-          label: 'Vehicle registration (Geran)',
-          status: DocumentStatus.approved,
-        ),
-        DriverDocument(
-          id: uid('doc'),
-          kind: DocumentKind.insurance,
-          label: 'Insurance certificate',
-          status: DocumentStatus.approved,
-          expiresAt: DateTime.now().add(const Duration(days: 200)),
-        ),
-        DriverDocument(
-          id: uid('doc'),
-          kind: DocumentKind.psv,
-          label: 'PSV / e-hailing permit',
-          status: DocumentStatus.pending,
-        ),
-        DriverDocument(
-          id: uid('doc'),
-          kind: DocumentKind.selfie,
-          label: 'Profile photo verification',
-          status: DocumentStatus.approved,
-        ),
-      ];
+    DriverDocument(
+      id: uid('doc'),
+      kind: DocumentKind.license,
+      label: 'Driving licence',
+      status: DocumentStatus.approved,
+      expiresAt: DateTime.now().add(const Duration(days: 400)),
+    ),
+    DriverDocument(
+      id: uid('doc'),
+      kind: DocumentKind.registration,
+      label: 'Vehicle registration (Geran)',
+      status: DocumentStatus.approved,
+    ),
+    DriverDocument(
+      id: uid('doc'),
+      kind: DocumentKind.insurance,
+      label: 'Insurance certificate',
+      status: DocumentStatus.approved,
+      expiresAt: DateTime.now().add(const Duration(days: 200)),
+    ),
+    DriverDocument(
+      id: uid('doc'),
+      kind: DocumentKind.psv,
+      label: 'PSV / e-hailing permit',
+      status: DocumentStatus.pending,
+    ),
+    DriverDocument(
+      id: uid('doc'),
+      kind: DocumentKind.selfie,
+      label: 'Profile photo verification',
+      status: DocumentStatus.approved,
+    ),
+  ];
 
   AppUser signIn(String phone, {String? name}) {
     final existing = _user;
@@ -206,7 +205,8 @@ class SessionStore extends ChangeNotifier {
   void becomeDriver(Vehicle vehicle) {
     final u = _user;
     if (u == null) return;
-    final profile = u.driverProfile?.copyWith(vehicle: vehicle) ??
+    final profile =
+        u.driverProfile?.copyWith(vehicle: vehicle) ??
         DriverProfile(
           vehicle: vehicle,
           rating: 5,
@@ -223,23 +223,29 @@ class SessionStore extends ChangeNotifier {
     final u = _user;
     final profile = u?.driverProfile;
     if (u == null || profile == null) return;
-    updateUser(u.copyWith(
-      driverProfile: profile.copyWith(
-        vehicle: profile.vehicle.copyWith(plate: plate, color: color),
+    updateUser(
+      u.copyWith(
+        driverProfile: profile.copyWith(
+          vehicle: profile.vehicle.copyWith(plate: plate, color: color),
+        ),
       ),
-    ));
+    );
   }
 
   void saveShortcut({required bool home, required Place place}) {
     final u = _user;
     if (u == null) return;
-    updateUser(home ? u.copyWith(homePlace: place) : u.copyWith(workPlace: place));
+    updateUser(
+      home ? u.copyWith(homePlace: place) : u.copyWith(workPlace: place),
+    );
   }
 
   void clearShortcut({required bool home}) {
     final u = _user;
     if (u == null) return;
-    updateUser(home ? u.copyWith(clearHome: true) : u.copyWith(clearWork: true));
+    updateUser(
+      home ? u.copyWith(clearHome: true) : u.copyWith(clearWork: true),
+    );
   }
 
   void creditWallet(int amount) {
@@ -265,12 +271,14 @@ class SessionStore extends ChangeNotifier {
     final u = _user;
     final profile = u?.driverProfile;
     if (u == null || profile == null) return;
-    updateUser(u.copyWith(
-      driverProfile: profile.copyWith(
-        earnings: profile.earnings + amount,
-        ridesGiven: profile.ridesGiven + 1,
+    updateUser(
+      u.copyWith(
+        driverProfile: profile.copyWith(
+          earnings: profile.earnings + amount,
+          ridesGiven: profile.ridesGiven + 1,
+        ),
+        walletBalance: u.walletBalance + amount,
       ),
-      walletBalance: u.walletBalance + amount,
-    ));
+    );
   }
 }

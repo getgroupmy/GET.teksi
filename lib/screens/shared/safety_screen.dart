@@ -40,11 +40,13 @@ class _SafetyScreenState extends State<SafetyScreen> {
       'contacts',
       const [],
       (json) => (json as List<dynamic>)
-          .map((e) => (
-                id: (e as Map<String, dynamic>)['id'] as String,
-                name: e['name'] as String,
-                phone: e['phone'] as String,
-              ))
+          .map(
+            (e) => (
+              id: (e as Map<String, dynamic>)['id'] as String,
+              name: e['name'] as String,
+              phone: e['phone'] as String,
+            ),
+          )
           .toList(),
     );
   }
@@ -52,7 +54,9 @@ class _SafetyScreenState extends State<SafetyScreen> {
   void _persist() {
     Store.instance.writeJson(
       'contacts',
-      _contacts.map((c) => {'id': c.id, 'name': c.name, 'phone': c.phone}).toList(),
+      _contacts
+          .map((c) => {'id': c.id, 'name': c.name, 'phone': c.phone})
+          .toList(),
     );
     setState(() {});
   }
@@ -66,9 +70,9 @@ class _SafetyScreenState extends State<SafetyScreen> {
     final shareText = ride == null
         ? 'SAFETY ALERT — please check on me.'
         : 'SAFETY ALERT — I’m on a GET.teksi trip to ${ride.dropoff.name}. '
-            'Driver ${ride.driverName ?? 'unknown'}, '
-            '${ride.driverVehicle?.plate ?? 'no plate'}. '
-            'Ref ${ride.id.substring(ride.id.length - 6).toUpperCase()}.';
+              'Driver ${ride.driverName ?? 'unknown'}, '
+              '${ride.driverVehicle?.plate ?? 'no plate'}. '
+              'Ref ${ride.id.substring(ride.id.length - 6).toUpperCase()}.';
 
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +99,11 @@ class _SafetyScreenState extends State<SafetyScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.emergency_share_rounded, size: 26, color: c.danger),
+                    Icon(
+                      Icons.emergency_share_rounded,
+                      size: 26,
+                      color: c.danger,
+                    ),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
@@ -141,7 +149,9 @@ class _SafetyScreenState extends State<SafetyScreen> {
             onTap: () {
               Clipboard.setData(ClipboardData(text: shareText));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Trip details copied to clipboard')),
+                const SnackBar(
+                  content: Text('Trip details copied to clipboard'),
+                ),
               );
             },
           ),
@@ -198,7 +208,9 @@ class _SafetyScreenState extends State<SafetyScreen> {
                 subtitle: contact.phone,
                 trailing: TextButton(
                   onPressed: () {
-                    _contacts = _contacts.where((x) => x.id != contact.id).toList();
+                    _contacts = _contacts
+                        .where((x) => x.id != contact.id)
+                        .toList();
                     _persist();
                   },
                   child: Text('Remove', style: TextStyle(color: c.danger)),
@@ -209,7 +221,12 @@ class _SafetyScreenState extends State<SafetyScreen> {
     );
   }
 
-  void _sos(BuildContext context, RidesStore rides, String shareText, String? rideId) {
+  void _sos(
+    BuildContext context,
+    RidesStore rides,
+    String shareText,
+    String? rideId,
+  ) {
     showAppSheet(
       context,
       title: 'Emergency SOS',
@@ -267,15 +284,16 @@ class _SafetyScreenState extends State<SafetyScreen> {
     showAppSheet(
       context,
       title: 'Report a problem',
-      builder: (sheetContext) => reasonList(sheetContext, _reportReasons, (reason) {
-        rides.notify(
-          kind: NotificationKind.safety,
-          title: 'Report submitted',
-          body: '$reason — our safety team will follow up within 24 hours.',
-          rideId: rideId,
-        );
-        Navigator.of(sheetContext).pop();
-      }),
+      builder: (sheetContext) =>
+          reasonList(sheetContext, _reportReasons, (reason) {
+            rides.notify(
+              kind: NotificationKind.safety,
+              title: 'Report submitted',
+              body: '$reason — our safety team will follow up within 24 hours.',
+              rideId: rideId,
+            );
+            Navigator.of(sheetContext).pop();
+          }),
     );
   }
 
@@ -294,7 +312,10 @@ class _SafetyScreenState extends State<SafetyScreen> {
             autofocus: true,
             decoration: const InputDecoration(hintText: 'e.g. Mum'),
           ),
-          const SectionLabel('Phone number', padding: EdgeInsets.only(top: 16, bottom: 6)),
+          const SectionLabel(
+            'Phone number',
+            padding: EdgeInsets.only(top: 16, bottom: 6),
+          ),
           TextField(
             controller: phone,
             keyboardType: TextInputType.phone,
@@ -305,10 +326,17 @@ class _SafetyScreenState extends State<SafetyScreen> {
             width: double.infinity,
             child: FilledButton(
               onPressed: () {
-                if (name.text.trim().length < 2 || phone.text.trim().length < 8) return;
+                if (name.text.trim().length < 2 ||
+                    phone.text.trim().length < 8) {
+                  return;
+                }
                 _contacts = [
                   ..._contacts,
-                  (id: uid('ct'), name: name.text.trim(), phone: phone.text.trim()),
+                  (
+                    id: uid('ct'),
+                    name: name.text.trim(),
+                    phone: phone.text.trim(),
+                  ),
                 ];
                 _persist();
                 Navigator.of(sheetContext).pop();

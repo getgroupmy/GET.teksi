@@ -62,31 +62,33 @@ class PriceSheet extends StatelessWidget {
         draft.setPrice(roundFare(price + delta).clamp(bounds.min, bounds.max));
 
     void publish() {
-      rides.publishRide(Ride(
-        id: uid('ride'),
-        passengerId: user.id,
-        passengerName: user.name,
-        passengerAvatarColor: user.avatarColor,
-        passengerRating: user.rating,
-        service: draft.service,
-        vehicleClass: draft.vehicleClass,
-        pickup: pickup,
-        dropoff: dropoff,
-        stop: draft.stop,
-        askingPrice: price,
-        recommendedPrice: trip.recommended,
-        distanceKm: trip.distanceKm,
-        durationMinutes: trip.durationMinutes,
-        paymentMethod: draft.paymentMethod,
-        passengerCount: draft.passengerCount,
-        comment: draft.comment.trim().isEmpty ? null : draft.comment.trim(),
-        options: draft.options,
-        status: RideStatus.searching,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        priceRaises: 0,
-        routeGeometry: syntheticRoute(pickup.coord, dropoff.coord, 3),
-      ));
+      rides.publishRide(
+        Ride(
+          id: uid('ride'),
+          passengerId: user.id,
+          passengerName: user.name,
+          passengerAvatarColor: user.avatarColor,
+          passengerRating: user.rating,
+          service: draft.service,
+          vehicleClass: draft.vehicleClass,
+          pickup: pickup,
+          dropoff: dropoff,
+          stop: draft.stop,
+          askingPrice: price,
+          recommendedPrice: trip.recommended,
+          distanceKm: trip.distanceKm,
+          durationMinutes: trip.durationMinutes,
+          paymentMethod: draft.paymentMethod,
+          passengerCount: draft.passengerCount,
+          comment: draft.comment.trim().isEmpty ? null : draft.comment.trim(),
+          options: draft.options,
+          status: RideStatus.searching,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          priceRaises: 0,
+          routeGeometry: syntheticRoute(pickup.coord, dropoff.coord, 3),
+        ),
+      );
       draft.setStep(DraftStep.idle);
     }
 
@@ -128,9 +130,16 @@ class PriceSheet extends StatelessWidget {
                   children: [
                     Text(
                       draft.vehicleClass.label,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    Icon(Icons.chevron_right_rounded, size: 16, color: c.textDim),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      size: 16,
+                      color: c.textDim,
+                    ),
                   ],
                 ),
               ),
@@ -180,7 +189,10 @@ class PriceSheet extends StatelessWidget {
             value: price.clamp(bounds.min, bounds.max).toDouble(),
             min: bounds.min.toDouble(),
             max: bounds.max.toDouble(),
-            divisions: ((bounds.max - bounds.min) ~/ bounds.step).clamp(1, 1000),
+            divisions: ((bounds.max - bounds.min) ~/ bounds.step).clamp(
+              1,
+              1000,
+            ),
             onChanged: (v) => draft.setPrice(roundFare(v)),
           ),
           Row(
@@ -219,7 +231,8 @@ class PriceSheet extends StatelessWidget {
               _MetaButton(
                 icon: _paymentIcons[draft.paymentMethod]!,
                 label: draft.paymentMethod.label,
-                onTap: () => _choosePayment(context, draft, user.walletBalance, price),
+                onTap: () =>
+                    _choosePayment(context, draft, user.walletBalance, price),
               ),
               const SizedBox(width: 8),
               _MetaButton(
@@ -228,7 +241,8 @@ class PriceSheet extends StatelessWidget {
                 onTap: () {
                   final max = draft.vehicleClass == VehicleClass.xl ? 6 : 4;
                   draft.setPassengerCount(
-                      draft.passengerCount >= max ? 1 : draft.passengerCount + 1);
+                    draft.passengerCount >= max ? 1 : draft.passengerCount + 1,
+                  );
                 },
               ),
               const SizedBox(width: 8),
@@ -240,7 +254,9 @@ class PriceSheet extends StatelessWidget {
               const SizedBox(width: 8),
               _MetaButton(
                 icon: Icons.auto_awesome_outlined,
-                label: draft.options.isEmpty ? 'Extras' : '+${draft.options.length}',
+                label: draft.options.isEmpty
+                    ? 'Extras'
+                    : '+${draft.options.length}',
                 onTap: () => _chooseOptions(context, draft),
               ),
             ],
@@ -287,7 +303,12 @@ class PriceSheet extends StatelessWidget {
     );
   }
 
-  void _choosePayment(BuildContext context, DraftStore draft, int balance, int price) {
+  void _choosePayment(
+    BuildContext context,
+    DraftStore draft,
+    int balance,
+    int price,
+  ) {
     showAppSheet(
       context,
       title: 'Payment method',
@@ -295,27 +316,30 @@ class PriceSheet extends StatelessWidget {
         return Column(
           children: [
             for (final method in PaymentMethod.values)
-              Builder(builder: (_) {
-                final insufficient = method == PaymentMethod.wallet && balance < price;
-                return Opacity(
-                  opacity: insufficient ? 0.45 : 1,
-                  child: AppRow(
-                    icon: _paymentIcons[method],
-                    title: method.label,
-                    subtitle: method == PaymentMethod.wallet
-                        ? 'Balance ${money(balance)}'
-                            '${insufficient ? ' — not enough for this fare' : ''}'
-                        : null,
-                    trailing: _Radio(selected: draft.paymentMethod == method),
-                    onTap: insufficient
-                        ? null
-                        : () {
-                            draft.setPaymentMethod(method);
-                            Navigator.of(sheetContext).pop();
-                          },
-                  ),
-                );
-              }),
+              Builder(
+                builder: (_) {
+                  final insufficient =
+                      method == PaymentMethod.wallet && balance < price;
+                  return Opacity(
+                    opacity: insufficient ? 0.45 : 1,
+                    child: AppRow(
+                      icon: _paymentIcons[method],
+                      title: method.label,
+                      subtitle: method == PaymentMethod.wallet
+                          ? 'Balance ${money(balance)}'
+                                '${insufficient ? ' — not enough for this fare' : ''}'
+                          : null,
+                      trailing: _Radio(selected: draft.paymentMethod == method),
+                      onTap: insufficient
+                          ? null
+                          : () {
+                              draft.setPaymentMethod(method);
+                              Navigator.of(sheetContext).pop();
+                            },
+                    ),
+                  );
+                },
+              ),
             const SizedBox(height: 12),
             const InfoBanner(
               'Cash is paid directly to the driver at the end of the trip.',
@@ -379,7 +403,10 @@ class PriceSheet extends StatelessWidget {
                 ),
                 title: Text(
                   option.label,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             const SizedBox(height: 8),
@@ -415,7 +442,11 @@ class _Radio extends StatelessWidget {
 }
 
 class _RoundButton extends StatelessWidget {
-  const _RoundButton({required this.icon, required this.onTap, required this.tooltip});
+  const _RoundButton({
+    required this.icon,
+    required this.onTap,
+    required this.tooltip,
+  });
 
   final IconData icon;
   final VoidCallback? onTap;
@@ -448,7 +479,11 @@ class _RoundButton extends StatelessWidget {
 }
 
 class _MetaButton extends StatelessWidget {
-  const _MetaButton({required this.icon, required this.label, required this.onTap});
+  const _MetaButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String label;
@@ -477,7 +512,10 @@ class _MetaButton extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],

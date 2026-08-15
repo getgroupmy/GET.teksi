@@ -66,7 +66,8 @@ class MarketplaceSimulation {
 
   T _pick<T>(List<T> list) => list[_rng.nextInt(list.length)];
 
-  double _between(double min, double max) => min + _rng.nextDouble() * (max - min);
+  double _between(double min, double max) =>
+      min + _rng.nextDouble() * (max - min);
 
   /* ---------------------------------------------------------------- */
   /* Fleet                                                            */
@@ -122,7 +123,9 @@ class MarketplaceSimulation {
       final path = syntheticRoute(driver.coord, target, _rng.nextInt(4));
       final km = pathLengthKm(path);
       // ~28 km/h of idle cruising, as a fraction of the path per tick.
-      final speed = km > 0 ? (28 / 3600) * (_tick.inMilliseconds / 1000) / km : 1.0;
+      final speed = km > 0
+          ? (28 / 3600) * (_tick.inMilliseconds / 1000) / km
+          : 1.0;
       trip = _BotTrip(path, speed);
       _wander[driver.id] = trip;
     }
@@ -145,15 +148,20 @@ class MarketplaceSimulation {
     final expected = math.min(_fleetSize, ((ageMs - 2500) ~/ 4000) + 1);
     if (expected <= bidders.length) return;
 
-    final candidates = _fleet
-        .where((d) => !bidders.contains(d.id) && !_active.containsKey(d.id))
-        .where((d) =>
-            ride.vehicleClass == VehicleClass.economy ||
-            d.vehicle.vehicleClass == ride.vehicleClass)
-        .map((d) => (driver: d, km: haversineKm(d.coord, ride.pickup.coord)))
-        .where((c) => c.km < _fleetRadiusKm * 1.6)
-        .toList()
-      ..sort((a, b) => a.km.compareTo(b.km));
+    final candidates =
+        _fleet
+            .where((d) => !bidders.contains(d.id) && !_active.containsKey(d.id))
+            .where(
+              (d) =>
+                  ride.vehicleClass == VehicleClass.economy ||
+                  d.vehicle.vehicleClass == ride.vehicleClass,
+            )
+            .map(
+              (d) => (driver: d, km: haversineKm(d.coord, ride.pickup.coord)),
+            )
+            .where((c) => c.km < _fleetRadiusKm * 1.6)
+            .toList()
+          ..sort((a, b) => a.km.compareTo(b.km));
 
     if (candidates.isEmpty) return;
     final (driver: driver, km: km) = candidates.first;
@@ -178,29 +186,33 @@ class MarketplaceSimulation {
         askRatio >= 0.97 || (askRatio >= 0.88 && _rng.nextDouble() < 0.45);
     final price = takesAsking
         ? ride.askingPrice
-        : roundFare(math.max(
-            ride.askingPrice * 1.02,
-            expectedFare * _between(1.05, 1.28),
-          ));
+        : roundFare(
+            math.max(
+              ride.askingPrice * 1.02,
+              expectedFare * _between(1.05, 1.28),
+            ),
+          );
 
     bidders.add(driver.id);
-    _rides.createOffer(Offer(
-      id: uid('ofr'),
-      rideId: ride.id,
-      driverId: driver.id,
-      driverName: driver.name,
-      driverAvatarColor: driver.avatarColor,
-      driverRating: driver.rating,
-      driverRidesGiven: driver.ridesGiven,
-      vehicle: driver.vehicle,
-      price: price,
-      etaMinutes: driveMinutes(km * 1.35),
-      distanceKm: double.parse(km.toStringAsFixed(2)),
-      createdAt: DateTime.now(),
-      expiresAt: DateTime.now().add(offerTtl),
-      status: OfferStatus.pending,
-      matchedAskingPrice: takesAsking,
-    ));
+    _rides.createOffer(
+      Offer(
+        id: uid('ofr'),
+        rideId: ride.id,
+        driverId: driver.id,
+        driverName: driver.name,
+        driverAvatarColor: driver.avatarColor,
+        driverRating: driver.rating,
+        driverRidesGiven: driver.ridesGiven,
+        vehicle: driver.vehicle,
+        price: price,
+        etaMinutes: driveMinutes(km * 1.35),
+        distanceKm: double.parse(km.toStringAsFixed(2)),
+        createdAt: DateTime.now(),
+        expiresAt: DateTime.now().add(offerTtl),
+        status: OfferStatus.pending,
+        matchedAskingPrice: takesAsking,
+      ),
+    );
   }
 
   /* ---------------------------------------------------------------- */
@@ -237,7 +249,8 @@ class MarketplaceSimulation {
       }
     }
 
-    if (ride.status == RideStatus.accepted || ride.status == RideStatus.arriving) {
+    if (ride.status == RideStatus.accepted ||
+        ride.status == RideStatus.arriving) {
       final trip = _active.putIfAbsent(driverId, () {
         final path = syntheticRoute(from, ride.pickup.coord, 1);
         return _BotTrip(
@@ -256,7 +269,11 @@ class MarketplaceSimulation {
       if (trip.progress >= 1 || remainingKm < 0.06) {
         _active.remove(driverId);
         _rides.setRideStatus(ride.id, RideStatus.waiting);
-        _rides.sendMessage(ride.id, Role.driver, "I've arrived and I'm waiting outside.");
+        _rides.sendMessage(
+          ride.id,
+          Role.driver,
+          "I've arrived and I'm waiting outside.",
+        );
         _rides.notify(
           kind: NotificationKind.ride,
           title: 'Your driver has arrived',
@@ -337,7 +354,10 @@ class MarketplaceSimulation {
 
     final last = _timers['spawn'];
     final gapMs = open == 0 ? 3000 : _between(9000, 20000);
-    if (last != null && DateTime.now().difference(last).inMilliseconds < gapMs) return;
+    if (last != null &&
+        DateTime.now().difference(last).inMilliseconds < gapMs) {
+      return;
+    }
     _timers['spawn'] = DateTime.now();
 
     final pickupAt = randomPointNear(center, 4, _rng);
@@ -368,31 +388,35 @@ class MarketplaceSimulation {
     );
     final name = _pick(passengerNames);
 
-    _rides.publishRide(Ride(
-      id: uid('ride'),
-      passengerId: uid('bp'),
-      passengerName: name,
-      passengerAvatarColor: pickAvatarColor(name),
-      passengerRating: double.parse(_between(4.2, 5).toStringAsFixed(1)),
-      service: ServiceType.city,
-      vehicleClass: vehicleClass,
-      pickup: pickupPlace,
-      dropoff: dropoffPlace,
-      // Bot passengers ask between a lowball and a generous offer.
-      askingPrice: roundFare(recommended * _between(0.78, 1.15)),
-      recommendedPrice: recommended,
-      distanceKm: double.parse(distanceKm.toStringAsFixed(2)),
-      durationMinutes: durationMinutes,
-      paymentMethod: _rng.nextDouble() < 0.6 ? PaymentMethod.cash : PaymentMethod.card,
-      passengerCount: _rng.nextDouble() < 0.8 ? 1 : 2 + _rng.nextInt(3),
-      comment: _rng.nextDouble() < 0.3 ? _pick(pickupNotes) : null,
-      options: _rng.nextDouble() < 0.2 ? [RideOption.luggage] : const [],
-      status: RideStatus.searching,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      priceRaises: 0,
-      routeGeometry: syntheticRoute(pickupPlace.coord, dropoffPlace.coord, 3),
-    ));
+    _rides.publishRide(
+      Ride(
+        id: uid('ride'),
+        passengerId: uid('bp'),
+        passengerName: name,
+        passengerAvatarColor: pickAvatarColor(name),
+        passengerRating: double.parse(_between(4.2, 5).toStringAsFixed(1)),
+        service: ServiceType.city,
+        vehicleClass: vehicleClass,
+        pickup: pickupPlace,
+        dropoff: dropoffPlace,
+        // Bot passengers ask between a lowball and a generous offer.
+        askingPrice: roundFare(recommended * _between(0.78, 1.15)),
+        recommendedPrice: recommended,
+        distanceKm: double.parse(distanceKm.toStringAsFixed(2)),
+        durationMinutes: durationMinutes,
+        paymentMethod: _rng.nextDouble() < 0.6
+            ? PaymentMethod.cash
+            : PaymentMethod.card,
+        passengerCount: _rng.nextDouble() < 0.8 ? 1 : 2 + _rng.nextInt(3),
+        comment: _rng.nextDouble() < 0.3 ? _pick(pickupNotes) : null,
+        options: _rng.nextDouble() < 0.2 ? [RideOption.luggage] : const [],
+        status: RideStatus.searching,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        priceRaises: 0,
+        routeGeometry: syntheticRoute(pickupPlace.coord, dropoffPlace.coord, 3),
+      ),
+    );
   }
 
   /// Bot passengers weigh the local driver's bid and answer after a beat.
@@ -417,7 +441,8 @@ class MarketplaceSimulation {
         continue;
       }
       // Bot passengers think for 4-10 seconds before answering.
-      final delayMs = 4000 + (offer.price / math.max(1, ride.askingPrice)) * 4000;
+      final delayMs =
+          4000 + (offer.price / math.max(1, ride.askingPrice)) * 4000;
       if (DateTime.now().difference(first).inMilliseconds < delayMs) continue;
       _timers.remove(key);
 
@@ -425,10 +450,10 @@ class MarketplaceSimulation {
       final acceptChance = overAsk <= 1.0
           ? 0.92
           : overAsk <= 1.12
-              ? 0.62
-              : overAsk <= 1.3
-                  ? 0.3
-                  : 0.08;
+          ? 0.62
+          : overAsk <= 1.3
+          ? 0.3
+          : 0.08;
       if (_rng.nextDouble() < acceptChance) {
         _rides.acceptOffer(offer.id);
         _rides.notify(

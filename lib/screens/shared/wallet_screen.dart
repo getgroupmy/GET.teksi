@@ -115,7 +115,10 @@ class WalletScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SectionLabel('Activity', padding: EdgeInsets.only(top: 24, bottom: 8)),
+          const SectionLabel(
+            'Activity',
+            padding: EdgeInsets.only(top: 24, bottom: 8),
+          ),
           if (rides.transactions.isEmpty)
             const EmptyState(
               title: 'No transactions yet',
@@ -181,7 +184,10 @@ class WalletScreen extends StatelessWidget {
                     ),
                     child: Text(
                       money(amount, decimals: false),
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                 ),
@@ -214,7 +220,10 @@ class _TxnRow extends StatelessWidget {
             width: 34,
             height: 34,
             alignment: Alignment.center,
-            decoration: BoxDecoration(color: c.surface2, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: c.surface2,
+              shape: BoxShape.circle,
+            ),
             child: Icon(
               positive ? Icons.south_west_rounded : Icons.north_east_rounded,
               size: 16,
@@ -230,7 +239,10 @@ class _TxnRow extends StatelessWidget {
                   txn.description,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Text(
                   timeAgo(txn.createdAt),

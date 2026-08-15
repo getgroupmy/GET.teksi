@@ -96,7 +96,11 @@ class _OtpScreenState extends State<OtpScreen> {
             children: [
               const Text(
                 'Enter the code',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, height: 1.2),
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                  height: 1.2,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -113,7 +117,9 @@ class _OtpScreenState extends State<OtpScreen> {
                           child: Container(
                             height: 58,
                             alignment: Alignment.center,
-                            margin: EdgeInsets.only(right: i == _length - 1 ? 0 : 8),
+                            margin: EdgeInsets.only(
+                              right: i == _length - 1 ? 0 : 8,
+                            ),
                             decoration: BoxDecoration(
                               color: c.surface2,
                               borderRadius: BorderRadius.circular(14),
@@ -162,12 +168,18 @@ class _OtpScreenState extends State<OtpScreen> {
               if (_error.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
-                  child: Text(_error, style: TextStyle(fontSize: 13, color: c.danger)),
+                  child: Text(
+                    _error,
+                    style: TextStyle(fontSize: 13, color: c.danger),
+                  ),
                 ),
               const SizedBox(height: 24),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: c.info.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -198,10 +210,12 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               const SizedBox(height: 18),
               TextButton(
-                onPressed: _seconds > 0 ? null : () => setState(() {
-                      _seconds = 30;
-                      _tick();
-                    }),
+                onPressed: _seconds > 0
+                    ? null
+                    : () => setState(() {
+                        _seconds = 30;
+                        _tick();
+                      }),
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 child: Text(
                   _seconds > 0 ? 'Resend code in ${_seconds}s' : 'Resend code',
@@ -210,7 +224,9 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               const Spacer(),
               FilledButton(
-                onPressed: _code.length == _length ? () => _submit(_code) : null,
+                onPressed: _code.length == _length
+                    ? () => _submit(_code)
+                    : null,
                 child: const Text('Verify'),
               ),
               const SizedBox(height: 22),

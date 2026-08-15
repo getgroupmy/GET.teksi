@@ -66,8 +66,8 @@ class _RateScreenState extends State<RateScreen> {
     final tagPool = _stars == 0
         ? const <String>[]
         : viewer == Role.driver
-            ? (_stars >= 4 ? driverRatingTagsGood : driverRatingTagsBad)
-            : (_stars >= 4 ? ratingTagsGood : ratingTagsBad);
+        ? (_stars >= 4 ? driverRatingTagsGood : driverRatingTagsBad)
+        : (_stars >= 4 ? ratingTagsGood : ratingTagsBad);
 
     void submit() {
       rides.rateRide(
@@ -146,7 +146,10 @@ class _RateScreenState extends State<RateScreen> {
                   const SizedBox(height: 12),
                   Text(
                     other.$1,
-                    style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
+                    style: const TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -167,7 +170,9 @@ class _RateScreenState extends State<RateScreen> {
                               _tags.clear();
                             }),
                             icon: Icon(
-                              n <= _stars ? Icons.star_rounded : Icons.star_border_rounded,
+                              n <= _stars
+                                  ? Icons.star_rounded
+                                  : Icons.star_border_rounded,
                               size: 38,
                               color: n <= _stars ? c.accent : c.surface3,
                             ),
@@ -187,7 +192,9 @@ class _RateScreenState extends State<RateScreen> {
                             label: tag,
                             selected: _tags.contains(tag),
                             onTap: () => setState(() {
-                              _tags.contains(tag) ? _tags.remove(tag) : _tags.add(tag);
+                              _tags.contains(tag)
+                                  ? _tags.remove(tag)
+                                  : _tags.add(tag);
                             }),
                           ),
                       ],
@@ -215,12 +222,16 @@ class _RateScreenState extends State<RateScreen> {
                         for (final value in _tips)
                           Expanded(
                             child: Padding(
-                              padding: EdgeInsets.only(right: value == _tips.last ? 0 : 8),
+                              padding: EdgeInsets.only(
+                                right: value == _tips.last ? 0 : 8,
+                              ),
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(13),
                                 onTap: () => setState(() => _tip = value),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     color: _tip == value
@@ -234,7 +245,9 @@ class _RateScreenState extends State<RateScreen> {
                                     ),
                                   ),
                                   child: Text(
-                                    value == 0 ? 'None' : money(value, decimals: false),
+                                    value == 0
+                                        ? 'None'
+                                        : money(value, decimals: false),
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,

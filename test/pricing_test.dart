@@ -39,24 +39,24 @@ void main() {
 
     test('orders the vehicle classes economy < comfort < xl', () {
       int fare(VehicleClass c) => recommendedPrice(
-            distanceKm: 8,
-            durationMinutes: 20,
-            vehicleClass: c,
-            service: ServiceType.city,
-            at: offPeak,
-          );
+        distanceKm: 8,
+        durationMinutes: 20,
+        vehicleClass: c,
+        service: ServiceType.city,
+        at: offPeak,
+      );
       expect(fare(VehicleClass.economy), lessThan(fare(VehicleClass.comfort)));
       expect(fare(VehicleClass.comfort), lessThan(fare(VehicleClass.xl)));
     });
 
     test('prices intercity below city per kilometre', () {
       int fare(ServiceType s) => recommendedPrice(
-            distanceKm: 120,
-            durationMinutes: 110,
-            vehicleClass: VehicleClass.economy,
-            service: s,
-            at: offPeak,
-          );
+        distanceKm: 120,
+        durationMinutes: 110,
+        vehicleClass: VehicleClass.economy,
+        service: s,
+        at: offPeak,
+      );
       expect(fare(ServiceType.intercity), lessThan(fare(ServiceType.city)));
     });
 

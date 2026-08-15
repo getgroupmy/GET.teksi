@@ -25,16 +25,17 @@ double bearingBetween(LatLng a, LatLng b) {
   final lat2 = _toRad(b.latitude);
   final dLng = _toRad(b.longitude - a.longitude);
   final y = math.sin(dLng) * math.cos(lat2);
-  final x = math.cos(lat1) * math.sin(lat2) -
+  final x =
+      math.cos(lat1) * math.sin(lat2) -
       math.sin(lat1) * math.cos(lat2) * math.cos(dLng);
   return (_toDeg(math.atan2(y, x)) + 360) % 360;
 }
 
 /// Linear interpolation between two coordinates — fine at city scale.
 LatLng lerpCoord(LatLng a, LatLng b, double t) => LatLng(
-      a.latitude + (b.latitude - a.latitude) * t,
-      a.longitude + (b.longitude - a.longitude) * t,
-    );
+  a.latitude + (b.latitude - a.latitude) * t,
+  a.longitude + (b.longitude - a.longitude) * t,
+);
 
 /// Random point within [radiusKm] of [center], uniform by area.
 LatLng randomPointNear(LatLng center, double radiusKm, math.Random rng) {
@@ -112,7 +113,9 @@ List<LatLng> syntheticRoute(LatLng from, LatLng to, [int seed = 1]) {
     final off = wobble * dir * 0.01;
     // A little stair-stepping to suggest a grid of streets.
     final jitter = math.sin(t * math.pi * 6 + seed) * amplitude * 0.0015;
-    path.add(LatLng(base.latitude + pLat * off + jitter, base.longitude + pLng * off));
+    path.add(
+      LatLng(base.latitude + pLat * off + jitter, base.longitude + pLng * off),
+    );
   }
   path.add(to);
   return path;
@@ -127,7 +130,7 @@ int driveMinutes(double km) {
   final avgSpeedKmh = km > 25
       ? 65.0
       : km > 8
-          ? 38.0
-          : 24.0;
+      ? 38.0
+      : 24.0;
   return math.max(2, ((km / avgSpeedKmh) * 60).round());
 }

@@ -54,7 +54,8 @@ void main() {
             expect(
               ratio,
               greaterThanOrEqualTo(4.5),
-              reason: '$name/$roleName on $surfaceName is '
+              reason:
+                  '$name/$roleName on $surfaceName is '
                   '${ratio.toStringAsFixed(2)}:1, below the 4.5:1 text minimum',
             );
           });
@@ -76,7 +77,8 @@ void main() {
           expect(
             ratio,
             greaterThanOrEqualTo(3.0),
-            reason: '$name/accent on $surfaceName is '
+            reason:
+                '$name/accent on $surfaceName is '
                 '${ratio.toStringAsFixed(2)}:1, below the 3:1 non-text minimum',
           );
         });

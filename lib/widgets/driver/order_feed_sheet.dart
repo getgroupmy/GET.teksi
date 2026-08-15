@@ -43,8 +43,15 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
               width: 64,
               height: 64,
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: c.surface2, shape: BoxShape.circle),
-              child: Icon(Icons.power_settings_new_rounded, size: 28, color: c.textDim),
+              decoration: BoxDecoration(
+                color: c.surface2,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.power_settings_new_rounded,
+                size: 28,
+                color: c.textDim,
+              ),
             ),
             const SizedBox(height: 14),
             const Text(
@@ -65,7 +72,10 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
             ),
             TextButton(
               onPressed: () => context.push('/d/earnings'),
-              child: Text('View today’s earnings', style: TextStyle(color: c.textDim)),
+              child: Text(
+                'View today’s earnings',
+                style: TextStyle(color: c.textDim),
+              ),
             ),
           ],
         ),
@@ -73,19 +83,32 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
     }
 
     final pending = rides.pendingOfferRideIds(user.id);
-    final decorated = rides
-        .openOrders(user.id)
-        .map((ride) {
-          final pickupKm = haversineKm(widget.driverAt, ride.pickup.coord) * 1.35;
-          return (ride: ride, pickupKm: pickupKm, eta: driveMinutes(pickupKm));
-        })
-        .where((o) => o.pickupKm <= _maxPickupKm && o.ride.askingPrice >= _minFare)
-        .toList()
-      ..sort((a, b) => switch (_sort) {
-            _SortMode.nearest => a.pickupKm.compareTo(b.pickupKm),
-            _SortMode.highest => b.ride.askingPrice.compareTo(a.ride.askingPrice),
-            _SortMode.newest => b.ride.createdAt.compareTo(a.ride.createdAt),
-          });
+    final decorated =
+        rides
+            .openOrders(user.id)
+            .map((ride) {
+              final pickupKm =
+                  haversineKm(widget.driverAt, ride.pickup.coord) * 1.35;
+              return (
+                ride: ride,
+                pickupKm: pickupKm,
+                eta: driveMinutes(pickupKm),
+              );
+            })
+            .where(
+              (o) =>
+                  o.pickupKm <= _maxPickupKm && o.ride.askingPrice >= _minFare,
+            )
+            .toList()
+          ..sort(
+            (a, b) => switch (_sort) {
+              _SortMode.nearest => a.pickupKm.compareTo(b.pickupKm),
+              _SortMode.highest => b.ride.askingPrice.compareTo(
+                a.ride.askingPrice,
+              ),
+              _SortMode.newest => b.ride.createdAt.compareTo(a.ride.createdAt),
+            },
+          );
 
     return MapSheet(
       child: Column(
@@ -101,7 +124,10 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
                       decorated.isEmpty
                           ? 'Waiting for orders'
                           : '${plural(decorated.length, 'order')} nearby',
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                     Text(
                       'You’re online · ${user.driverProfile?.vehicle.plate ?? ''}',
@@ -166,7 +192,9 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
               foregroundColor: c.text,
               side: BorderSide(color: c.line),
               minimumSize: const Size.fromHeight(50),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
           ),
         ],
@@ -182,7 +210,10 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
         builder: (_, setSheetState) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionLabel('Minimum fare', padding: EdgeInsets.only(bottom: 8)),
+            const SectionLabel(
+              'Minimum fare',
+              padding: EdgeInsets.only(bottom: 8),
+            ),
             Wrap(
               spacing: 8,
               children: [
@@ -266,7 +297,11 @@ class _OrderCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Avatar(name: ride.passengerName, color: ride.passengerAvatarColor, size: 34),
+                Avatar(
+                  name: ride.passengerName,
+                  color: ride.passengerAvatarColor,
+                  size: 34,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -279,7 +314,10 @@ class _OrderCard extends StatelessWidget {
                               ride.passengerName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 6),
@@ -338,7 +376,11 @@ class _OrderCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'Your offer is waiting for a reply',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: c.warn),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: c.warn,
+                ),
               ),
             ],
           ],

@@ -105,7 +105,9 @@ void main() {
 
   group('publishing an order', () {
     test('puts the ride on the market with route geometry', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       expect(rides.rides[ride.id]!.status, RideStatus.searching);
       expect(ride.routeGeometry, isNotNull);
       expect(ride.routeGeometry!.length, greaterThan(2));
@@ -115,7 +117,10 @@ void main() {
       final me = session.requireUser.id;
       final ride = rides.publishRide(buildRide(passengerId: me));
       // A driver sees it…
-      expect(rides.openOrders('some-other-driver').map((r) => r.id), contains(ride.id));
+      expect(
+        rides.openOrders('some-other-driver').map((r) => r.id),
+        contains(ride.id),
+      );
       // …but you can never drive your own order.
       expect(rides.openOrders(me), isEmpty);
     });
@@ -123,7 +128,9 @@ void main() {
 
   group('bidding', () {
     test('accepts a bid and records the agreed price on the ride', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       final offer = buildOffer(rideId: ride.id, driverId: 'drv1', price: 1700);
       rides.createOffer(offer);
 
@@ -138,7 +145,9 @@ void main() {
     });
 
     test('accepting one bid declines every other bid on that ride', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       final a = buildOffer(rideId: ride.id, driverId: 'drv1', price: 1500);
       final b = buildOffer(rideId: ride.id, driverId: 'drv2', price: 1600);
       final c = buildOffer(rideId: ride.id, driverId: 'drv3', price: 1800);
@@ -155,10 +164,18 @@ void main() {
     });
 
     test('sorts bids cheapest first', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
-      rides.createOffer(buildOffer(rideId: ride.id, driverId: 'a', price: 2200));
-      rides.createOffer(buildOffer(rideId: ride.id, driverId: 'b', price: 1500));
-      rides.createOffer(buildOffer(rideId: ride.id, driverId: 'c', price: 1900));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
+      rides.createOffer(
+        buildOffer(rideId: ride.id, driverId: 'a', price: 2200),
+      );
+      rides.createOffer(
+        buildOffer(rideId: ride.id, driverId: 'b', price: 1500),
+      );
+      rides.createOffer(
+        buildOffer(rideId: ride.id, driverId: 'c', price: 1900),
+      );
 
       expect(
         rides.offersForRide(ride.id).map((o) => o.price),
@@ -167,17 +184,23 @@ void main() {
     });
 
     test('refuses new bids once the order is off the market', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       final first = buildOffer(rideId: ride.id, driverId: 'drv1', price: 1500);
       rides.createOffer(first);
       rides.acceptOffer(first.id);
 
-      rides.createOffer(buildOffer(rideId: ride.id, driverId: 'drv2', price: 1400));
+      rides.createOffer(
+        buildOffer(rideId: ride.id, driverId: 'drv2', price: 1400),
+      );
       expect(rides.offersForRide(ride.id).length, 1);
     });
 
     test('a withdrawn bid stops counting as pending', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       final offer = buildOffer(rideId: ride.id, driverId: 'drv1', price: 1500);
       rides.createOffer(offer);
 
@@ -189,7 +212,9 @@ void main() {
 
   group('raising the price', () {
     test('records each raise and only applies while searching', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       rides.raisePrice(ride.id, 1800);
       expect(rides.rides[ride.id]!.askingPrice, 1800);
       expect(rides.rides[ride.id]!.priceRaises, 1);
@@ -206,7 +231,9 @@ void main() {
 
   group('cancellation', () {
     test('voids every pending bid on the order', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       final offer = buildOffer(rideId: ride.id, driverId: 'drv1', price: 1500);
       rides.createOffer(offer);
 
@@ -218,7 +245,9 @@ void main() {
     });
 
     test('is a no-op on a completed ride', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       rides.setRideStatus(ride.id, RideStatus.completed);
       rides.cancelRide(ride.id, CancelledBy.driver);
       expect(rides.rides[ride.id]!.status, RideStatus.completed);
@@ -238,10 +267,7 @@ void main() {
 
       expect(rides.rides[ride.id]!.status, RideStatus.completed);
       expect(session.requireUser.ridesTaken, tripsBefore + 1);
-      expect(
-        rides.transactions.first.kind,
-        TransactionKind.ridePayment,
-      );
+      expect(rides.transactions.first.kind, TransactionKind.ridePayment);
       expect(rides.transactions.first.amount, -1700);
     });
 
@@ -267,7 +293,9 @@ void main() {
 
   group('sweep', () {
     test('expires bids past their TTL', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       final stale = buildOffer(
         rideId: ride.id,
         driverId: 'drv1',
@@ -316,13 +344,18 @@ void main() {
       rides.setRideStatus(ride.id, RideStatus.completed);
 
       expect(rides.activeRideFor(me, Role.passenger), isNull);
-      expect(rides.historyFor(me, Role.passenger).map((r) => r.id), contains(ride.id));
+      expect(
+        rides.historyFor(me, Role.passenger).map((r) => r.id),
+        contains(ride.id),
+      );
     });
   });
 
   group('chat', () {
     test('counts only the other side’s unread messages', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       rides.sendMessage(ride.id, Role.driver, 'On my way');
       rides.sendMessage(ride.id, Role.passenger, 'Thanks!');
 
@@ -335,7 +368,9 @@ void main() {
     });
 
     test('ignores empty messages', () {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       rides.sendMessage(ride.id, Role.passenger, '   ');
       expect(rides.chatFor(ride.id), isEmpty);
     });
@@ -343,7 +378,9 @@ void main() {
 
   group('persistence', () {
     test('a ride survives a store restart', () async {
-      final ride = rides.publishRide(buildRide(passengerId: session.requireUser.id));
+      final ride = rides.publishRide(
+        buildRide(passengerId: session.requireUser.id),
+      );
       // Rebuild from the same backing store, as a cold app start would.
       final reopened = RidesStore(session);
       expect(reopened.rides[ride.id]?.id, ride.id);

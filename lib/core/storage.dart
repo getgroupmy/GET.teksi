@@ -58,7 +58,8 @@ class Store {
 
   Future<void> clearAll() async {
     try {
-      for (final key in _prefs.getKeys().where((k) => k.startsWith(_prefix)).toList()) {
+      for (final key
+          in _prefs.getKeys().where((k) => k.startsWith(_prefix)).toList()) {
         await _prefs.remove(key);
       }
     } catch (_) {
@@ -71,6 +72,9 @@ final _rng = Random();
 const _alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
 String uid([String prefix = '']) {
-  final body = List.generate(12, (_) => _alphabet[_rng.nextInt(_alphabet.length)]).join();
+  final body = List.generate(
+    12,
+    (_) => _alphabet[_rng.nextInt(_alphabet.length)],
+  ).join();
   return prefix.isEmpty ? body : '${prefix}_$body';
 }

@@ -47,7 +47,8 @@ class _PromosScreenState extends State<PromosScreen> {
     final c = context.c;
     final user = context.watch<SessionStore>().requireUser;
     final draft = context.watch<DraftStore>();
-    final referral = 'TEKSI-${user.id.substring(user.id.length - 5).toUpperCase()}';
+    final referral =
+        'TEKSI-${user.id.substring(user.id.length - 5).toUpperCase()}';
 
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +69,9 @@ class _PromosScreenState extends State<PromosScreen> {
                   textCapitalization: TextCapitalization.characters,
                   onChanged: (_) => setState(() => _feedback = null),
                   onSubmitted: _apply,
-                  decoration: const InputDecoration(hintText: 'Enter a promo code'),
+                  decoration: const InputDecoration(
+                    hintText: 'Enter a promo code',
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -109,7 +112,11 @@ class _PromosScreenState extends State<PromosScreen> {
                         color: c.brand.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(13),
                       ),
-                      child: Icon(Icons.card_giftcard_rounded, size: 20, color: c.accent),
+                      child: Icon(
+                        Icons.card_giftcard_rounded,
+                        size: 20,
+                        color: c.accent,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -126,12 +133,19 @@ class _PromosScreenState extends State<PromosScreen> {
                           ),
                           Text(
                             promo.label,
-                            style: TextStyle(fontSize: 13, color: c.textDim, height: 1.3),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: c.textDim,
+                              height: 1.3,
+                            ),
                           ),
                           if (promo.minSpend != null)
                             Text(
                               'Minimum fare ${money(promo.minSpend!, decimals: false)}',
-                              style: TextStyle(fontSize: 11.5, color: c.textMute),
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                color: c.textMute,
+                              ),
                             ),
                         ],
                       ),
@@ -163,11 +177,18 @@ class _PromosScreenState extends State<PromosScreen> {
                 Text(
                   'Give a friend ${money(500, decimals: false)} off their first ride '
                   'and get ${money(500, decimals: false)} when they take it.',
-                  style: TextStyle(fontSize: 13.5, color: c.textDim, height: 1.4),
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    color: c.textDim,
+                    height: 1.4,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: c.surface2,
                     borderRadius: BorderRadius.circular(12),
@@ -185,12 +206,18 @@ class _PromosScreenState extends State<PromosScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.copy_rounded, size: 18, color: c.accent),
+                        icon: Icon(
+                          Icons.copy_rounded,
+                          size: 18,
+                          color: c.accent,
+                        ),
                         tooltip: 'Copy referral code',
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: referral));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Referral code copied')),
+                            const SnackBar(
+                              content: Text('Referral code copied'),
+                            ),
                           );
                         },
                       ),
@@ -202,12 +229,17 @@ class _PromosScreenState extends State<PromosScreen> {
                   width: double.infinity,
                   child: FilledButton.tonalIcon(
                     onPressed: () {
-                      Clipboard.setData(ClipboardData(
-                        text: 'Use my GET.teksi code $referral and get RM5 off your '
-                            'first ride.',
-                      ));
+                      Clipboard.setData(
+                        ClipboardData(
+                          text:
+                              'Use my GET.teksi code $referral and get RM5 off your '
+                              'first ride.',
+                        ),
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Invite copied to clipboard')),
+                        const SnackBar(
+                          content: Text('Invite copied to clipboard'),
+                        ),
                       );
                     },
                     icon: const Icon(Icons.ios_share_rounded, size: 17),

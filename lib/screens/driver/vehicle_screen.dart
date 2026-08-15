@@ -63,7 +63,11 @@ class VehicleScreen extends StatelessWidget {
                         color: c.brand.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Icon(Icons.directions_car_rounded, size: 24, color: c.accent),
+                      child: Icon(
+                        Icons.directions_car_rounded,
+                        size: 24,
+                        color: c.accent,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -74,7 +78,10 @@ class VehicleScreen extends StatelessWidget {
                             '${vehicle.make} ${vehicle.model}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                           Text(
                             '${vehicle.color} · ${vehicle.year} · ${vehicle.seats} seats',
@@ -107,10 +114,16 @@ class VehicleScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Category', style: TextStyle(fontSize: 13, color: c.textDim)),
+                    Text(
+                      'Category',
+                      style: TextStyle(fontSize: 13, color: c.textDim),
+                    ),
                     Text(
                       vehicle.vehicleClass.label,
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -125,16 +138,16 @@ class VehicleScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SectionLabel('Documents', padding: EdgeInsets.only(top: 20, bottom: 8)),
+          const SectionLabel(
+            'Documents',
+            padding: EdgeInsets.only(top: 20, bottom: 8),
+          ),
           AppCard(
             padding: EdgeInsets.zero,
             child: Column(
               children: [
                 for (var i = 0; i < profile.documents.length; i++)
-                  _DocumentRow(
-                    document: profile.documents[i],
-                    first: i == 0,
-                  ),
+                  _DocumentRow(document: profile.documents[i], first: i == 0),
               ],
             ),
           ),
@@ -157,13 +170,22 @@ class VehicleScreen extends StatelessWidget {
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionLabel('Plate number', padding: EdgeInsets.only(bottom: 6)),
+          const SectionLabel(
+            'Plate number',
+            padding: EdgeInsets.only(bottom: 6),
+          ),
           TextField(
             controller: plate,
             textCapitalization: TextCapitalization.characters,
           ),
-          const SectionLabel('Colour', padding: EdgeInsets.only(top: 16, bottom: 6)),
-          TextField(controller: color, textCapitalization: TextCapitalization.words),
+          const SectionLabel(
+            'Colour',
+            padding: EdgeInsets.only(top: 16, bottom: 6),
+          ),
+          TextField(
+            controller: color,
+            textCapitalization: TextCapitalization.words,
+          ),
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
@@ -196,8 +218,16 @@ class _DocumentRow extends StatelessWidget {
     final (label, color, icon) = switch (document.status) {
       DocumentStatus.approved => ('Approved', c.ok, Icons.verified_rounded),
       DocumentStatus.pending => ('In review', c.warn, Icons.schedule_rounded),
-      DocumentStatus.rejected => ('Rejected', c.danger, Icons.error_outline_rounded),
-      DocumentStatus.missing => ('Not uploaded', c.textMute, Icons.description_outlined),
+      DocumentStatus.rejected => (
+        'Rejected',
+        c.danger,
+        Icons.error_outline_rounded,
+      ),
+      DocumentStatus.missing => (
+        'Not uploaded',
+        c.textMute,
+        Icons.description_outlined,
+      ),
     };
 
     return Container(
@@ -217,7 +247,10 @@ class _DocumentRow extends StatelessWidget {
                   document.label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 if (document.expiresAt != null)
                   Text(
@@ -234,7 +267,11 @@ class _DocumentRow extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 label,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: color),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
               ),
             ],
           ),
