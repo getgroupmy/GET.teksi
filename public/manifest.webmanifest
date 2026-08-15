@@ -1,0 +1,13 @@
+{
+  "name": "GET.teksi",
+  "short_name": "GET.teksi",
+  "description": "Name your own fare. Ride or drive, all in one app.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d0c",
+  "theme_color": "#0b0d0c",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
