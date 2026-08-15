@@ -115,7 +115,7 @@ jobs:
           retention-days: 14
 
   build-android:
-    name: Build Android (APK + AAB)
+    name: Build Android (APK + AAB), GMS-free
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -136,31 +136,17 @@ jobs:
       - name: Build App Bundle
         run: flutter build appbundle --release
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: android
-          path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
-          retention-days: 14
-
-  huawei-compatibility:
-    name: Verify the build is GMS-free
-    needs: build-android
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: android
-          path: artifacts
-
       # Huawei devices ship without Google Play Services. This app is only
       # installable there because nothing in the dependency graph touches GMS,
       # so that property is asserted on every build rather than trusted.
+      #
+      # This runs in the same job that produced the APK, before the upload
+      # step: an artifact that fails the scan is never published at all, and
+      # there is no round trip through artifact storage to check a file the
+      # runner already has on disk.
       - name: Scan the APK for Google Play Services
         run: |
-          APK=$(find artifacts -name '*.apk' | head -1)
+          APK=$(find build/app/outputs -name '*.apk' | head -1)
           echo "Scanning $APK"
 
           # Classes live inside classes*.dex, not as separate zip entries, so
@@ -210,6 +196,15 @@ jobs:
             exit 1
           fi
           echo "✅ Platform folders are clean."
+
+      # Last, so nothing that failed a scan above is ever published.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          retention-days: 14
 
   build-ios:
     name: Build iOS (unsigned)

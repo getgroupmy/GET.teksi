@@ -21,12 +21,16 @@ also enforces the properties this app's platform story depends on:
 - `flutter test` — 79 tests covering the fare engine, geometry, the full
   marketplace state machine (bid → accept → complete → settle), and WCAG
   contrast for every colour token on every surface in both themes.
-- **GMS-free is asserted, not assumed.** The `huawei-compatibility` job
+- **GMS-free is asserted, not assumed.** The `build-android` job
   unpacks the release APK's `classes*.dex`, extracts its strings, and fails the
   build if any `Lcom/google/android/gms`, `Lcom/google/firebase`, or
   `Lcom/huawei/hms` class descriptor appears. The scan self-checks by requiring
   the app's own `Lmy/getgroup/get_teksi` classes to be present, so a silently
-  failed extraction can't pass as a clean result.
+  failed extraction can't pass as a clean result. It runs before the artifact
+  upload, so an APK that fails the scan is never published.
+- **The marketplace rules are enforced by the database.** The `database` job
+  applies the migration to a stock PostgreSQL and runs the policy suite and a
+  concurrency test; see [supabase/README.md](../supabase/README.md).
 - **CanvasKit is bundled, not fetched.** The web job asserts
   `canvaskit.wasm` is in the output *and* that the build config carries
   `"useLocalCanvasKit":true` — the flag that makes the loader resolve to the
