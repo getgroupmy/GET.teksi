@@ -1,5 +1,7 @@
 # GET.teksi
 
+[![CI](https://github.com/getgroupmy/GET.teksi/actions/workflows/ci.yml/badge.svg)](https://github.com/getgroupmy/GET.teksi/actions/workflows/ci.yml)
+
 A ride-hailing app built on the inDrive model: **the passenger names the fare, drivers bid, the passenger picks who to ride with.** Passenger and driver live in the same app — one account, one wallet, one history, switch sides whenever you like.
 
 One Flutter codebase targeting **Android, iOS, Web and Huawei**.
@@ -43,12 +45,12 @@ Phone + OTP auth · profile and ratings · wallet with top-ups and transaction l
 
 | Target | Status |
 |---|---|
-| Web | Built and driven end-to-end in a browser |
-| Android | Configured, GMS-free; needs the Android SDK to build |
-| iOS | Configured; needs macOS + Xcode to build |
+| Web | Built in CI; driven end-to-end in a browser |
+| Android | Release APK + AAB built in CI, GMS-free |
+| iOS | Compiled unsigned in CI on macOS; signing needs your certificates |
 | Huawei | Same GMS-free Android build runs on HarmonyOS 2–4 / EMUI; HarmonyOS NEXT needs the OpenHarmony Flutter fork |
 
-**Huawei support is real, not incidental.** The usual thing that breaks a Flutter ride-hailing app on Huawei is `google_maps_flutter`, which needs Google Play Services. This app uses `flutter_map` over OpenStreetMap tiles instead — no Google SDK, no API key, no GMS anywhere in the dependency graph (verified by scanning every resolved package's Gradle files). The same release build you ship to Play runs on Huawei and passes AppGallery review on that axis.
+**Huawei support is real, not incidental.** The usual thing that breaks a Flutter ride-hailing app on Huawei is `google_maps_flutter`, which needs Google Play Services. This app uses `flutter_map` over OpenStreetMap tiles instead — no Google SDK, no API key, no GMS anywhere in the dependency graph. That isn't a claim you have to take on faith: CI unpacks the release APK's dex bytecode on every push and fails the build if a single `com.google.android.gms`, `com.google.firebase`, or `com.huawei.hms` class descriptor shows up. The same release build you ship to Play runs on Huawei and passes AppGallery review on that axis.
 
 **[docs/PLATFORMS.md](docs/PLATFORMS.md)** has the full picture: exact build commands per target, what was and wasn't verified here, the HarmonyOS NEXT toolchain steps, and the map-tile and CanvasKit changes you need before shipping into mainland China.
 

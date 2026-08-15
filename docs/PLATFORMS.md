@@ -1,30 +1,40 @@
 # Platforms
 
 One Flutter codebase, four targets. This file records exactly how each one is
-built, and — importantly — which of them were actually verified in this
-environment versus which need a machine with the relevant SDK.
+built, and — importantly — which of them are actually built and verified
+versus which still need a machine with the relevant SDK.
 
 ## Verification status
 
-| Target | Build command | Verified here |
+| Target | Build command | Verified |
 |---|---|---|
-| **Web** | `flutter build web --release --no-web-resources-cdn` | ✅ Built, served, and driven end-to-end in Chromium |
-| **Android** | `flutter build apk --release` / `appbundle` | ⚠️ Not built — `dl.google.com` is blocked in this sandbox, so the Android SDK could not be installed |
-| **iOS** | `flutter build ipa --release` | ⚠️ Not built — requires macOS and Xcode |
-| **HarmonyOS NEXT** | `flutter build hap --release` (OpenHarmony fork) | ⚠️ Not built — requires the OpenHarmony Flutter SDK fork |
+| **Web** | `flutter build web --release --no-web-resources-cdn` | ✅ Built in CI; served and driven end-to-end in Chromium |
+| **Android** | `flutter build apk --release` / `appbundle` | ✅ Release APK and AAB built in CI (`build-android`) |
+| **iOS** | `flutter build ios --release --no-codesign` | ✅ Compiled unsigned in CI on macOS (`build-ios`); a signed `ipa` still needs your certificates |
+| **HarmonyOS NEXT** | `flutter build hap --release` (OpenHarmony fork) | ⚠️ Not built — needs the OpenHarmony Flutter SDK fork, which has no hosted runner |
 
-What *was* verified for every target, because it is platform-independent:
+Every push runs [`.github/workflows/ci.yml`](../.github/workflows/ci.yml), which
+also enforces the properties this app's platform story depends on:
 
-- `flutter analyze` — clean, no errors or lints.
-- `flutter test` — 55 tests covering the fare engine, geometry, and the full
-  marketplace state machine (bid → accept → complete → settle).
-- The complete passenger and driver flows, driven through the real running app
-  in a browser with zero runtime errors.
+- `dart format --set-exit-if-changed` and `flutter analyze --fatal-infos
+  --fatal-warnings` — clean, no errors, lints, or infos.
+- `flutter test` — 79 tests covering the fare engine, geometry, the full
+  marketplace state machine (bid → accept → complete → settle), and WCAG
+  contrast for every colour token on every surface in both themes.
+- **GMS-free is asserted, not assumed.** The `huawei-compatibility` job
+  unpacks the release APK's `classes*.dex`, extracts its strings, and fails the
+  build if any `Lcom/google/android/gms`, `Lcom/google/firebase`, or
+  `Lcom/huawei/hms` class descriptor appears. The scan self-checks by requiring
+  the app's own `Lmy/getgroup/get_teksi` classes to be present, so a silently
+  failed extraction can't pass as a clean result.
+- **CanvasKit is bundled, not fetched.** The web job asserts
+  `canvaskit.wasm` is in the output *and* that the build config carries
+  `"useLocalCanvasKit":true` — the flag that makes the loader resolve to the
+  local copy rather than gstatic, which is unreachable in mainland China.
 
-Everything above the platform layer is shared Dart, so a passing web build plus
-a clean analyze is strong evidence the other targets compile — but it is not
-the same as having built them. Run the commands above on a machine with the
-SDKs before shipping.
+The only remaining unbuilt target is HarmonyOS NEXT, because its toolchain is a
+vendor fork of Flutter that no hosted runner provides. Build it locally with the
+steps below before shipping to AppGallery.
 
 ---
 

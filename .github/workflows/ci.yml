@@ -53,14 +53,19 @@ jobs:
       - name: Build
         run: flutter build web --release --no-web-resources-cdn
 
-      - name: Assert CanvasKit is bundled, not remote
+      # The loader always carries the gstatic URL as a fallback branch, so its
+      # mere presence proves nothing. What matters is the build config: with
+      # useLocalCanvasKit set, the loader resolves to the bundled copy.
+      - name: Assert CanvasKit is bundled, not fetched from the CDN
         run: |
           test -f build/web/canvaskit/canvaskit.wasm \
             || { echo "::error::CanvasKit was not bundled locally"; exit 1; }
-          if grep -rq "gstatic.com/flutter-canvaskit" build/web/*.js; then
-            echo "::error::Build still references the gstatic CanvasKit CDN"
+
+          if ! grep -q '"useLocalCanvasKit":true' build/web/flutter_bootstrap.js; then
+            echo "::error::useLocalCanvasKit is not set — the app would fetch CanvasKit from gstatic, which fails in mainland China"
             exit 1
           fi
+          echo "✅ CanvasKit is served from the app's own origin."
 
       - uses: actions/upload-artifact@v4
         with:
