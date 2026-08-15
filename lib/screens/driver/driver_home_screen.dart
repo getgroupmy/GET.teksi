@@ -50,29 +50,37 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
     final pins = <MapPin>[MapPin('me', session.myLocation, PinKind.me)];
     if (activeRide != null) {
-      pins.add(MapPin(
-        'pickup',
-        activeRide.pickup.coord,
-        PinKind.pickup,
-        label: activeRide.pickup.name,
-      ));
+      pins.add(
+        MapPin(
+          'pickup',
+          activeRide.pickup.coord,
+          PinKind.pickup,
+          label: activeRide.pickup.name,
+        ),
+      );
       if (activeRide.stop != null) {
         pins.add(MapPin('stop', activeRide.stop!.coord, PinKind.stop));
       }
-      pins.add(MapPin(
-        'dropoff',
-        activeRide.dropoff.coord,
-        PinKind.dropoff,
-        label: activeRide.dropoff.name,
-      ));
+      pins.add(
+        MapPin(
+          'dropoff',
+          activeRide.dropoff.coord,
+          PinKind.dropoff,
+          label: activeRide.dropoff.name,
+        ),
+      );
     }
 
     final route = activeRide == null
         ? null
         : (activeRide.status == RideStatus.inProgress
-            ? (activeRide.routeGeometry ??
-                syntheticRoute(activeRide.pickup.coord, activeRide.dropoff.coord, 3))
-            : syntheticRoute(session.myLocation, activeRide.pickup.coord, 1));
+              ? (activeRide.routeGeometry ??
+                    syntheticRoute(
+                      activeRide.pickup.coord,
+                      activeRide.dropoff.coord,
+                      3,
+                    ))
+              : syntheticRoute(session.myLocation, activeRide.pickup.coord, 1));
 
     return Scaffold(
       body: Stack(
@@ -99,43 +107,73 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     onTap: () => context.push('/menu'),
                   ),
                   const Spacer(),
-                  Material(
-                    color: c.surface,
-                    borderRadius: BorderRadius.circular(999),
-                    elevation: 4,
-                    shadowColor: Colors.black54,
-                    child: InkWell(
+                  Semantics(
+                    button: true,
+                    label:
+                        'Earnings, '
+                        '${money(user.driverProfile!.earnings)}, '
+                        '${session.prefs.driverOnline ? 'online' : 'offline'}',
+                    child: Material(
+                      color: c.surface,
                       borderRadius: BorderRadius.circular(999),
-                      onTap: () => context.push('/d/earnings'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(999),
-                          border: Border.all(color: c.line),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.account_balance_wallet_outlined,
-                                size: 15, color: c.brand),
-                            const SizedBox(width: 6),
-                            Text(
-                              money(user.driverProfile!.earnings, decimals: false),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w800,
+                      elevation: 4,
+                      shadowColor: Colors.black54,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(999),
+                        onTap: () => context.push('/d/earnings'),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 11,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(color: c.line),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.account_balance_wallet_outlined,
+                                size: 15,
+                                color: c.accent,
                               ),
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 7,
-                              height: 7,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: session.prefs.driverOnline ? c.ok : c.textMute,
+                              const SizedBox(width: 6),
+                              Text(
+                                money(
+                                  user.driverProfile!.earnings,
+                                  decimals: false,
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 8),
+                              // Colour alone must not carry the duty state.
+                              Container(
+                                width: 7,
+                                height: 7,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: session.prefs.driverOnline
+                                      ? c.ok
+                                      : c.textMute,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                session.prefs.driverOnline ? 'On' : 'Off',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: session.prefs.driverOnline
+                                      ? c.ok
+                                      : c.textMute,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -166,7 +204,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: activeRide != null
-                ? ActiveRideSheet(ride: activeRide, driverAt: session.myLocation)
+                ? ActiveRideSheet(
+                    ride: activeRide,
+                    driverAt: session.myLocation,
+                  )
                 : OrderFeedSheet(driverAt: session.myLocation),
           ),
         ],

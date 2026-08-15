@@ -39,7 +39,7 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => _edit(context, session, user),
-            child: Text('Edit', style: TextStyle(color: c.brand)),
+            child: Text('Edit', style: TextStyle(color: c.accent)),
           ),
         ],
       ),
@@ -73,7 +73,7 @@ class ProfileScreen extends StatelessWidget {
               StatBox(
                 label: 'Passenger rating',
                 value: user.rating.toStringAsFixed(1),
-                tone: c.brand,
+                tone: c.accent,
               ),
               const SizedBox(width: 8),
               StatBox(label: 'Trips taken', value: '$asPassenger'),
@@ -102,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
                           color: c.brand.withValues(alpha: 0.14),
                           borderRadius: BorderRadius.circular(13),
                         ),
-                        child: Icon(Icons.directions_car_rounded, size: 20, color: c.brand),
+                        child: Icon(Icons.directions_car_rounded, size: 20, color: c.accent),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -150,7 +150,7 @@ class ProfileScreen extends StatelessWidget {
                       StatBox(
                         label: 'Driver rating',
                         value: user.driverProfile!.rating.toStringAsFixed(2),
-                        tone: c.brand,
+                        tone: c.accent,
                       ),
                       const SizedBox(width: 8),
                       StatBox(
@@ -180,7 +180,7 @@ class ProfileScreen extends StatelessWidget {
                     style: const TextStyle(fontSize: 14),
                   ),
                 ),
-                Icon(Icons.star_rounded, size: 16, color: c.brand),
+                Icon(Icons.star_rounded, size: 16, color: c.accent),
               ],
             ),
           ),

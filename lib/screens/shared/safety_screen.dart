@@ -176,8 +176,8 @@ class _SafetyScreenState extends State<SafetyScreen> {
                 ),
                 TextButton.icon(
                   onPressed: () => _addContact(context),
-                  icon: Icon(Icons.add_rounded, size: 16, color: c.brand),
-                  label: Text('Add', style: TextStyle(color: c.brand)),
+                  icon: Icon(Icons.add_rounded, size: 16, color: c.accent),
+                  label: Text('Add', style: TextStyle(color: c.accent)),
                 ),
               ],
             ),

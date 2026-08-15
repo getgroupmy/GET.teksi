@@ -156,7 +156,7 @@ class _HistoryCard extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.star_rounded, size: 13, color: c.brand),
+                Icon(Icons.star_rounded, size: 13, color: c.accent),
                 const SizedBox(width: 4),
                 Text(
                   'You rated ${ride.ratingByPassenger!.stars}',

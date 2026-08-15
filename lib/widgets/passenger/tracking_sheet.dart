@@ -62,7 +62,7 @@ class TrackingSheet extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: c.brand,
+                    color: c.accent,
                   ),
                 ),
             ],

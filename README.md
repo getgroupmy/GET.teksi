@@ -97,14 +97,43 @@ Today the app is single-device: the simulated marketplace and one real user shar
 
 ---
 
+## Tooling
+
+Two third-party skills are vendored under `.claude/skills/` so they travel with
+the repo — see [`.claude/skills/README.md`](.claude/skills/README.md) for
+sources, licences and local changes.
+
+**[ui-ux-pro-max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** —
+searchable UX guidelines, styles and per-stack rules, including a `flutter`
+stack. The accessibility pass in [`docs/UI-UX-AUDIT.md`](docs/UI-UX-AUDIT.md)
+was run against its native-app checklist; it found a light theme where the
+brand colour sat at 1.7:1 as foreground, six touch targets under the platform
+minimum, and an animation that ignored reduced-motion.
+
+```bash
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "touch target size" --domain ux
+```
+
+**[graphify](https://github.com/Graphify-Labs/graphify)** — maps the repo into a
+queryable knowledge graph instead of grepping. Dev tool, not an app dependency;
+the Dart pass is deterministic and costs no API calls.
+
+```bash
+pip install graphifyy
+graphify update .        # 1160 nodes, 1827 edges, 59 communities
+```
+
+Only `graphify-out/GRAPH_REPORT.md` is committed; the ~2 MB `graph.json` and
+`graph.html` regenerate from the command above.
+
 ## Tests
 
 ```bash
 flutter analyze   # clean
-flutter test      # 55 tests
+flutter test      # 79 tests
 ```
 
-Covering the fare engine (class ordering, minimums, peak pressure, commission reconciliation), geometry (haversine, bearings, route endpoints, path interpolation), and the marketplace state machine end to end: publishing, bid ordering, accept-one-declines-the-rest, refusing bids on a closed order, raise-price only while searching, cancellation voiding bids, settlement crediting the driver net of commission, TTL sweeps, the rating queue, unread chat counts, and persistence across a store restart.
+Covering colour contrast (every text token against every surface in both themes), the fare engine (class ordering, minimums, peak pressure, commission reconciliation), geometry (haversine, bearings, route endpoints, path interpolation), and the marketplace state machine end to end: publishing, bid ordering, accept-one-declines-the-rest, refusing bids on a closed order, raise-price only while searching, cancellation voiding bids, settlement crediting the driver net of commission, TTL sweeps, the rating queue, unread chat counts, and persistence across a store restart.
 
 ---
 

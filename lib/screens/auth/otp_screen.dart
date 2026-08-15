@@ -119,7 +119,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
                                 color: i == _code.length
-                                    ? c.brand
+                                    ? c.accent
                                     : (_error.isNotEmpty ? c.danger : c.line),
                                 width: 1.5,
                               ),
@@ -205,7 +205,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 child: Text(
                   _seconds > 0 ? 'Resend code in ${_seconds}s' : 'Resend code',
-                  style: TextStyle(color: _seconds > 0 ? c.textMute : c.brand),
+                  style: TextStyle(color: _seconds > 0 ? c.textMute : c.accent),
                 ),
               ),
               const Spacer(),

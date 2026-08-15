@@ -259,7 +259,7 @@ class RideDetailScreen extends StatelessWidget {
                                       ? Icons.star_rounded
                                       : Icons.star_border_rounded,
                                   size: 18,
-                                  color: n <= mine.stars ? c.brand : c.surface3,
+                                  color: n <= mine.stars ? c.accent : c.surface3,
                                 ),
                             ],
                           ),

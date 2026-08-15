@@ -353,7 +353,7 @@ class _OfferCardState extends State<_OfferCard> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: diff == 0 ? c.brand : (diff > 0 ? c.warn : c.ok),
+                      color: diff == 0 ? c.accent : (diff > 0 ? c.warn : c.ok),
                     ),
                   ),
                 ],
@@ -376,14 +376,14 @@ class _OfferCardState extends State<_OfferCard> {
                 onPressed: widget.onDecline,
                 style: IconButton.styleFrom(
                   backgroundColor: c.surface3,
-                  minimumSize: const Size(38, 38),
+                  minimumSize: const Size(48, 48),
                 ),
               ),
               const SizedBox(width: 8),
               FilledButton(
                 onPressed: widget.onAccept,
                 style: FilledButton.styleFrom(
-                  minimumSize: const Size(0, 40),
+                  minimumSize: const Size(0, 48),
                   padding: const EdgeInsets.symmetric(horizontal: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                 ),

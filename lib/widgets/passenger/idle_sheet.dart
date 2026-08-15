@@ -46,7 +46,7 @@ class IdleSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 36,
+            height: 52,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
@@ -79,7 +79,7 @@ class IdleSheet extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search_rounded, color: c.brand, size: 22),
+                  Icon(Icons.search_rounded, color: c.accent, size: 22),
                   const SizedBox(width: 12),
                   Text(
                     'Where to?',
@@ -200,7 +200,7 @@ class _Shortcut extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 17, color: c.brand),
+              Icon(icon, size: 17, color: c.accent),
               const SizedBox(height: 6),
               Text(
                 label,

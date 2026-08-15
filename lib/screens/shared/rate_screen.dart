@@ -169,7 +169,7 @@ class _RateScreenState extends State<RateScreen> {
                             icon: Icon(
                               n <= _stars ? Icons.star_rounded : Icons.star_border_rounded,
                               size: 38,
-                              color: n <= _stars ? c.brand : c.surface3,
+                              color: n <= _stars ? c.accent : c.surface3,
                             ),
                           ),
                         ),
@@ -238,7 +238,7 @@ class _RateScreenState extends State<RateScreen> {
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
-                                      color: _tip == value ? c.brand : c.text,
+                                      color: _tip == value ? c.accent : c.text,
                                     ),
                                   ),
                                 ),

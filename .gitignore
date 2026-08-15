@@ -63,3 +63,8 @@ android/.gradle/
 android/local.properties
 android/key.properties
 *.jks
+
+# graphify — regenerate with `graphify update .` (deterministic, no API cost).
+# Only the human-readable report is tracked.
+graphify-out/*
+!graphify-out/GRAPH_REPORT.md

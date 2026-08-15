@@ -109,7 +109,7 @@ class _PromosScreenState extends State<PromosScreen> {
                         color: c.brand.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(13),
                       ),
-                      child: Icon(Icons.card_giftcard_rounded, size: 20, color: c.brand),
+                      child: Icon(Icons.card_giftcard_rounded, size: 20, color: c.accent),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -138,7 +138,7 @@ class _PromosScreenState extends State<PromosScreen> {
                     ),
                     const SizedBox(width: 8),
                     if (draft.promoCode == promo.code)
-                      Icon(Icons.check_rounded, color: c.brand)
+                      Icon(Icons.check_rounded, color: c.accent)
                     else
                       FilledButton.tonal(
                         onPressed: () => _apply(promo.code),
@@ -185,7 +185,7 @@ class _PromosScreenState extends State<PromosScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.copy_rounded, size: 18, color: c.brand),
+                        icon: Icon(Icons.copy_rounded, size: 18, color: c.accent),
                         tooltip: 'Copy referral code',
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: referral));

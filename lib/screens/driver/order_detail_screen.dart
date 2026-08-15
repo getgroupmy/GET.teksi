@@ -305,7 +305,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         onPressed: () => setState(() => _counter = null),
                         child: Text(
                           'Reset to ${money(ride.askingPrice, decimals: false)}',
-                          style: TextStyle(color: c.brand),
+                          style: TextStyle(color: c.accent),
                         ),
                       ),
                   ],
@@ -406,7 +406,7 @@ class _Round extends StatelessWidget {
           child: InkWell(
             customBorder: const CircleBorder(),
             onTap: onTap,
-            child: SizedBox(width: 46, height: 46, child: Icon(icon, size: 21)),
+            child: SizedBox(width: 48, height: 48, child: Icon(icon, size: 21)),
           ),
         ),
       ),

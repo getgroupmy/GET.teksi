@@ -60,7 +60,7 @@ class _IntroScreenState extends State<IntroScreen> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.navigation_rounded, color: c.brand, size: 24),
+                  Icon(Icons.navigation_rounded, color: c.accent, size: 24),
                   const SizedBox(width: 8),
                   const Text(
                     'GET.teksi',
@@ -88,7 +88,7 @@ class _IntroScreenState extends State<IntroScreen> {
                             color: c.brand.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(28),
                           ),
-                          child: Icon(slide.icon, size: 42, color: c.brand),
+                          child: Icon(slide.icon, size: 42, color: c.accent),
                         ),
                         const SizedBox(height: 24),
                         Text(
@@ -121,7 +121,7 @@ class _IntroScreenState extends State<IntroScreen> {
                       width: i == _index ? 22 : 7,
                       height: 7,
                       decoration: BoxDecoration(
-                        color: i == _index ? c.brand : c.surface3,
+                        color: i == _index ? c.accent : c.surface3,
                         borderRadius: BorderRadius.circular(999),
                       ),
                     ),

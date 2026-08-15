@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
     required this.brand,
+    required this.accent,
     required this.brandInk,
     required this.bg,
     required this.surface,
@@ -21,7 +22,13 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.mapTint,
   });
 
+  /// The vivid brand fill — buttons, the route line, selection washes.
   final Color brand;
+
+  /// Brand identity drawn as text or an icon on a surface. Identical to
+  /// [brand] in dark mode; a darker green in light mode, where the vivid
+  /// lime only reaches 1.7:1 against white and is effectively invisible.
+  final Color accent;
   final Color brandInk;
   final Color bg;
   final Color surface;
@@ -42,6 +49,7 @@ class AppColors extends ThemeExtension<AppColors> {
 
   static const dark = AppColors(
     brand: Color(0xFFC1F11D),
+    accent: Color(0xFFC1F11D),
     brandInk: Color(0xFF0D1200),
     bg: Color(0xFF0B0D0C),
     surface: Color(0xFF161A18),
@@ -50,8 +58,9 @@ class AppColors extends ThemeExtension<AppColors> {
     line: Color(0xFF2F3633),
     text: Color(0xFFF4F7F4),
     textDim: Color(0xFF9AA39D),
-    textMute: Color(0xFF6B746F),
-    danger: Color(0xFFFF5A5F),
+    // Every text token below clears 4.5:1 against all four dark surfaces.
+    textMute: Color(0xFF8F9893),
+    danger: Color(0xFFFF5F64),
     warn: Color(0xFFFFB020),
     ok: Color(0xFF35C759),
     info: Color(0xFF38BDF8),
@@ -60,6 +69,7 @@ class AppColors extends ThemeExtension<AppColors> {
 
   static const light = AppColors(
     brand: Color(0xFF9BC400),
+    accent: Color(0xFF5A7200),
     brandInk: Color(0xFF0D1200),
     bg: Color(0xFFF2F4F2),
     surface: Color(0xFFFFFFFF),
@@ -68,11 +78,12 @@ class AppColors extends ThemeExtension<AppColors> {
     line: Color(0xFFDFE3DF),
     text: Color(0xFF10130F),
     textDim: Color(0xFF5C635E),
-    textMute: Color(0xFF8B928D),
-    danger: Color(0xFFD93A3F),
-    warn: Color(0xFFB77400),
-    ok: Color(0xFF1F9D45),
-    info: Color(0xFF0C7CB0),
+    // Every text token below clears 4.5:1 against all four light surfaces.
+    textMute: Color(0xFF656B67),
+    danger: Color(0xFFCB272C),
+    warn: Color(0xFF935D00),
+    ok: Color(0xFF187935),
+    info: Color(0xFF0B709F),
     mapTint: Color(0x00000000),
   );
 
@@ -168,14 +179,14 @@ ThemeData buildTheme({required bool dark}) {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: colors.brand, width: 1.5),
+        borderSide: BorderSide(color: colors.accent, width: 1.5),
       ),
     ),
     sliderTheme: SliderThemeData(
-      activeTrackColor: colors.brand,
+      activeTrackColor: colors.accent,
       inactiveTrackColor: colors.surface3,
-      thumbColor: colors.brand,
-      overlayColor: colors.brand.withValues(alpha: 0.15),
+      thumbColor: colors.accent,
+      overlayColor: colors.accent.withValues(alpha: 0.15),
       trackHeight: 6,
     ),
     switchTheme: SwitchThemeData(

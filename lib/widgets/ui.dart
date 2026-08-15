@@ -26,7 +26,7 @@ class Avatar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Color(color),
         shape: BoxShape.circle,
-        border: ring ? Border.all(color: context.c.brand, width: 2.5) : null,
+        border: ring ? Border.all(color: context.c.accent, width: 2.5) : null,
       ),
       child: Text(
         initials(name),
@@ -51,7 +51,7 @@ class RatingChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.star_rounded, size: size + 3, color: context.c.brand),
+        Icon(Icons.star_rounded, size: size + 3, color: context.c.accent),
         const SizedBox(width: 2),
         Text(
           value.toStringAsFixed(1),
@@ -142,8 +142,8 @@ class FabButton extends StatelessWidget {
           customBorder: const CircleBorder(),
           onTap: onTap,
           child: SizedBox(
-            width: 44,
-            height: 44,
+            width: 48,
+            height: 48,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -209,14 +209,16 @@ class ActionTile extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(14),
             onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 56),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Icon(icon, size: 19, color: danger ? c.danger : c.brand),
+                      Icon(icon, size: 19, color: danger ? c.danger : c.accent),
                       if (badge > 0)
                         Positioned(
                           top: -5,
@@ -316,7 +318,7 @@ class RouteStops extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5, bottom: 5),
             child: Column(
               children: [
-                dot(c.brand),
+                dot(c.accent),
                 line(),
                 if (stop != null) ...[dot(c.warn, square: true), line()],
                 dot(c.text, square: true),
@@ -649,22 +651,27 @@ class AppChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
+    // The pill stays visually compact, but the tappable box is padded out to
+    // the 48dp minimum so the chip is not a hairline target.
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
+        constraints: const BoxConstraints(minHeight: 48),
+        alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: selected ? c.brand.withValues(alpha: 0.18) : c.surface2,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
-            color: selected ? c.brand.withValues(alpha: 0.45) : Colors.transparent,
+            color: selected ? c.accent.withValues(alpha: 0.55) : Colors.transparent,
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (icon != null) ...[
-              Icon(icon, size: 15, color: selected ? c.brand : c.textDim),
+              Icon(icon, size: 15, color: selected ? c.accent : c.textDim),
               const SizedBox(width: 6),
             ],
             Text(
@@ -672,7 +679,7 @@ class AppChip extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: selected ? c.brand : c.textDim,
+                color: selected ? c.accent : c.textDim,
               ),
             ),
           ],
@@ -705,6 +712,19 @@ class _RadarBarState extends State<RadarBar> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final c = context.c;
+    // Under reduced motion the sweep becomes a static bar: the "searching"
+    // state is still legible from the surrounding copy.
+    if (MediaQuery.disableAnimationsOf(context)) {
+      _controller.stop();
+      return Container(
+        height: 3,
+        decoration: BoxDecoration(
+          color: c.accent.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(999),
+        ),
+      );
+    }
+    if (!_controller.isAnimating) _controller.repeat();
     return ClipRRect(
       borderRadius: BorderRadius.circular(999),
       child: SizedBox(
@@ -721,7 +741,7 @@ class _RadarBarState extends State<RadarBar> with SingleTickerProviderStateMixin
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.transparent, c.brand, Colors.transparent],
+                        colors: [Colors.transparent, c.accent, Colors.transparent],
                       ),
                     ),
                   ),

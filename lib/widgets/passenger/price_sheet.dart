@@ -54,7 +54,7 @@ class PriceSheet extends StatelessWidget {
     final toneColor = switch (verdict.tone) {
       PriceTone.low => c.danger,
       PriceTone.high => c.info,
-      PriceTone.good => c.brand,
+      PriceTone.good => c.accent,
       PriceTone.fair => c.textDim,
     };
 
@@ -374,7 +374,7 @@ class PriceSheet extends StatelessWidget {
                 secondary: Icon(
                   _optionIcons[option],
                   color: draft.options.contains(option)
-                      ? innerContext.c.brand
+                      ? innerContext.c.accent
                       : innerContext.c.textDim,
                 ),
                 title: Text(
@@ -407,8 +407,8 @@ class _Radio extends StatelessWidget {
       height: 20,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: selected ? c.brand : Colors.transparent,
-        border: Border.all(color: selected ? c.brand : c.line, width: 2),
+        color: selected ? c.accent : Colors.transparent,
+        border: Border.all(color: selected ? c.accent : c.line, width: 2),
       ),
     );
   }

@@ -68,7 +68,7 @@ class ActiveRideSheet extends StatelessWidget {
               ),
               Text(
                 '${durationLabel(eta)} · ${distanceLabel(km)}',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: c.brand),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: c.accent),
               ),
             ],
           ),

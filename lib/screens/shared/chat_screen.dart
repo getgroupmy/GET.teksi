@@ -119,7 +119,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.phone_rounded, color: c.brand),
+            icon: Icon(Icons.phone_rounded, color: c.accent),
             tooltip: 'Call',
             onPressed: () => ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('Calling ${other.$1}…'))),
@@ -195,7 +195,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
           ),
           SizedBox(
-            height: 40,
+            height: 56,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),

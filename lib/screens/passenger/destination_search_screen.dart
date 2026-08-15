@@ -222,8 +222,8 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                       draft.setEditing(DraftField.stop);
                       _focusActiveField();
                     },
-                    icon: Icon(Icons.add_rounded, size: 18, color: c.brand),
-                    label: Text('Add a stop', style: TextStyle(color: c.brand)),
+                    icon: Icon(Icons.add_rounded, size: 18, color: c.accent),
+                    label: Text('Add a stop', style: TextStyle(color: c.accent)),
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   ),
               ],
@@ -338,11 +338,11 @@ class _Field extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: active ? c.brand : Colors.transparent, width: 1.5),
+          borderSide: BorderSide(color: active ? c.accent : Colors.transparent, width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: c.brand, width: 1.5),
+          borderSide: BorderSide(color: c.accent, width: 1.5),
         ),
         prefixIcon: Padding(
           padding: const EdgeInsets.only(left: 14, right: 10),
@@ -350,7 +350,7 @@ class _Field extends StatelessWidget {
             hint == 'Where to?' ? Icons.stop_rounded : Icons.circle,
             size: hint == 'Where to?' ? 12 : 10,
             color: hint == 'Pickup location'
-                ? c.brand
+                ? c.accent
                 : (hint == 'Where to?' ? c.text : c.warn),
           ),
         ),

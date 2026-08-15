@@ -74,7 +74,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           child: Icon(
                             icon,
                             size: 17,
-                            color: n.kind == NotificationKind.safety ? c.danger : c.brand,
+                            color: n.kind == NotificationKind.safety ? c.danger : c.accent,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -112,7 +112,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             height: 8,
                             margin: const EdgeInsets.only(top: 6, left: 8),
                             decoration: BoxDecoration(
-                              color: c.brand,
+                              color: c.accent,
                               shape: BoxShape.circle,
                             ),
                           ),

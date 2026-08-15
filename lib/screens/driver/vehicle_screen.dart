@@ -63,7 +63,7 @@ class VehicleScreen extends StatelessWidget {
                         color: c.brand.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: Icon(Icons.directions_car_rounded, size: 24, color: c.brand),
+                      child: Icon(Icons.directions_car_rounded, size: 24, color: c.accent),
                     ),
                     const SizedBox(width: 12),
                     Expanded(

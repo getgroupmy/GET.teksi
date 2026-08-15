@@ -107,7 +107,7 @@ class MenuScreen extends StatelessWidget {
                           ? Icons.person_outline_rounded
                           : Icons.directions_car_filled_rounded,
                       size: 18,
-                      color: c.brand,
+                      color: c.accent,
                     ),
                     const SizedBox(width: 8),
                     Text(

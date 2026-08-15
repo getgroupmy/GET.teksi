@@ -225,7 +225,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                             color: c.surface2,
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: _class == option ? c.brand : Colors.transparent,
+                              color: _class == option ? c.accent : Colors.transparent,
                               width: 1.5,
                             ),
                           ),
@@ -250,7 +250,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                                 ),
                               ),
                               if (_class == option)
-                                Icon(Icons.check_rounded, color: c.brand, size: 20),
+                                Icon(Icons.check_rounded, color: c.accent, size: 20),
                             ],
                           ),
                         ),
@@ -296,7 +296,7 @@ class _Perk extends StatelessWidget {
               color: c.brand.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(13),
             ),
-            child: Icon(icon, size: 20, color: c.brand),
+            child: Icon(icon, size: 20, color: c.accent),
           ),
           const SizedBox(width: 12),
           Expanded(

@@ -122,7 +122,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
               StatBox(
                 label: 'Rating',
                 value: avgRating.toStringAsFixed(2),
-                tone: c.brand,
+                tone: c.accent,
               ),
               const SizedBox(width: 8),
               StatBox(
@@ -130,7 +130,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 value: minutes == 0
                     ? '—'
                     : money((net / minutes * 60).round(), decimals: false),
-                tone: c.brand,
+                tone: c.accent,
               ),
             ],
           ),
