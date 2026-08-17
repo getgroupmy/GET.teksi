@@ -146,7 +146,13 @@ jobs:
       # runner already has on disk.
       - name: Scan the APK for Google Play Services
         run: |
-          APK=$(find build/app/outputs -name '*.apk' | head -1)
+          # The exact file the upload step publishes, not whichever APK a glob
+          # happens to match first. Gradle also leaves a copy under
+          # apk/release/, and a check that gates an artifact should read the
+          # artifact rather than a sibling that is merely expected to be
+          # identical.
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          test -f "$APK" || { echo "::error::$APK was not produced"; exit 1; }
           echo "Scanning $APK"
 
           # Classes live inside classes*.dex, not as separate zip entries, so
