@@ -9,6 +9,7 @@ a Supabase project and the same build becomes a real multi-device marketplace.
 supabase/
   migrations/20260815120000_marketplace.sql   the schema, policies and RPCs
   migrations/20260820120000_hide_internal_functions.sql
+  migrations/20260820130000_schedule_offer_sweep.sql
   tests/harness.sql                           stands in for Supabase's own objects
   tests/policies.sql                          what the database must refuse
   tests/concurrency.sh                        races two accepts of the same ride
@@ -147,9 +148,14 @@ the app itself. Never ship the **service role** key: it bypasses RLS entirely.
 | Region | `ap-southeast-1` (Singapore, ~10 ms from Kuala Lumpur) |
 | Postgres | 17 |
 
-Both migrations are applied. Supabase's security linter reports one warning
-against it, kept deliberately: `accept_offer` is callable by signed-in users,
-which is what it is for.
+All three migrations are applied. Supabase's security linter reports one
+warning against it, kept deliberately: `accept_offer` is callable by signed-in
+users, which is what it is for.
+
+`sweep_expired_offers()` runs every minute under `pg_cron`, verified by
+`cron.job_run_details` rather than by the schedule merely existing. The
+migration that sets it up skips with a notice where `pg_cron` is unavailable,
+which is why the policy suite still applies cleanly to a stock PostgreSQL.
 
 ## How it connects to the app
 
@@ -183,5 +189,7 @@ replaced rather than reused when the backend supplies a different one.
   reach the network, because they belong to no real account and row-level
   security would reject them. Turn it off in Settings when testing against a
   real backend, or the map shows local bots alongside real drivers.
-- **The expiry sweep has no schedule.** `sweep_expired_offers()` is idempotent
-  and ready for `pg_cron`; nothing calls it periodically yet.
+- **The app ships in English only.** `prefs.language` is persisted but nothing
+  reads it, so the Settings row is display-only rather than a toggle that
+  reports a change it did not make. Translating the ~385 user-visible strings
+  is a project of its own.

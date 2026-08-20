@@ -5,6 +5,12 @@
 **After every push, wait 5 minutes, then check CI. Repeat until the run is
 green.** Do not report a push as done while its run is unfinished or red.
 
+**One run at a time.** Never push while a run is still going. Finish the
+current one first — green or red — and batch further work into the next push.
+A push that lands mid-run cancels the run in flight (`cancel-in-progress`),
+which throws away minutes already spent and leaves the superseded commit with
+no verdict of its own.
+
 Each round:
 
 1. Wait ~5 minutes (`sleep 300` in the background), then read the run's status.

@@ -40,13 +40,16 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SectionLabel('Preferences'),
-          AppRow(
+          // Display-only until the app is actually translated. This row used
+          // to flip prefs.language between 'en' and 'ms' and persist it, and
+          // nothing anywhere read the value back — so the subtitle changed,
+          // the app stayed English, and the control quietly lied. A setting
+          // that reports a change it did not make is worse than one that
+          // isn't offered.
+          const AppRow(
             icon: Icons.translate_rounded,
             title: 'Language',
-            subtitle: prefs.language == 'en' ? 'English' : 'Bahasa Melayu',
-            onTap: () => session.setPrefs(
-              prefs.copyWith(language: prefs.language == 'en' ? 'ms' : 'en'),
-            ),
+            subtitle: 'English',
           ),
           AppRow(
             icon: Icons.volume_up_rounded,

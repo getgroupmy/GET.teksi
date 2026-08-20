@@ -22,6 +22,10 @@ class Prefs {
 
   /// Drivers go on/off duty; only online drivers receive the order feed.
   final bool driverOnline;
+
+  /// Persisted, and deliberately not read anywhere yet: the app ships only in
+  /// English. It is kept so a stored preference survives until there is a
+  /// translation to apply it to — see the Language row in Settings.
   final String language;
   final bool soundEnabled;
 
