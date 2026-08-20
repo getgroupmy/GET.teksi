@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/formats.dart';
+import '../l10n/app_localizations.dart';
 import '../theme.dart';
 
 class Avatar extends StatelessWidget {
@@ -843,7 +844,7 @@ Future<T?> showAppSheet<T>(
                     IconButton(
                       icon: const Icon(Icons.close_rounded),
                       onPressed: () => Navigator.of(sheetContext).pop(),
-                      tooltip: 'Close',
+                      tooltip: AppLocalizations.of(sheetContext)!.close,
                     ),
                   ],
                 ),

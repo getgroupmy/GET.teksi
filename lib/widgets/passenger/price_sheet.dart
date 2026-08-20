@@ -155,7 +155,7 @@ class PriceSheet extends StatelessWidget {
             children: [
               _RoundButton(
                 icon: Icons.remove_rounded,
-                tooltip: 'Lower fare',
+                tooltip: l.lowerFareTooltip,
                 onTap: price <= bounds.min ? null : () => bump(-bounds.step),
               ),
               Expanded(
@@ -183,7 +183,7 @@ class PriceSheet extends StatelessWidget {
               ),
               _RoundButton(
                 icon: Icons.add_rounded,
-                tooltip: 'Raise fare',
+                tooltip: l.raiseFareTooltip,
                 onTap: price >= bounds.max ? null : () => bump(bounds.step),
               ),
             ],

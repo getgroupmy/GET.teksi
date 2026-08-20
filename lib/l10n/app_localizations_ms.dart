@@ -1719,4 +1719,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get raiseFareTooltip => 'Naikkan tambang';
+
+  @override
+  String get close => 'Tutup';
 }

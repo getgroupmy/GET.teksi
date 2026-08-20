@@ -60,7 +60,7 @@ class _IntroScreenState extends State<IntroScreen> {
                   const Spacer(),
                   TextButton(
                     onPressed: _finish,
-                    child: Text('Skip', style: TextStyle(color: c.textDim)),
+                    child: Text(l.skip, style: TextStyle(color: c.textDim)),
                   ),
                 ],
               ),
@@ -125,7 +125,7 @@ class _IntroScreenState extends State<IntroScreen> {
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: () => last ? _finish() : setState(() => _index++),
-                child: Text(last ? 'Get started' : 'Next'),
+                child: Text(last ? l.getStarted : l.next),
               ),
               const SizedBox(height: 20),
             ],

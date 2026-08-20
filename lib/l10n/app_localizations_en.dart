@@ -1711,4 +1711,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get raiseFareTooltip => 'Raise fare';
+
+  @override
+  String get close => 'Close';
 }

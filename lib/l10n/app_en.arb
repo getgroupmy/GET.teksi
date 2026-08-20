@@ -1074,5 +1074,6 @@
   "nothingNew": "Nothing new",
   "nothingNewBody": "Ride updates, offers and promos will show up here.",
   "lowerFareTooltip": "Lower fare",
-  "raiseFareTooltip": "Raise fare"
+  "raiseFareTooltip": "Raise fare",
+  "close": "Close"
 }
