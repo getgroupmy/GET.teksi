@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_teksi/l10n/app_localizations.dart';
@@ -87,4 +90,26 @@ void main() {
       expect(value.trim(), isNotEmpty);
     }
   });
+
+  test('every English key has a Malay entry', () {
+    // gen_l10n falls back to the template for a key with no Malay entry, which
+    // is what makes translating screen by screen safe — and also what makes a
+    // gap invisible: the app renders English and nothing complains. This is
+    // the only thing that turns that silence into a failure. Read from the ARB
+    // files rather than the generated classes, because the fallback means the
+    // generated Malay class answers every key either way.
+    final en = _keysOf('lib/l10n/app_en.arb');
+    final ms = _keysOf('lib/l10n/app_ms.arb');
+    expect(en, isNotEmpty, reason: 'the template ARB should not be empty');
+    expect(ms.difference(en), isEmpty, reason: 'Malay keys with no template');
+    expect(en.difference(ms), isEmpty, reason: 'keys with no Malay entry');
+  });
+}
+
+/// Message keys in an ARB file: the `@`-prefixed entries are metadata for the
+/// key beside them, not messages of their own.
+Set<String> _keysOf(String path) {
+  final json =
+      jsonDecode(File(path).readAsStringSync()) as Map<String, dynamic>;
+  return json.keys.where((k) => !k.startsWith('@')).toSet();
 }

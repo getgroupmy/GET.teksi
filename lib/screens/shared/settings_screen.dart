@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../../l10n/app_localizations.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../state/rides.dart';
 import '../../state/session.dart';
 import '../../theme.dart';

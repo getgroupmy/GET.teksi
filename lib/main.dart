@@ -3,10 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'l10n/app_localizations.dart';
-
 import 'core/backend.dart';
 import 'core/storage.dart';
+import 'l10n/app_localizations.dart';
 import 'router.dart';
 import 'services/simulation.dart';
 import 'state/draft.dart';

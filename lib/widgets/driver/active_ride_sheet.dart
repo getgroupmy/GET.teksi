@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../core/formats.dart';
 import '../../core/geo.dart';
 import '../../data/fixtures.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/rides.dart';
@@ -26,6 +27,7 @@ class ActiveRideSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final rides = context.watch<RidesStore>();
     final unread = rides.unreadChat(ride.id, Role.driver);
@@ -42,20 +44,20 @@ class ActiveRideSheet extends StatelessWidget {
         () => rides.setRideStatus(ride.id, RideStatus.waiting),
       ),
       RideStatus.waiting => (
-        'Start the trip',
+        l.startTheTrip,
         () => rides.setRideStatus(ride.id, RideStatus.inProgress),
       ),
       RideStatus.inProgress => (
-        'Finish trip · ${money(ride.fare, decimals: false)}',
+        l.finishTripFor(money(ride.fare, decimals: false)),
         () => rides.completeRide(ride.id),
       ),
       _ => (null, null),
     };
 
     final title = switch (ride.status) {
-      RideStatus.inProgress => 'To ${ride.dropoff.name}',
-      RideStatus.waiting => 'Waiting for the passenger',
-      _ => 'Pick up ${ride.passengerName}',
+      RideStatus.inProgress => l.toDestination(ride.dropoff.name),
+      RideStatus.waiting => l.waitingForPassenger,
+      _ => l.pickUpName(ride.passengerName),
     };
 
     return MapSheet(
@@ -126,10 +128,10 @@ class ActiveRideSheet extends StatelessWidget {
                       Text(
                         '${plural(ride.passengerCount, 'passenger')} · '
                         '${ride.paymentMethod == PaymentMethod.cash
-                            ? 'Cash'
+                            ? l.cash
                             : ride.paymentMethod == PaymentMethod.card
-                            ? 'Card'
-                            : 'Wallet'}',
+                            ? l.card
+                            : l.wallet}',
                         style: TextStyle(fontSize: 12.5, color: c.textDim),
                       ),
                     ],
@@ -194,30 +196,30 @@ class ActiveRideSheet extends StatelessWidget {
             children: [
               ActionTile(
                 icon: Icons.chat_bubble_outline_rounded,
-                label: 'Chat',
+                label: l.chatLabel,
                 badge: unread,
                 onTap: () => context.push('/chat/${ride.id}'),
               ),
               const SizedBox(width: 8),
               ActionTile(
                 icon: Icons.phone_rounded,
-                label: 'Call',
+                label: l.callLabel,
                 onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Calling ${ride.passengerName}…')),
+                  SnackBar(content: Text(l.callingName(ride.passengerName))),
                 ),
               ),
               const SizedBox(width: 8),
               ActionTile(
                 icon: Icons.navigation_rounded,
-                label: 'Navigate',
+                label: l.navigate,
                 onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Navigating to ${heading.name}…')),
+                  SnackBar(content: Text(l.navigatingTo(heading.name))),
                 ),
               ),
               const SizedBox(width: 8),
               ActionTile(
                 icon: Icons.shield_outlined,
-                label: 'Safety',
+                label: l.safetyLabel,
                 danger: true,
                 onTap: () => context.push('/safety', extra: ride.id),
               ),
@@ -244,11 +246,14 @@ class ActiveRideSheet extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Trip ${distanceLabel(ride.distanceKm)} · ${durationLabel(ride.durationMinutes)}',
+                      l.tripDistanceDuration(
+                        distanceLabel(ride.distanceKm),
+                        durationLabel(ride.durationMinutes),
+                      ),
                       style: TextStyle(fontSize: 12.5, color: c.textDim),
                     ),
                     Text(
-                      'Fee ${money(commissionOn(ride.fare))}',
+                      l.feeIs(money(commissionOn(ride.fare))),
                       style: TextStyle(fontSize: 12.5, color: c.textDim),
                     ),
                   ],
@@ -259,9 +264,7 @@ class ActiveRideSheet extends StatelessWidget {
 
           if (ride.status == RideStatus.waiting) ...[
             const SizedBox(height: 12),
-            const InfoBanner(
-              'Free waiting time is 3 minutes. Message the passenger if they’re not out yet.',
-            ),
+            InfoBanner(l.freeWaitDriverNote),
           ],
 
           const SizedBox(height: 14),
@@ -270,10 +273,7 @@ class ActiveRideSheet extends StatelessWidget {
           if (ride.status != RideStatus.inProgress)
             TextButton(
               onPressed: () => _confirmCancel(context, rides),
-              child: Text(
-                'Cancel this order',
-                style: TextStyle(color: c.danger),
-              ),
+              child: Text(l.cancelThisOrder, style: TextStyle(color: c.danger)),
             ),
         ],
       ),
@@ -281,16 +281,14 @@ class ActiveRideSheet extends StatelessWidget {
   }
 
   void _confirmCancel(BuildContext context, RidesStore rides) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: 'Cancel the order?',
+      title: l.cancelOrderConfirmTitle,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const InfoBanner(
-            'Cancelling accepted orders too often lowers your priority in the feed.',
-            tone: BannerTone.warn,
-          ),
+          InfoBanner(l.cancelOrderBody, tone: BannerTone.warn),
           const SizedBox(height: 12),
           reasonList(sheetContext, cancelReasonsDriver, (reason) {
             rides.cancelRide(ride.id, CancelledBy.driver, reason);
@@ -299,7 +297,7 @@ class ActiveRideSheet extends StatelessWidget {
           const SizedBox(height: 16),
           FilledButton.tonal(
             onPressed: () => Navigator.of(sheetContext).pop(),
-            child: const Text('Keep the order'),
+            child: Text(l.keepTheOrder),
           ),
         ],
       ),

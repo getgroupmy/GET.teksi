@@ -6,25 +6,19 @@ import 'package:provider/provider.dart';
 import '../../core/formats.dart';
 import '../../core/geo.dart';
 import '../../data/fixtures.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
 import '../../theme.dart';
 import '../ui.dart';
 
-const _copy = <RideStatus, (String, String)>{
-  RideStatus.accepted: (
-    'Driver is on the way',
-    'Meet your driver at the pickup point',
-  ),
-  RideStatus.arriving: (
-    'Driver is arriving',
-    'Please start heading to the pickup point',
-  ),
-  RideStatus.waiting: (
-    'Your driver is waiting',
-    'They can wait a few minutes free of charge',
-  ),
-  RideStatus.inProgress: ('On the way to your destination', 'Enjoy the ride'),
+/// Headline and sub-line for each live status. A function rather than a const
+/// map: the text depends on the locale, which is only known from a context.
+Map<RideStatus, (String, String)> _copyFor(AppLocalizations l) => {
+  RideStatus.accepted: (l.driverOnTheWay, l.meetAtPickup),
+  RideStatus.arriving: (l.driverArriving, l.headToPickup),
+  RideStatus.waiting: (l.driverWaiting, l.freeWaitNote),
+  RideStatus.inProgress: (l.onTheWayToDestination, l.enjoyTheRide),
 };
 
 class TrackingSheet extends StatelessWidget {
@@ -32,18 +26,25 @@ class TrackingSheet extends StatelessWidget {
 
   final Ride ride;
 
-  String get _shareText =>
-      "I'm on a GET.teksi ride to ${ride.dropoff.name}. "
-      'Driver: ${ride.driverName} (${ride.driverVehicle?.describe}, '
-      '${ride.driverVehicle?.plate}). '
-      'Ref ${ride.id.substring(ride.id.length - 6).toUpperCase()}.';
+  /// What someone following the trip actually receives. Assembled from a
+  /// single translated sentence rather than glued together from fragments, so
+  /// a language that orders the clauses differently can say so.
+  String _shareText(AppLocalizations l) => l.shareTripMessage(
+    ride.dropoff.name,
+    ride.driverName ?? '',
+    ride.driverVehicle?.describe ?? '',
+    ride.driverVehicle?.plate ?? '',
+    ride.id.substring(ride.id.length - 6).toUpperCase(),
+  );
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final rides = context.watch<RidesStore>();
     final unread = rides.unreadChat(ride.id, Role.passenger);
-    final (title, sub) = _copy[ride.status] ?? _copy[RideStatus.accepted]!;
+    final (title, sub) =
+        _copyFor(l)[ride.status] ?? _copyFor(l)[RideStatus.accepted]!;
 
     final target = ride.status == RideStatus.inProgress
         ? ride.dropoff.coord
@@ -106,7 +107,7 @@ class TrackingSheet extends StatelessWidget {
                         children: [
                           Flexible(
                             child: Text(
-                              ride.driverName ?? 'Driver',
+                              ride.driverName ?? l.driverLabel,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -174,26 +175,27 @@ class TrackingSheet extends StatelessWidget {
             children: [
               ActionTile(
                 icon: Icons.chat_bubble_outline_rounded,
-                label: 'Chat',
+                label: l.chatLabel,
                 badge: unread,
                 onTap: () => context.push('/chat/${ride.id}'),
               ),
               const SizedBox(width: 8),
               ActionTile(
                 icon: Icons.phone_rounded,
-                label: 'Call',
-                onTap: () => _snack(context, 'Calling ${ride.driverName}…'),
+                label: l.callLabel,
+                onTap: () =>
+                    _snack(context, l.callingName(ride.driverName ?? '')),
               ),
               const SizedBox(width: 8),
               ActionTile(
                 icon: Icons.ios_share_rounded,
-                label: 'Share',
+                label: l.shareLabel,
                 onTap: () => _share(context),
               ),
               const SizedBox(width: 8),
               ActionTile(
                 icon: Icons.shield_outlined,
-                label: 'Safety',
+                label: l.safetyLabel,
                 danger: true,
                 onTap: () => context.push('/safety', extra: ride.id),
               ),
@@ -221,7 +223,7 @@ class TrackingSheet extends StatelessWidget {
                   children: [
                     Text(
                       ride.paymentMethod == PaymentMethod.cash
-                          ? 'Pay in cash'
+                          ? l.payInCash
                           : ride.paymentMethod.label,
                       style: TextStyle(fontSize: 13, color: c.textDim),
                     ),
@@ -240,10 +242,7 @@ class TrackingSheet extends StatelessWidget {
 
           if (ride.status == RideStatus.waiting) ...[
             const SizedBox(height: 12),
-            const InfoBanner(
-              'Your driver has arrived. Free waiting time applies for 3 minutes.',
-              tone: BannerTone.warn,
-            ),
+            InfoBanner(l.driverArrivedFreeWait, tone: BannerTone.warn),
           ],
 
           if (ride.status != RideStatus.inProgress) ...[
@@ -261,7 +260,7 @@ class TrackingSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('Cancel ride'),
+                child: Text(l.cancelRide),
               ),
             ),
           ],
@@ -276,15 +275,16 @@ class TrackingSheet extends StatelessWidget {
   }
 
   void _share(BuildContext context) {
-    Clipboard.setData(ClipboardData(text: _shareText));
+    final l = AppLocalizations.of(context)!;
+    Clipboard.setData(ClipboardData(text: _shareText(l)));
     showAppSheet(
       context,
-      title: 'Share your trip',
+      title: l.shareYourTrip,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Send these details to someone you trust — they’re already on your clipboard.',
+            l.shareTripBody,
             style: TextStyle(fontSize: 13.5, color: sheetContext.c.textDim),
           ),
           const SizedBox(height: 12),
@@ -295,14 +295,14 @@ class TrackingSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              _shareText,
+              _shareText(l),
               style: const TextStyle(fontSize: 13.5, height: 1.45),
             ),
           ),
           const SizedBox(height: 12),
           FilledButton(
             onPressed: () => Navigator.of(sheetContext).pop(),
-            child: const Text('Done'),
+            child: Text(l.done),
           ),
         ],
       ),
@@ -310,16 +310,14 @@ class TrackingSheet extends StatelessWidget {
   }
 
   void _confirmCancel(BuildContext context, RidesStore rides) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: 'Cancel this ride?',
+      title: l.cancelRideTitle,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const InfoBanner(
-            'Your driver is already on the way. Frequent late cancellations can affect your rating.',
-            tone: BannerTone.warn,
-          ),
+          InfoBanner(l.cancelRideBody, tone: BannerTone.warn),
           const SizedBox(height: 12),
           reasonList(sheetContext, cancelReasonsPassenger, (reason) {
             rides.cancelRide(ride.id, CancelledBy.passenger, reason);
@@ -328,7 +326,7 @@ class TrackingSheet extends StatelessWidget {
           const SizedBox(height: 16),
           FilledButton.tonal(
             onPressed: () => Navigator.of(sheetContext).pop(),
-            child: const Text('Keep my ride'),
+            child: Text(l.keepMyRide),
           ),
         ],
       ),

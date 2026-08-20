@@ -121,5 +121,310 @@
         "type": "String"
       }
     }
-  }
+  },
+  "driverOnTheWay": "Driver is on the way",
+  "driverArriving": "Driver is arriving",
+  "driverWaiting": "Your driver is waiting",
+  "enjoyTheRide": "Enjoy the ride",
+  "meetAtPickup": "Meet your driver at the pickup point",
+  "headToPickup": "Please start heading to the pickup point",
+  "driverArrivedFreeWait": "Your driver has arrived. Free waiting time applies for 3 minutes.",
+  "onTheWayToDestination": "On the way to your destination",
+  "callLabel": "Call",
+  "chatLabel": "Chat",
+  "safetyLabel": "Safety",
+  "shareLabel": "Share",
+  "shareYourTrip": "Share your trip",
+  "shareTripBody": "Send these details to someone you trust — they’re already on your clipboard.",
+  "callingName": "Calling {name}…",
+  "@callingName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelRide": "Cancel ride",
+  "cancelRideTitle": "Cancel this ride?",
+  "cancelRideBody": "Your driver is already on the way. Frequent late cancellations can affect your rating.",
+  "keepMyRide": "Keep my ride",
+  "payInCash": "Pay in cash",
+  "driverLabel": "Driver",
+  "freeWaitNote": "They can wait a few minutes free of charge",
+  "youreOffline": "You’re offline",
+  "goOnline": "Go online",
+  "goOffline": "Go offline",
+  "goOnlinePrompt": "Go online to see ride requests near you and send your price.",
+  "waitingForOrders": "Waiting for orders",
+  "stayOnlinePrompt": "Stay online — new requests appear here as passengers publish them.",
+  "noOrdersMatch": "No orders match right now",
+  "offerWaitingReply": "Your offer is waiting for a reply",
+  "filters": "Filters",
+  "filterOrders": "Filter orders",
+  "applyFilters": "Apply filters",
+  "minimumFare": "Minimum fare",
+  "maxPickupDistance": "Maximum distance to pickup",
+  "sortNearest": "Nearest",
+  "sortHighest": "Highest",
+  "sortNewest": "Newest",
+  "viewTodaysEarnings": "View today’s earnings",
+  "pickUpName": "Pick up {name}",
+  "@pickUpName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "toDestination": "To {place}",
+  "@toDestination": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForPassenger": "Waiting for the passenger",
+  "freeWaitDriverNote": "Free waiting time is 3 minutes. Message the passenger if they’re not out yet.",
+  "startTheTrip": "Start the trip",
+  "finishTripFor": "Finish trip · {amount}",
+  "@finishTripFor": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "feeIs": "Fee {amount}",
+  "@feeIs": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "navigate": "Navigate",
+  "navigatingTo": "Navigating to {place}…",
+  "@navigatingTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelThisOrder": "Cancel this order",
+  "cancelOrderConfirmTitle": "Cancel the order?",
+  "cancelOrderBody": "Cancelling accepted orders too often lowers your priority in the feed.",
+  "keepTheOrder": "Keep the order",
+  "cash": "Cash",
+  "card": "Card",
+  "wallet": "Wallet",
+  "anyAmount": "Any",
+  "@anyAmount": {
+    "description": "Filter option meaning no minimum fare is required."
+  },
+  "youreOnlineWith": "You’re online · {plate}",
+  "@youreOnlineWith": {
+    "description": "Driver status line, with the vehicle's plate.",
+    "placeholders": {
+      "plate": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDistance": "Trip {distance}",
+  "@tripDistance": {
+    "description": "Distance of the trip leg on an order card.",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDistanceDuration": "Trip {distance} · {duration}",
+  "@tripDistanceDuration": {
+    "description": "Distance and duration of the trip leg.",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "shareTripMessage": "I’m on a GET.teksi ride to {destination}. Driver: {driver} ({vehicle}, {plate}). Ref {ref}.",
+  "@shareTripMessage": {
+    "description": "The message a passenger shares to let someone follow their trip.",
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      },
+      "driver": {
+        "type": "String"
+      },
+      "vehicle": {
+        "type": "String"
+      },
+      "plate": {
+        "type": "String"
+      },
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "menu": "Menu",
+  "tripsGiven": "{count} trips given",
+  "@tripsGiven": {
+    "description": "Trip count on a driver's profile row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripsTaken": "{count} trips taken",
+  "@tripsTaken": {
+    "description": "Trip count on a passenger's profile row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "switchToPassenger": "Switch to passenger",
+  "switchToDriver": "Switch to driver",
+  "becomeADriver": "Become a driver",
+  "myRides": "My rides",
+  "myRidesSubtitle": "Trip history and receipts",
+  "promoCodes": "Promo codes",
+  "promoCodesSubtitle": "Discounts and referrals",
+  "savedPlaces": "Saved places",
+  "savedPlacesSubtitle": "Home, work and favourites",
+  "earnings": "Earnings",
+  "earningsSubtitle": "Daily and weekly totals",
+  "vehicleAndDocuments": "Vehicle & documents",
+  "safetyCentre": "Safety centre",
+  "safetyCentreSubtitle": "Emergency contacts and SOS",
+  "signOut": "Sign out",
+  "signOutConfirmTitle": "Sign out?",
+  "signOutBody": "Your rides and history stay on this device unless you clear them.",
+  "signOutAndErase": "Sign out and erase all local data",
+  "appVersionLine": "GET.teksi · v1.0.0",
+  "@appVersionLine": {
+    "description": "App name and version at the foot of the menu."
+  },
+  "safetyAlertNoTrip": "SAFETY ALERT — please check on me.",
+  "safetyAlertTrip": "SAFETY ALERT — I’m on a GET.teksi trip to {destination}. Driver {driver}, {plate}. Ref {ref}.",
+  "@safetyAlertTrip": {
+    "description": "The message SOS copies when a trip is in progress.",
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      },
+      "driver": {
+        "type": "String"
+      },
+      "plate": {
+        "type": "String"
+      },
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownDriver": "unknown",
+  "noPlate": "no plate",
+  "emergencySos": "Emergency SOS",
+  "emergencySosSubtitle": "Call {number} and alert your contacts",
+  "@emergencySosSubtitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "activeTripBanner": "Active trip to {destination}{vehicle}. Your contacts can see these details when you share the trip.",
+  "@activeTripBanner": {
+    "description": "vehicle is an already-formatted fragment, empty when no vehicle is assigned.",
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      },
+      "vehicle": {
+        "type": "String"
+      }
+    }
+  },
+  "duringATrip": "During a trip",
+  "shareMyTrip": "Share my trip",
+  "shareMyTripSubtitle": "Send live trip details to someone you trust",
+  "tripDetailsCopied": "Trip details copied to clipboard",
+  "reportAProblem": "Report a problem",
+  "reportAProblemSubtitle": "Driving, behaviour, route or payment",
+  "supportTitle": "24/7 support",
+  "supportSubtitle": "Talk to a GET.teksi agent",
+  "connectingToSupport": "Connecting you to support…",
+  "emergencyContacts": "EMERGENCY CONTACTS",
+  "add": "Add",
+  "noEmergencyContacts": "No contacts yet. Add someone who should be alerted if you press SOS.",
+  "remove": "Remove",
+  "sosBodyNoContacts": "We’ll place a call to {number} and copy your trip details so you can send them to your contacts.",
+  "@sosBodyNoContacts": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "sosBodyWithContacts": "We’ll place a call to {number} and copy your trip details so you can send them to your {count} emergency contacts.",
+  "@sosBodyWithContacts": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sosTriggered": "SOS triggered",
+  "sosTriggeredBody": "Trip details copied. Support has been notified.",
+  "callingEmergency": "Calling {number}…",
+  "@callingEmergency": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callEmergency": "Call {number}",
+  "@callEmergency": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "reportSubmitted": "Report submitted",
+  "reportSubmittedBody": "{reason} — our safety team will follow up within 24 hours.",
+  "@reportSubmittedBody": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "reportUnsafeDriving": "Unsafe driving",
+  "reportDriverBehaviour": "Driver behaviour",
+  "reportWrongRoute": "Wrong route taken",
+  "reportExtraPayment": "Asked for extra payment",
+  "reportVehicleMismatch": "Vehicle did not match",
+  "reportSomethingElse": "Something else",
+  "addEmergencyContact": "Add emergency contact",
+  "nameLabel": "Name",
+  "nameHint": "e.g. Mum",
+  "phoneNumberLabel": "Phone number",
+  "saveContact": "Save contact"
 }

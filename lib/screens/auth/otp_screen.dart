@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/backend.dart';
-import '../../l10n/app_localizations.dart';
 import '../../core/formats.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme.dart';
 
 const _length = 6;

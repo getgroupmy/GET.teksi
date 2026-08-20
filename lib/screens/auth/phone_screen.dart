@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../../l10n/app_localizations.dart';
-
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/backend.dart';
+import '../../l10n/app_localizations.dart';
 import '../../theme.dart';
 
 /// Phone entry.

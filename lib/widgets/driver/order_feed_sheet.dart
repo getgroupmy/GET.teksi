@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
 import '../../core/geo.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/rides.dart';
@@ -30,6 +31,7 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -54,13 +56,13 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
               ),
             ),
             const SizedBox(height: 14),
-            const Text(
-              'You’re offline',
+            Text(
+              l.youreOffline,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 6),
             Text(
-              'Go online to see ride requests near you and send your price.',
+              l.goOnlinePrompt,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13.5, color: c.textDim, height: 1.4),
             ),
@@ -68,12 +70,12 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
             FilledButton(
               onPressed: () =>
                   session.setPrefs(session.prefs.copyWith(driverOnline: true)),
-              child: const Text('Go online'),
+              child: Text(l.goOnline),
             ),
             TextButton(
               onPressed: () => context.push('/d/earnings'),
               child: Text(
-                'View today’s earnings',
+                l.viewTodaysEarnings,
                 style: TextStyle(color: c.textDim),
               ),
             ),
@@ -122,7 +124,7 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
                   children: [
                     Text(
                       decorated.isEmpty
-                          ? 'Waiting for orders'
+                          ? l.waitingForOrders
                           : '${plural(decorated.length, 'order')} nearby',
                       style: const TextStyle(
                         fontSize: 17,
@@ -130,7 +132,9 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
                       ),
                     ),
                     Text(
-                      'You’re online · ${user.driverProfile?.vehicle.plate ?? ''}',
+                      l.youreOnlineWith(
+                        user.driverProfile?.vehicle.plate ?? '',
+                      ),
                       style: TextStyle(fontSize: 12.5, color: c.textDim),
                     ),
                   ],
@@ -138,7 +142,7 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
               ),
               IconButton(
                 icon: const Icon(Icons.tune_rounded, size: 18),
-                tooltip: 'Filters',
+                tooltip: l.filters,
                 onPressed: () => _showFilters(context),
                 style: IconButton.styleFrom(backgroundColor: c.surface3),
               ),
@@ -148,19 +152,19 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
           Segmented<_SortMode>(
             value: _sort,
             onChanged: (v) => setState(() => _sort = v),
-            options: const [
-              (_SortMode.nearest, 'Nearest'),
-              (_SortMode.highest, 'Highest'),
-              (_SortMode.newest, 'Newest'),
+            options: [
+              (_SortMode.nearest, l.sortNearest),
+              (_SortMode.highest, l.sortHighest),
+              (_SortMode.newest, l.sortNewest),
             ],
           ),
           const SizedBox(height: 12),
           if (decorated.isEmpty) ...[
             const RadarBar(),
-            const EmptyState(
+            EmptyState(
               icon: Icons.inbox_rounded,
-              title: 'No orders match right now',
-              body: 'Stay online — new requests appear here as passengers publish them.',
+              title: l.noOrdersMatch,
+              body: l.stayOnlinePrompt,
             ),
           ] else
             ConstrainedBox(
@@ -187,7 +191,7 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
             onPressed: () =>
                 session.setPrefs(session.prefs.copyWith(driverOnline: false)),
             icon: const Icon(Icons.power_settings_new_rounded, size: 17),
-            label: const Text('Go offline'),
+            label: Text(l.goOffline),
             style: OutlinedButton.styleFrom(
               foregroundColor: c.text,
               side: BorderSide(color: c.line),
@@ -203,23 +207,21 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
   }
 
   void _showFilters(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: 'Filter orders',
+      title: l.filterOrders,
       builder: (sheetContext) => StatefulBuilder(
         builder: (_, setSheetState) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SectionLabel(
-              'Minimum fare',
-              padding: EdgeInsets.only(bottom: 8),
-            ),
+            SectionLabel(l.minimumFare, padding: EdgeInsets.only(bottom: 8)),
             Wrap(
               spacing: 8,
               children: [
                 for (final v in [0, 1000, 1500, 2500])
                   AppChip(
-                    label: v == 0 ? 'Any' : money(v, decimals: false),
+                    label: v == 0 ? l.anyAmount : money(v, decimals: false),
                     selected: _minFare == v,
                     onTap: () {
                       setState(() => _minFare = v);
@@ -228,8 +230,8 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
                   ),
               ],
             ),
-            const SectionLabel(
-              'Maximum distance to pickup',
+            SectionLabel(
+              l.maxPickupDistance,
               padding: EdgeInsets.only(top: 20, bottom: 8),
             ),
             Wrap(
@@ -249,7 +251,7 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
             const SizedBox(height: 20),
             FilledButton(
               onPressed: () => Navigator.of(sheetContext).pop(),
-              child: const Text('Apply filters'),
+              child: Text(l.applyFilters),
             ),
           ],
         ),
@@ -275,6 +277,7 @@ class _OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final generous = ride.askingPrice >= ride.recommendedPrice;
 
@@ -367,7 +370,7 @@ class _OrderCard extends StatelessWidget {
                   style: TextStyle(fontSize: 12, color: c.textDim),
                 ),
                 Text(
-                  'Trip ${distanceLabel(ride.distanceKm)}',
+                  l.tripDistance(distanceLabel(ride.distanceKm)),
                   style: TextStyle(fontSize: 12, color: c.textDim),
                 ),
               ],
@@ -375,7 +378,7 @@ class _OrderCard extends StatelessWidget {
             if (pending) ...[
               const SizedBox(height: 8),
               Text(
-                'Your offer is waiting for a reply',
+                l.offerWaitingReply,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
