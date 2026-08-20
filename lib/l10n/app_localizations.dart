@@ -397,6 +397,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy policy'**
   String get privacyPolicy;
+
+  /// No description provided for @yourPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your price'**
+  String get yourPrice;
+
+  /// No description provided for @recommendedFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended {amount}'**
+  String recommendedFare(String amount);
+
+  /// No description provided for @chooseCarType.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a car type'**
+  String get chooseCarType;
+
+  /// No description provided for @carEconomy.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyday cars, 4 seats'**
+  String get carEconomy;
+
+  /// No description provided for @carComfort.
+  ///
+  /// In en, this message translates to:
+  /// **'Newer, roomier cars'**
+  String get carComfort;
+
+  /// No description provided for @carXl.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 6 passengers'**
+  String get carXl;
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method'**
+  String get paymentMethod;
+
+  /// No description provided for @cashNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash is paid directly to the driver at the end of the trip.'**
+  String get cashNote;
+
+  /// No description provided for @balanceIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance {amount}'**
+  String balanceIs(String amount);
+
+  /// No description provided for @tripOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip options'**
+  String get tripOptions;
+
+  /// No description provided for @extras.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras'**
+  String get extras;
+
+  /// No description provided for @noteForDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Note for the driver'**
+  String get noteForDriver;
+
+  /// No description provided for @note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get note;
+
+  /// No description provided for @noteAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Note added'**
+  String get noteAdded;
+
+  /// No description provided for @saveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Save note'**
+  String get saveNote;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @findDriverFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a driver for {amount}'**
+  String findDriverFor(String amount);
+
+  /// No description provided for @lookingForDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for drivers…'**
+  String get lookingForDrivers;
+
+  /// No description provided for @noOffersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No offers yet. Raising your price is the fastest way to get picked up.'**
+  String get noOffersYet;
+
+  /// No description provided for @raiseYourPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise your price'**
+  String get raiseYourPrice;
+
+  /// No description provided for @raiseFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise fare'**
+  String get raiseFare;
+
+  /// No description provided for @lowerFare.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower fare'**
+  String get lowerFare;
+
+  /// No description provided for @moreDriversWhenHigher.
+  ///
+  /// In en, this message translates to:
+  /// **'More drivers see your order when the fare goes up.'**
+  String get moreDriversWhenHigher;
+
+  /// No description provided for @cancelSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel search'**
+  String get cancelSearch;
+
+  /// No description provided for @cancelOrderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel your order?'**
+  String get cancelOrderTitle;
+
+  /// No description provided for @keepSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep searching'**
+  String get keepSearching;
+
+  /// No description provided for @declineOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline offer'**
+  String get declineOffer;
+
+  /// No description provided for @declineReasonPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us why so we can improve matching.'**
+  String get declineReasonPrompt;
+
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
+  /// No description provided for @balanceInsufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance {amount} — not enough for this fare'**
+  String balanceInsufficient(String amount);
 }
 
 class _AppLocalizationsDelegate

@@ -173,4 +173,106 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Dasar privasi';
+
+  @override
+  String get yourPrice => 'Harga anda';
+
+  @override
+  String recommendedFare(String amount) {
+    return 'Disyorkan $amount';
+  }
+
+  @override
+  String get chooseCarType => 'Pilih jenis kereta';
+
+  @override
+  String get carEconomy => 'Kereta harian, 4 tempat duduk';
+
+  @override
+  String get carComfort => 'Kereta lebih baharu dan lapang';
+
+  @override
+  String get carXl => 'Sehingga 6 penumpang';
+
+  @override
+  String get paymentMethod => 'Cara pembayaran';
+
+  @override
+  String get cashNote =>
+      'Tunai dibayar terus kepada pemandu pada akhir perjalanan.';
+
+  @override
+  String balanceIs(String amount) {
+    return 'Baki $amount';
+  }
+
+  @override
+  String get tripOptions => 'Pilihan perjalanan';
+
+  @override
+  String get extras => 'Tambahan';
+
+  @override
+  String get noteForDriver => 'Nota untuk pemandu';
+
+  @override
+  String get note => 'Nota';
+
+  @override
+  String get noteAdded => 'Nota ditambah';
+
+  @override
+  String get saveNote => 'Simpan nota';
+
+  @override
+  String get done => 'Selesai';
+
+  @override
+  String findDriverFor(String amount) {
+    return 'Cari pemandu untuk $amount';
+  }
+
+  @override
+  String get lookingForDrivers => 'Mencari pemandu…';
+
+  @override
+  String get noOffersYet =>
+      'Belum ada tawaran. Menaikkan harga anda ialah cara terpantas untuk dijemput.';
+
+  @override
+  String get raiseYourPrice => 'Naikkan harga anda';
+
+  @override
+  String get raiseFare => 'Naikkan tambang';
+
+  @override
+  String get lowerFare => 'Turunkan tambang';
+
+  @override
+  String get moreDriversWhenHigher =>
+      'Lebih ramai pemandu melihat pesanan anda apabila tambang dinaikkan.';
+
+  @override
+  String get cancelSearch => 'Batal carian';
+
+  @override
+  String get cancelOrderTitle => 'Batalkan pesanan anda?';
+
+  @override
+  String get keepSearching => 'Teruskan mencari';
+
+  @override
+  String get declineOffer => 'Tolak tawaran';
+
+  @override
+  String get declineReasonPrompt =>
+      'Beritahu kami sebabnya supaya kami boleh menambah baik padanan.';
+
+  @override
+  String get accept => 'Terima';
+
+  @override
+  String balanceInsufficient(String amount) {
+    return 'Baki $amount — tidak mencukupi untuk tambang ini';
+  }
 }

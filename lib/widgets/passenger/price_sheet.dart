@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +39,7 @@ class PriceSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
+    final l = AppLocalizations.of(context)!;
     final draft = context.watch<DraftStore>();
     final session = context.watch<SessionStore>();
     final rides = context.read<RidesStore>();
@@ -205,7 +209,7 @@ class PriceSheet extends StatelessWidget {
               InkWell(
                 onTap: () => draft.setPrice(trip.recommended),
                 child: Text(
-                  'Recommended ${money(trip.recommended, decimals: false)}',
+                  l.recommendedFare(money(trip.recommended, decimals: false)),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -248,14 +252,14 @@ class PriceSheet extends StatelessWidget {
               const SizedBox(width: 8),
               _MetaButton(
                 icon: Icons.sticky_note_2_outlined,
-                label: draft.comment.isEmpty ? 'Note' : 'Note added',
+                label: draft.comment.isEmpty ? l.note : l.noteAdded,
                 onTap: () => _editComment(context, draft),
               ),
               const SizedBox(width: 8),
               _MetaButton(
                 icon: Icons.auto_awesome_outlined,
                 label: draft.options.isEmpty
-                    ? 'Extras'
+                    ? l.extras
                     : '+${draft.options.length}',
                 onTap: () => _chooseOptions(context, draft),
               ),
@@ -264,11 +268,11 @@ class PriceSheet extends StatelessWidget {
           const SizedBox(height: 14),
           FilledButton(
             onPressed: publish,
-            child: Text('Find a driver for ${money(price, decimals: false)}'),
+            child: Text(l.findDriverFor(money(price, decimals: false))),
           ),
           TextButton(
             onPressed: draft.clear,
-            child: Text('Cancel', style: TextStyle(color: c.textDim)),
+            child: Text(l.cancel, style: TextStyle(color: c.textDim)),
           ),
         ],
       ),
@@ -276,14 +280,15 @@ class PriceSheet extends StatelessWidget {
   }
 
   void _chooseClass(BuildContext context, DraftStore draft) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: 'Choose a car type',
+      title: l.chooseCarType,
       builder: (sheetContext) {
-        const hints = {
-          VehicleClass.economy: 'Everyday cars, 4 seats',
-          VehicleClass.comfort: 'Newer, roomier cars',
-          VehicleClass.xl: 'Up to 6 passengers',
+        final hints = {
+          VehicleClass.economy: l.carEconomy,
+          VehicleClass.comfort: l.carComfort,
+          VehicleClass.xl: l.carXl,
         };
         return Column(
           children: [
@@ -309,9 +314,10 @@ class PriceSheet extends StatelessWidget {
     int balance,
     int price,
   ) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: 'Payment method',
+      title: l.paymentMethod,
       builder: (sheetContext) {
         return Column(
           children: [
@@ -326,8 +332,9 @@ class PriceSheet extends StatelessWidget {
                       icon: _paymentIcons[method],
                       title: method.label,
                       subtitle: method == PaymentMethod.wallet
-                          ? 'Balance ${money(balance)}'
-                                '${insufficient ? ' — not enough for this fare' : ''}'
+                          ? (insufficient
+                                ? l.balanceInsufficient(money(balance))
+                                : l.balanceIs(money(balance)))
                           : null,
                       trailing: _Radio(selected: draft.paymentMethod == method),
                       onTap: insufficient
@@ -341,9 +348,7 @@ class PriceSheet extends StatelessWidget {
                 },
               ),
             const SizedBox(height: 12),
-            const InfoBanner(
-              'Cash is paid directly to the driver at the end of the trip.',
-            ),
+            InfoBanner(l.cashNote),
           ],
         );
       },
@@ -351,10 +356,11 @@ class PriceSheet extends StatelessWidget {
   }
 
   void _editComment(BuildContext context, DraftStore draft) {
+    final l = AppLocalizations.of(context)!;
     final controller = TextEditingController(text: draft.comment);
     showAppSheet(
       context,
-      title: 'Note for the driver',
+      title: l.noteForDriver,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -373,7 +379,7 @@ class PriceSheet extends StatelessWidget {
               draft.setComment(controller.text);
               Navigator.of(sheetContext).pop();
             },
-            child: const Text('Save note'),
+            child: Text(l.saveNote),
           ),
         ],
       ),
@@ -381,9 +387,10 @@ class PriceSheet extends StatelessWidget {
   }
 
   void _chooseOptions(BuildContext context, DraftStore draft) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: 'Trip options',
+      title: l.tripOptions,
       builder: (sheetContext) => StatefulBuilder(
         builder: (innerContext, setSheetState) => Column(
           children: [
@@ -412,7 +419,7 @@ class PriceSheet extends StatelessWidget {
             const SizedBox(height: 8),
             FilledButton(
               onPressed: () => Navigator.of(sheetContext).pop(),
-              child: const Text('Done'),
+              child: Text(l.done),
             ),
           ],
         ),

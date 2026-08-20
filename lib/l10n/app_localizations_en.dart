@@ -171,4 +171,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Privacy policy';
+
+  @override
+  String get yourPrice => 'Your price';
+
+  @override
+  String recommendedFare(String amount) {
+    return 'Recommended $amount';
+  }
+
+  @override
+  String get chooseCarType => 'Choose a car type';
+
+  @override
+  String get carEconomy => 'Everyday cars, 4 seats';
+
+  @override
+  String get carComfort => 'Newer, roomier cars';
+
+  @override
+  String get carXl => 'Up to 6 passengers';
+
+  @override
+  String get paymentMethod => 'Payment method';
+
+  @override
+  String get cashNote =>
+      'Cash is paid directly to the driver at the end of the trip.';
+
+  @override
+  String balanceIs(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String get tripOptions => 'Trip options';
+
+  @override
+  String get extras => 'Extras';
+
+  @override
+  String get noteForDriver => 'Note for the driver';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get noteAdded => 'Note added';
+
+  @override
+  String get saveNote => 'Save note';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String findDriverFor(String amount) {
+    return 'Find a driver for $amount';
+  }
+
+  @override
+  String get lookingForDrivers => 'Looking for drivers…';
+
+  @override
+  String get noOffersYet =>
+      'No offers yet. Raising your price is the fastest way to get picked up.';
+
+  @override
+  String get raiseYourPrice => 'Raise your price';
+
+  @override
+  String get raiseFare => 'Raise fare';
+
+  @override
+  String get lowerFare => 'Lower fare';
+
+  @override
+  String get moreDriversWhenHigher =>
+      'More drivers see your order when the fare goes up.';
+
+  @override
+  String get cancelSearch => 'Cancel search';
+
+  @override
+  String get cancelOrderTitle => 'Cancel your order?';
+
+  @override
+  String get keepSearching => 'Keep searching';
+
+  @override
+  String get declineOffer => 'Decline offer';
+
+  @override
+  String get declineReasonPrompt => 'Tell us why so we can improve matching.';
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String balanceInsufficient(String amount) {
+    return 'Balance $amount — not enough for this fare';
+  }
 }

@@ -1,6 +1,5 @@
 {
   "@@locale": "en",
-
   "onboardTitle1": "Name your own fare",
   "onboardBody1": "No fixed meter, no surge. You say what the trip is worth, drivers reply with their price.",
   "onboardTitle2": "Ride and drive in one app",
@@ -10,18 +9,28 @@
   "skip": "Skip",
   "next": "Next",
   "getStarted": "Get started",
-
   "phoneTitle": "Enter your phone number",
   "phoneSubtitle": "We’ll send a 6-digit code to verify it’s you.",
   "phoneTerms": "By continuing you agree to the Terms of Service and Privacy Policy. Standard message rates may apply.",
   "phoneSendFailed": "We could not send a code to that number.",
   "continueLabel": "Continue",
-
   "otpTitle": "Enter the code",
   "otpSentTo": "Sent to {phone}",
-  "@otpSentTo": { "placeholders": { "phone": { "type": "String" } } },
+  "@otpSentTo": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "otpResendIn": "Resend code in {seconds}s",
-  "@otpResendIn": { "placeholders": { "seconds": { "type": "int" } } },
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "otpResend": "Resend code",
   "otpVerify": "Verify",
   "otpMismatch": "That code doesn’t match. Check the code shown below.",
@@ -29,13 +38,11 @@
   "otpWrongOrExpired": "That code is wrong or has expired.",
   "otpResendFailed": "Could not send a new code.",
   "otpDemoPrefix": "Demo build — no SMS is sent. Your code is ",
-
   "profileTitle": "What should we call you?",
   "profileSubtitle": "Drivers and passengers will see this name and photo.",
   "profileFullName": "Full name",
   "profileEmail": "Email (optional)",
   "profileStart": "Start riding",
-
   "settings": "Settings",
   "appearance": "Appearance",
   "darkTheme": "Dark theme",
@@ -56,5 +63,63 @@
   "about": "About",
   "version": "Version",
   "termsOfService": "Terms of service",
-  "privacyPolicy": "Privacy policy"
+  "privacyPolicy": "Privacy policy",
+  "yourPrice": "Your price",
+  "recommendedFare": "Recommended {amount}",
+  "@recommendedFare": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseCarType": "Choose a car type",
+  "carEconomy": "Everyday cars, 4 seats",
+  "carComfort": "Newer, roomier cars",
+  "carXl": "Up to 6 passengers",
+  "paymentMethod": "Payment method",
+  "cashNote": "Cash is paid directly to the driver at the end of the trip.",
+  "balanceIs": "Balance {amount}",
+  "@balanceIs": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tripOptions": "Trip options",
+  "extras": "Extras",
+  "noteForDriver": "Note for the driver",
+  "note": "Note",
+  "noteAdded": "Note added",
+  "saveNote": "Save note",
+  "done": "Done",
+  "findDriverFor": "Find a driver for {amount}",
+  "@findDriverFor": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "lookingForDrivers": "Looking for drivers…",
+  "noOffersYet": "No offers yet. Raising your price is the fastest way to get picked up.",
+  "raiseYourPrice": "Raise your price",
+  "raiseFare": "Raise fare",
+  "lowerFare": "Lower fare",
+  "moreDriversWhenHigher": "More drivers see your order when the fare goes up.",
+  "cancelSearch": "Cancel search",
+  "cancelOrderTitle": "Cancel your order?",
+  "keepSearching": "Keep searching",
+  "declineOffer": "Decline offer",
+  "declineReasonPrompt": "Tell us why so we can improve matching.",
+  "accept": "Accept",
+  "balanceInsufficient": "Balance {amount} — not enough for this fare",
+  "@balanceInsufficient": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
 }
