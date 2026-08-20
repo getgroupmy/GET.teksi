@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/backend.dart';
+import '../../l10n/app_localizations.dart';
 import '../../data/fixtures.dart';
 import '../../state/session.dart';
 import '../../theme.dart';
@@ -74,6 +75,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
+    final l = AppLocalizations.of(context)!;
     final display = _name.text.trim().isEmpty ? '?' : _name.text.trim();
 
     return Scaffold(
@@ -89,8 +91,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'What should we call you?',
+              Text(
+                l.profileTitle,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
@@ -99,7 +101,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Drivers and passengers will see this name and photo.',
+                l.profileSubtitle,
                 style: TextStyle(fontSize: 14, color: c.textDim),
               ),
               const SizedBox(height: 28),
@@ -113,8 +115,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 ),
               ),
               const SizedBox(height: 28),
-              const SectionLabel(
-                'Full name',
+              SectionLabel(
+                l.profileFullName,
                 padding: EdgeInsets.only(bottom: 8),
               ),
               TextField(
@@ -127,8 +129,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   hintText: 'e.g. Aiman Rahman',
                 ),
               ),
-              const SectionLabel(
-                'Email (optional)',
+              SectionLabel(
+                l.profileEmail,
                 padding: EdgeInsets.only(top: 20, bottom: 8),
               ),
               TextField(
@@ -140,7 +142,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               const SizedBox(height: 40),
               FilledButton(
                 onPressed: _valid ? _finish : null,
-                child: const Text('Start riding'),
+                child: Text(l.profileStart),
               ),
               const SizedBox(height: 22),
             ],

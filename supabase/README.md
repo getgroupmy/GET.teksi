@@ -221,7 +221,7 @@ replaced rather than reused when the backend supplies a different one.
   reach the network, because they belong to no real account and row-level
   security would reject them. Turn it off in Settings when testing against a
   real backend, or the map shows local bots alongside real drivers.
-- **The app ships in English only.** `prefs.language` is persisted but nothing
-  reads it, so the Settings row is display-only rather than a toggle that
-  reports a change it did not make. Translating the ~385 user-visible strings
-  is a project of its own.
+- **Only part of the app is translated.** The Language setting is real and
+  Bahasa Melayu is in place for onboarding, sign-in and Settings. Screens that
+  have not been converted yet fall back to English automatically, which is what
+  makes translating them one at a time safe. See `lib/l10n/`.

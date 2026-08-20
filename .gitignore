@@ -71,3 +71,6 @@ graphify-out/*
 
 # Local build configuration overriding config/get-teksi.json
 config/local.json
+
+# Report of keys with no translation yet — regenerated on every build.
+l10n-untranslated.json

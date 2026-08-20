@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+
+import 'l10n/app_localizations.dart';
 
 import 'core/backend.dart';
 import 'core/storage.dart';
@@ -98,6 +101,17 @@ class _RootState extends State<_Root> {
       theme: buildTheme(dark: false),
       darkTheme: buildTheme(dark: true),
       themeMode: session.prefs.darkTheme ? ThemeMode.dark : ThemeMode.light,
+      // The Language setting drives this. A key with no Malay entry falls back
+      // to the English template, so a screen that has not been translated yet
+      // stays readable rather than showing a key or throwing.
+      locale: Locale(session.prefs.language),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       routerConfig: _routerConfig.router,
       builder: (context, child) {
         // The UI is designed as a phone-shaped column; on desktop and wide

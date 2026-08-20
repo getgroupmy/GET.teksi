@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/backend.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/formats.dart';
 import '../../theme.dart';
 
@@ -65,10 +66,11 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Future<void> _submit(String value) async {
     if (value.length != _length || _verifying) return;
+    final l = AppLocalizations.of(context)!;
 
     if (!Backend.isLive) {
       if (value != _expected) {
-        _reject('That code doesn’t match. Check the code shown below.');
+        _reject(l.otpMismatch);
         return;
       }
       context.push('/auth/profile', extra: (widget.phone, null));
@@ -84,7 +86,7 @@ class _OtpScreenState extends State<OtpScreen> {
       final id = response.user?.id;
       if (!mounted) return;
       if (id == null) {
-        _reject('That code could not be verified. Request a new one.');
+        _reject(l.otpUnverified);
         return;
       }
       // The authenticated id travels onward: the profile must be created
@@ -92,7 +94,7 @@ class _OtpScreenState extends State<OtpScreen> {
       context.push('/auth/profile', extra: (widget.phone, id));
     } catch (e) {
       if (!mounted) return;
-      _reject('That code is wrong or has expired.');
+      _reject(l.otpWrongOrExpired);
       debugPrint('verifyOtp failed: $e');
     } finally {
       if (mounted) setState(() => _verifying = false);
@@ -114,6 +116,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   Future<void> _resend() async {
+    final l = AppLocalizations.of(context)!;
     setState(() {
       _seconds = 30;
       _error = '';
@@ -124,7 +127,7 @@ class _OtpScreenState extends State<OtpScreen> {
     try {
       await Backend.sendOtp(widget.phone);
     } catch (e) {
-      if (mounted) setState(() => _error = 'Could not send a new code.');
+      if (mounted) setState(() => _error = l.otpResendFailed);
       debugPrint('resend failed: $e');
     }
   }
@@ -132,6 +135,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -145,8 +149,8 @@ class _OtpScreenState extends State<OtpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Enter the code',
+              Text(
+                l.otpTitle,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
@@ -155,7 +159,7 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Sent to ${phoneDisplay(widget.phone)}',
+                l.otpSentTo(phoneDisplay(widget.phone)),
                 style: TextStyle(fontSize: 14, color: c.textDim),
               ),
               const SizedBox(height: 32),
@@ -244,7 +248,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
-                        'Demo build — no SMS is sent. Your code is ',
+                        l.otpDemoPrefix,
                         style: TextStyle(fontSize: 13, color: c.info),
                       ),
                       GestureDetector(
@@ -269,7 +273,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 onPressed: _seconds > 0 ? null : _resend,
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 child: Text(
-                  _seconds > 0 ? 'Resend code in ${_seconds}s' : 'Resend code',
+                  _seconds > 0 ? l.otpResendIn(_seconds) : l.otpResend,
                   style: TextStyle(color: _seconds > 0 ? c.textMute : c.accent),
                 ),
               ),
@@ -284,7 +288,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2.5),
                       )
-                    : const Text('Verify'),
+                    : Text(l.otpVerify),
               ),
               const SizedBox(height: 22),
             ],

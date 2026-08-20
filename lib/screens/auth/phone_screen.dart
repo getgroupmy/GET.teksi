@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
+
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,6 +37,9 @@ class _PhoneScreenState extends State<PhoneScreen> {
   Future<void> _continue() async {
     if (!_valid || _sending) return;
     final phone = '60$_digits';
+    // Captured before the await: reaching for an inherited widget through
+    // `context` after an async gap is exactly the lint this avoids.
+    final l = AppLocalizations.of(context)!;
 
     if (!Backend.isLive) {
       context.push('/auth/otp', extra: phone);
@@ -52,7 +58,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
       if (!mounted) return;
       // The number is the one thing the user can act on, so say what failed
       // rather than dropping them on a code screen no code will ever reach.
-      setState(() => _error = 'We could not send a code to that number.');
+      setState(() => _error = l.phoneSendFailed);
       debugPrint('sendOtp failed: $e');
     } finally {
       if (mounted) setState(() => _sending = false);
@@ -62,6 +68,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
+    final l = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,8 +82,8 @@ class _PhoneScreenState extends State<PhoneScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Enter your phone number',
+              Text(
+                l.phoneTitle,
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
@@ -85,7 +92,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'We’ll send a 6-digit code to verify it’s you.',
+                l.phoneSubtitle,
                 style: TextStyle(fontSize: 14, color: c.textDim),
               ),
               const SizedBox(height: 28),
@@ -150,8 +157,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
               ],
               const SizedBox(height: 16),
               Text(
-                'By continuing you agree to the Terms of Service and Privacy Policy. '
-                'Standard message rates may apply.',
+                l.phoneTerms,
                 style: TextStyle(fontSize: 12, color: c.textMute, height: 1.45),
               ),
               const Spacer(),
@@ -163,7 +169,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2.5),
                       )
-                    : const Text('Continue'),
+                    : Text(l.continueLabel),
               ),
               const SizedBox(height: 22),
             ],

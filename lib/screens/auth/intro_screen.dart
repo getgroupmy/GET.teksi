@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -12,22 +15,10 @@ class _Slide {
   final String body;
 }
 
-const _slides = [
-  _Slide(
-    Icons.payments_outlined,
-    'Name your own fare',
-    'No fixed meter, no surge. You say what the trip is worth, drivers reply with their price.',
-  ),
-  _Slide(
-    Icons.people_alt_outlined,
-    'Ride and drive in one app',
-    'Switch between passenger and driver whenever you like. One profile, one wallet, one history.',
-  ),
-  _Slide(
-    Icons.verified_user_outlined,
-    'Safety built in',
-    'Share your trip, call for help, and see every driver’s rating before you accept a price.',
-  ),
+List<_Slide> _slidesFor(AppLocalizations l) => [
+  _Slide(Icons.payments_outlined, l.onboardTitle1, l.onboardBody1),
+  _Slide(Icons.people_alt_outlined, l.onboardTitle2, l.onboardBody2),
+  _Slide(Icons.verified_user_outlined, l.onboardTitle3, l.onboardBody3),
 ];
 
 class IntroScreen extends StatefulWidget {
@@ -49,8 +40,10 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
-    final slide = _slides[_index];
-    final last = _index == _slides.length - 1;
+    final l = AppLocalizations.of(context)!;
+    final slides = _slidesFor(l);
+    final slide = slides[_index];
+    final last = _index == slides.length - 1;
 
     return Scaffold(
       body: SafeArea(
@@ -118,7 +111,7 @@ class _IntroScreenState extends State<IntroScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (var i = 0; i < _slides.length; i++)
+                  for (var i = 0; i < slides.length; i++)
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       margin: const EdgeInsets.symmetric(horizontal: 3),

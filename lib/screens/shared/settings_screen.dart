@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +16,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.c;
+    final l = AppLocalizations.of(context)!;
     final session = context.watch<SessionStore>();
     final prefs = session.prefs;
 
@@ -22,49 +26,46 @@ class SettingsScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Settings'),
+        title: Text(l.settings),
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 32),
         children: [
-          const SectionLabel('Appearance'),
+          SectionLabel(l.appearance),
           AppRow(
             icon: prefs.darkTheme
                 ? Icons.dark_mode_rounded
                 : Icons.light_mode_rounded,
-            title: 'Dark theme',
+            title: l.darkTheme,
             subtitle: prefs.darkTheme ? 'On' : 'Off',
             trailing: Switch(
               value: prefs.darkTheme,
               onChanged: (v) => session.setPrefs(prefs.copyWith(darkTheme: v)),
             ),
           ),
-          const SectionLabel('Preferences'),
-          // Display-only until the app is actually translated. This row used
-          // to flip prefs.language between 'en' and 'ms' and persist it, and
-          // nothing anywhere read the value back — so the subtitle changed,
-          // the app stayed English, and the control quietly lied. A setting
-          // that reports a change it did not make is worse than one that
-          // isn't offered.
-          const AppRow(
+          SectionLabel(l.preferences),
+          AppRow(
             icon: Icons.translate_rounded,
-            title: 'Language',
-            subtitle: 'English',
+            title: l.language,
+            subtitle: l.languageName,
+            onTap: () => session.setPrefs(
+              prefs.copyWith(language: prefs.language == 'en' ? 'ms' : 'en'),
+            ),
           ),
           AppRow(
             icon: Icons.volume_up_rounded,
-            title: 'Sounds and vibration',
-            subtitle: prefs.soundEnabled ? 'On' : 'Off',
+            title: l.sounds,
+            subtitle: prefs.soundEnabled ? l.on : l.off,
             trailing: Switch(
               value: prefs.soundEnabled,
               onChanged: (v) =>
                   session.setPrefs(prefs.copyWith(soundEnabled: v)),
             ),
           ),
-          const SectionLabel('Demo'),
+          SectionLabel(l.demo),
           AppRow(
             icon: Icons.smart_toy_outlined,
-            title: 'Simulated marketplace',
+            title: l.simulatedMarketplace,
             subtitle:
                 'Bot drivers bid on your orders and bot passengers post rides',
             trailing: Switch(
@@ -81,24 +82,18 @@ class SettingsScreen extends StatelessWidget {
               'as a driver.',
             ),
           ),
-          const SectionLabel('About'),
-          const AppRow(
-            icon: Icons.description_outlined,
-            title: 'Terms of service',
-          ),
-          const AppRow(
-            icon: Icons.privacy_tip_outlined,
-            title: 'Privacy policy',
-          ),
-          const AppRow(
+          SectionLabel(l.about),
+          AppRow(icon: Icons.description_outlined, title: l.termsOfService),
+          AppRow(icon: Icons.privacy_tip_outlined, title: l.privacyPolicy),
+          AppRow(
             icon: Icons.info_outline_rounded,
-            title: 'Version',
+            title: l.version,
             subtitle: 'GET.teksi 1.0.0',
           ),
           AppRow(
             icon: Icons.delete_outline_rounded,
-            title: 'Clear local data',
-            subtitle: 'Erase rides, offers and messages on this device',
+            title: l.clearLocalData,
+            subtitle: l.clearLocalDataSubtitle,
             danger: true,
             onTap: () => _confirmClear(context),
           ),

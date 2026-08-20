@@ -36,6 +36,9 @@ Map with live nearby cars · destination search with recents, saved places and o
 **Driver**
 Onboarding with vehicle and document set · go online/offline · order feed sorted by nearest / highest / newest, filtered by minimum fare and pickup distance · accept the asking price or counter-offer, with net-of-commission shown live · withdraw a pending offer · job card driving the trip forward one button at a time (on my way → arrived → start → finish) · earnings dashboard by day/week/all-time with per-hour and per-trip breakdowns · vehicle and document management.
 
+**Languages**
+English and Bahasa Melayu, switched in Settings. Onboarding, sign-in and Settings are translated; screens not yet converted fall back to English rather than showing a key, so the rest can be done a screen at a time.
+
 **Shared**
 Phone + OTP auth · profile and ratings · wallet with top-ups and transaction ledger · promo codes and referrals · saved places · notifications · safety centre with emergency contacts and trip sharing · settings with dark/light theme.
 
