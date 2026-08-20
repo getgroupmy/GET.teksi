@@ -8,6 +8,7 @@ a Supabase project and the same build becomes a real multi-device marketplace.
 ```
 supabase/
   migrations/20260815120000_marketplace.sql   the schema, policies and RPCs
+  migrations/20260820120000_hide_internal_functions.sql
   tests/harness.sql                           stands in for Supabase's own objects
   tests/policies.sql                          what the database must refuse
   tests/concurrency.sh                        races two accepts of the same ride
@@ -49,12 +50,39 @@ What the database enforces, all of it verified in `tests/policies.sql`:
 | Exactly one bid can ever win a ride | `accept_offer` + `for update` |
 | Chat is readable and writable only by the two participants | `is_ride_participant` |
 | Profiles are not a directory: you see a counterparty only while sharing a ride | `profiles` select policies |
+| The schema's internals are not reachable over HTTP | `private` schema + explicit grants |
 
 The last point is why names, ratings and vehicles are denormalised onto
 `rides` and `offers`. A driver browsing the order feed needs to see who is
 asking and what they are asking — but granting read access to every
 passenger's profile row to make that work would turn the order feed into a
 user directory.
+
+### Why the helpers live in `private`
+
+PostgREST publishes every function in `public` as an RPC endpoint. That is
+correct for `accept_offer` and wrong for the helpers, one of which was a real
+leak: `ride_bid_context` is SECURITY DEFINER, so it reads with the owner's
+privileges — necessary, because the offer guard must see a ride the bidding
+driver may not be allowed to read. Exposed at `/rest/v1/rpc/ride_bid_context`
+it would have returned the passenger id and status of *any* ride id a caller
+tried, which the table policies would have refused.
+
+They now live in a `private` schema that PostgREST does not expose, still
+reachable from policies and triggers because those run as the caller and the
+signed-in role is granted `EXECUTE` explicitly.
+
+Revoking that execute takes two statements, not one, and missing either leaves
+a function callable while looking revoked: Postgres grants `EXECUTE` to
+`PUBLIC` on every function, and a Supabase project *additionally* carries
+default privileges granting it to `anon` and `authenticated` directly. The
+policy suite asserts the end state rather than the statements — it was written
+first, and caught exactly this mistake twice.
+
+`accept_offer` remains callable by signed-in users, which is the one Supabase
+security-lint warning this schema keeps on purpose: it is the RPC the client is
+meant to call, and its first act is to check `auth.uid()` against the ride's
+passenger.
 
 ### Why `accept_offer` is a function
 

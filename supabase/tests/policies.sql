@@ -456,5 +456,42 @@ do $$ begin
 end $$;
 
 reset role;
+
+\echo ''
+\echo '== the schema internals are not an API =='
+
+-- PostgREST publishes every function in `public` as an RPC endpoint. The
+-- helpers exist to be called by policies and triggers; if one reappears here,
+-- it is reachable over HTTP again — and ride_bid_context in particular reads
+-- with the owner's privileges, so exposing it hands out rides the caller's own
+-- policies would refuse them.
+do $$
+declare
+  leaked text;
+begin
+  select string_agg(p.proname, ', ')
+    into leaked
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+   where n.nspname = 'public'
+     and p.proname in ('ride_bid_context', 'is_driver', 'is_ride_participant');
+  if leaked is not null then
+    raise exception 'SECURITY FAILURE: internal helper(s) exposed in public: %', leaked;
+  end if;
+  raise notice '  ok: the helpers live outside the exposed schema';
+end $$;
+
+do $$ begin
+  perform test.eq(
+    has_function_privilege('authenticated', 'public.sweep_expired_offers()', 'EXECUTE'),
+    false, 'a client cannot settle other people''s expired bids');
+  perform test.eq(
+    has_function_privilege('authenticated', 'public.accept_offer(uuid)', 'EXECUTE'),
+    true, 'but a signed-in client can still accept a bid');
+  perform test.eq(
+    has_function_privilege('anon', 'public.accept_offer(uuid)', 'EXECUTE'),
+    false, 'and a signed-out one cannot');
+end $$;
+
 \echo ''
 \echo 'ALL POLICY TESTS PASSED'
