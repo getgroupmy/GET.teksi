@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/backend.dart';
 import '../../core/formats.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
@@ -225,6 +228,7 @@ class MenuScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(sheetContext).pop();
                 session.signOut();
+                unawaited(Backend.signOut());
               },
               child: const Text('Sign out'),
             ),
@@ -237,6 +241,7 @@ class MenuScreen extends StatelessWidget {
                 Navigator.of(sheetContext).pop();
                 rides.reset();
                 session.signOut();
+                unawaited(Backend.signOut());
               },
               child: Text(
                 'Sign out and erase all local data',

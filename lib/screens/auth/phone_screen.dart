@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/backend.dart';
 import '../../theme.dart';
 
-/// Phone entry. There is no SMS gateway here — the OTP screen shows the code
-/// it "sent" and accepts it, so the flow stays fully walkable.
+/// Phone entry.
+///
+/// With a backend configured this asks Supabase to send a real OTP. Without
+/// one there is no SMS gateway: the next screen shows the code it "sent" and
+/// accepts it, so the flow stays fully walkable with nothing provisioned.
 class PhoneScreen extends StatefulWidget {
   const PhoneScreen({super.key});
 
@@ -16,6 +20,8 @@ class PhoneScreen extends StatefulWidget {
 class _PhoneScreenState extends State<PhoneScreen> {
   final _controller = TextEditingController();
   String _digits = '';
+  String _error = '';
+  bool _sending = false;
 
   bool get _valid => _digits.length >= 9 && _digits.length <= 10;
 
@@ -25,9 +31,32 @@ class _PhoneScreenState extends State<PhoneScreen> {
     super.dispose();
   }
 
-  void _continue() {
-    if (!_valid) return;
-    context.push('/auth/otp', extra: '60$_digits');
+  Future<void> _continue() async {
+    if (!_valid || _sending) return;
+    final phone = '60$_digits';
+
+    if (!Backend.isLive) {
+      context.push('/auth/otp', extra: phone);
+      return;
+    }
+
+    setState(() {
+      _sending = true;
+      _error = '';
+    });
+    try {
+      await Backend.sendOtp(phone);
+      if (!mounted) return;
+      context.push('/auth/otp', extra: phone);
+    } catch (e) {
+      if (!mounted) return;
+      // The number is the one thing the user can act on, so say what failed
+      // rather than dropping them on a code screen no code will ever reach.
+      setState(() => _error = 'We could not send a code to that number.');
+      debugPrint('sendOtp failed: $e');
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
   }
 
   @override
@@ -108,6 +137,17 @@ class _PhoneScreenState extends State<PhoneScreen> {
                   ],
                 ),
               ),
+              if (_error.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  _error,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: c.danger,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
               const SizedBox(height: 16),
               Text(
                 'By continuing you agree to the Terms of Service and Privacy Policy. '
@@ -116,8 +156,14 @@ class _PhoneScreenState extends State<PhoneScreen> {
               ),
               const Spacer(),
               FilledButton(
-                onPressed: _valid ? _continue : null,
-                child: const Text('Continue'),
+                onPressed: _valid && !_sending ? _continue : null,
+                child: _sending
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2.5),
+                      )
+                    : const Text('Continue'),
               ),
               const SizedBox(height: 22),
             ],

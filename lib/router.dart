@@ -44,8 +44,18 @@ class GoRouterConfig {
         ),
         GoRoute(
           path: '/auth/profile',
-          builder: (_, state) =>
-              ProfileSetupScreen(phone: state.extra as String? ?? ''),
+          // The verified identity travels with the route. With a backend the
+          // profile has to be created under the authenticated account's id,
+          // so the OTP screen passes it alongside the number; without one it
+          // sends the number alone and the id is minted locally.
+          builder: (_, state) => switch (state.extra) {
+            (final String phone, final String? authId) => ProfileSetupScreen(
+              phone: phone,
+              authId: authId,
+            ),
+            final String phone => ProfileSetupScreen(phone: phone),
+            _ => const ProfileSetupScreen(phone: ''),
+          },
         ),
 
         GoRoute(path: '/p', builder: (_, _) => const PassengerHomeScreen()),

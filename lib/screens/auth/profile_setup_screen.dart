@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/backend.dart';
 import '../../data/fixtures.dart';
 import '../../state/session.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
-  const ProfileSetupScreen({super.key, required this.phone});
+  const ProfileSetupScreen({super.key, required this.phone, this.authId});
 
   final String phone;
+
+  /// The verified account's id, when a backend owns the identity. The local
+  /// profile is created under it so its writes satisfy row-level security.
+  final String? authId;
 
   @override
   State<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
@@ -19,6 +24,8 @@ class ProfileSetupScreen extends StatefulWidget {
 class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final _name = TextEditingController();
   final _email = TextEditingController();
+
+  bool _saving = false;
 
   bool get _valid => _name.text.trim().length >= 2;
 
@@ -29,16 +36,38 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     super.dispose();
   }
 
-  void _finish() {
-    if (!_valid) return;
+  Future<void> _finish() async {
+    if (!_valid || _saving) return;
     final session = context.read<SessionStore>();
-    final user = session.signIn(widget.phone, name: _name.text.trim());
-    session.updateUser(
-      user.copyWith(
-        name: _name.text.trim(),
-        email: _email.text.trim().isEmpty ? null : _email.text.trim(),
-      ),
-    );
+    final name = _name.text.trim();
+    final email = _email.text.trim().isEmpty ? null : _email.text.trim();
+
+    final user = session.signIn(widget.phone, name: name, id: widget.authId);
+    session.updateUser(user.copyWith(name: name, email: email));
+
+    // The auth trigger already created the profile row from the phone number;
+    // this is where the name and colour the user just chose reach it. A
+    // failure here is not fatal — the account exists and the app is usable —
+    // so it is reported rather than blocking entry.
+    if (Backend.isLive && widget.authId != null) {
+      setState(() => _saving = true);
+      try {
+        await Backend.client
+            .from('profiles')
+            .update({
+              'name': name,
+              'email': email,
+              'avatar_color': user.avatarColor,
+            })
+            .eq('id', widget.authId!);
+      } catch (e) {
+        debugPrint('profile update failed: $e');
+      } finally {
+        if (mounted) setState(() => _saving = false);
+      }
+    }
+
+    if (!mounted) return;
     context.go('/p');
   }
 

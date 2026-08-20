@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/backend.dart';
 import '../../core/formats.dart';
 import '../../theme.dart';
 
@@ -24,9 +25,12 @@ class _OtpScreenState extends State<OtpScreen> {
   String _code = '';
   String _error = '';
   int _seconds = 30;
+  bool _verifying = false;
   Timer? _timer;
 
-  /// The demo "SMS" — shown on screen instead of being sent.
+  /// The demo "SMS" — shown on screen instead of being sent. Only meaningful
+  /// without a backend; with one, a real code arrives by SMS and this is
+  /// neither shown nor accepted.
   late final String _expected = () {
     var n = 7;
     for (final unit in widget.phone.codeUnits) {
@@ -59,23 +63,70 @@ class _OtpScreenState extends State<OtpScreen> {
     super.dispose();
   }
 
-  void _submit(String value) {
-    if (value.length != _length) return;
-    if (value != _expected) {
-      setState(() {
-        _error = 'That code doesn’t match. Check the code shown below.';
-        _code = '';
-        _controller.clear();
-      });
+  Future<void> _submit(String value) async {
+    if (value.length != _length || _verifying) return;
+
+    if (!Backend.isLive) {
+      if (value != _expected) {
+        _reject('That code doesn’t match. Check the code shown below.');
+        return;
+      }
+      context.push('/auth/profile', extra: (widget.phone, null));
       return;
     }
-    context.push('/auth/profile', extra: widget.phone);
+
+    setState(() {
+      _verifying = true;
+      _error = '';
+    });
+    try {
+      final response = await Backend.verifyOtp(widget.phone, value);
+      final id = response.user?.id;
+      if (!mounted) return;
+      if (id == null) {
+        _reject('That code could not be verified. Request a new one.');
+        return;
+      }
+      // The authenticated id travels onward: the profile must be created
+      // under it, or every write this account makes is refused by RLS.
+      context.push('/auth/profile', extra: (widget.phone, id));
+    } catch (e) {
+      if (!mounted) return;
+      _reject('That code is wrong or has expired.');
+      debugPrint('verifyOtp failed: $e');
+    } finally {
+      if (mounted) setState(() => _verifying = false);
+    }
+  }
+
+  void _reject(String message) {
+    setState(() {
+      _error = message;
+      _code = '';
+      _controller.clear();
+    });
   }
 
   void _autofill() {
     _controller.text = _expected;
     setState(() => _code = _expected);
     _submit(_expected);
+  }
+
+  Future<void> _resend() async {
+    setState(() {
+      _seconds = 30;
+      _error = '';
+    });
+    _timer?.cancel();
+    _tick();
+    if (!Backend.isLive) return;
+    try {
+      await Backend.sendOtp(widget.phone);
+    } catch (e) {
+      if (mounted) setState(() => _error = 'Could not send a new code.');
+      debugPrint('resend failed: $e');
+    }
   }
 
   @override
@@ -173,49 +224,49 @@ class _OtpScreenState extends State<OtpScreen> {
                     style: TextStyle(fontSize: 13, color: c.danger),
                   ),
                 ),
-              const SizedBox(height: 24),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: c.info.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: c.info.withValues(alpha: 0.25)),
-                ),
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Text(
-                      'Demo build — no SMS is sent. Your code is ',
-                      style: TextStyle(fontSize: 13, color: c.info),
-                    ),
-                    GestureDetector(
-                      onTap: _autofill,
-                      child: Text(
-                        _expected,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                          color: c.info,
-                          decoration: TextDecoration.underline,
-                          decorationColor: c.info,
+              // Only meaningful without a backend. With one, a real code was
+              // sent by SMS and showing a guessable stand-in beside it would
+              // be worse than useless.
+              if (!Backend.isLive) ...[
+                const SizedBox(height: 24),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: c.info.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: c.info.withValues(alpha: 0.25)),
+                  ),
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        'Demo build — no SMS is sent. Your code is ',
+                        style: TextStyle(fontSize: 13, color: c.info),
+                      ),
+                      GestureDetector(
+                        onTap: _autofill,
+                        child: Text(
+                          _expected,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: c.info,
+                            decoration: TextDecoration.underline,
+                            decorationColor: c.info,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
               const SizedBox(height: 18),
               TextButton(
-                onPressed: _seconds > 0
-                    ? null
-                    : () => setState(() {
-                        _seconds = 30;
-                        _tick();
-                      }),
+                onPressed: _seconds > 0 ? null : _resend,
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 child: Text(
                   _seconds > 0 ? 'Resend code in ${_seconds}s' : 'Resend code',
@@ -224,10 +275,16 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               const Spacer(),
               FilledButton(
-                onPressed: _code.length == _length
+                onPressed: _code.length == _length && !_verifying
                     ? () => _submit(_code)
                     : null,
-                child: const Text('Verify'),
+                child: _verifying
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2.5),
+                      )
+                    : const Text('Verify'),
               ),
               const SizedBox(height: 22),
             ],

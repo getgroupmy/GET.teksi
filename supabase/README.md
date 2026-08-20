@@ -119,15 +119,26 @@ Postgres. Nothing above that file knows which one is in use.
 - `lib/core/rows.dart` — model ↔ row mapping, tested in `test/rows_test.dart`
 - `lib/core/supabase_transport.dart` — the live transport
 
+## Sign-in
+
+With a backend configured, the phone screen asks Supabase to send a real OTP
+and the code screen verifies it; the demo code panel is hidden, because showing
+a guessable stand-in next to a real SMS would be worse than useless. Without a
+backend the flow is unchanged and still fully walkable.
+
+The load-bearing detail is identity. Every policy in the schema compares
+`auth.uid()` against the ids an account writes, so the verified id travels from
+the code screen to profile setup and the local user is created **under it**. A
+profile that kept a locally minted id would have all of its writes refused —
+silently, since RLS rejects rather than errors. `test/marketplace_test.dart`
+pins that: the local user adopts the backend's id, and a local-only profile is
+replaced rather than reused when the backend supplies a different one.
+
 ### Known gaps
 
 - **The simulation stays local.** Bot rides and bids are dropped before they
   reach the network, because they belong to no real account and row-level
   security would reject them. Turn it off in Settings when testing against a
   real backend, or the map shows local bots alongside real drivers.
-- **Sign-in is not yet switched over.** `Backend.sendOtp` / `verifyOtp` are
-  wired and ready, but the auth screens still drive the local session store.
-  Until that swap, a configured build authenticates locally and the transport
-  has no `auth.uid()` to publish under.
 - **The expiry sweep has no schedule.** `sweep_expired_offers()` is idempotent
   and ready for `pg_cron`; nothing calls it periodically yet.

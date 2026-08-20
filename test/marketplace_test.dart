@@ -103,6 +103,52 @@ void main() {
     rides.dispose();
   });
 
+  // Identity is the hinge the whole backend turns on: every row-level security
+  // policy compares auth.uid() against the ids this account writes. If the
+  // local user keeps an id the server has never heard of, nothing it publishes
+  // is accepted — and the failure is a silent rejection, not a crash.
+  group('identity', () {
+    test('adopts the id the backend supplies', () {
+      final fresh = SessionStore();
+      const authId = '11111111-1111-4111-8111-111111111111';
+      final user = fresh.signIn('60129998877', name: 'Aisyah', id: authId);
+      expect(user.id, authId);
+    });
+
+    test('mints an id locally when there is no backend', () {
+      final fresh = SessionStore();
+      final user = fresh.signIn('60129998877', name: 'Aisyah');
+      expect(user.id, isNotEmpty);
+      expect(
+        RegExp(
+          r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+        ).hasMatch(user.id),
+        isTrue,
+        reason: 'a locally minted id must still be a uuid the schema accepts',
+      );
+    });
+
+    test('keeps the existing profile when the same number signs in again', () {
+      final fresh = SessionStore();
+      final first = fresh.signIn('60129998877', name: 'Aisyah');
+      final again = fresh.signIn('60129998877', name: 'Someone else');
+      expect(again.id, first.id);
+      expect(again.name, 'Aisyah');
+    });
+
+    test('replaces a local-only profile when the backend disagrees', () {
+      // The stored user was created before a backend existed. Signing in for
+      // real must not keep that id, or the account would write rows under an
+      // identity the server will refuse.
+      final fresh = SessionStore();
+      final local = fresh.signIn('60129998877', name: 'Aisyah');
+      const authId = '22222222-2222-4222-8222-222222222222';
+      final authed = fresh.signIn('60129998877', name: 'Aisyah', id: authId);
+      expect(authed.id, authId);
+      expect(authed.id, isNot(local.id));
+    });
+  });
+
   group('publishing an order', () {
     test('puts the ride on the market with route geometry', () {
       final ride = rides.publishRide(

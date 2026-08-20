@@ -162,12 +162,21 @@ class SessionStore extends ChangeNotifier {
     ),
   ];
 
-  AppUser signIn(String phone, {String? name}) {
+  /// [id] is supplied when a backend owns the identity: the local user must
+  /// carry the authenticated account's id, because every row-level security
+  /// policy compares against it. Without a backend it is minted locally.
+  AppUser signIn(String phone, {String? name, String? id}) {
     final existing = _user;
-    // Returning to the same number keeps the profile, rating and history.
-    if (existing != null && existing.phone == phone) return existing;
+    // Returning to the same number keeps the profile, rating and history —
+    // unless the backend says this is a different account, in which case the
+    // stored one was a local-only profile and is replaced.
+    if (existing != null &&
+        existing.phone == phone &&
+        (id == null || existing.id == id)) {
+      return existing;
+    }
     final created = AppUser(
-      id: uuid4(),
+      id: id ?? uuid4(),
       phone: phone,
       name: (name ?? '').trim().isEmpty ? 'Guest' : name!.trim(),
       avatarColor: pickAvatarColor(phone),
