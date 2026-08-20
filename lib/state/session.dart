@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../core/location.dart';
 import '../core/storage.dart';
 import '../data/fixtures.dart';
 import '../data/places.dart';
@@ -70,24 +71,6 @@ class Prefs {
     simulationEnabled: json['simulationEnabled'] as bool? ?? true,
     hasSeenIntro: json['hasSeenIntro'] as bool? ?? false,
   );
-}
-
-/// Where the device is.
-///
-/// The shipped implementation seeds to the city centre and lets the passenger
-/// place the pickup pin by moving the map — which is how pickup adjustment
-/// works in these apps anyway. Swapping in real GPS means implementing this
-/// one interface against `geolocator` (or the HMS Location Kit on Huawei);
-/// nothing else in the app reads the platform directly.
-abstract class LocationService {
-  Future<LatLng?> current();
-}
-
-class SeededLocationService implements LocationService {
-  const SeededLocationService();
-
-  @override
-  Future<LatLng?> current() async => cityCenter;
 }
 
 class SessionStore extends ChangeNotifier {

@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'core/backend.dart';
+import 'core/location.dart';
 import 'core/storage.dart';
 import 'l10n/app_localizations.dart';
 import 'router.dart';
@@ -34,7 +35,13 @@ class GetTeksiApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SessionStore()..locate()),
+        ChangeNotifierProvider(
+          // Asks the platform where we are, and carries on from the city
+          // centre if it will not say — declined permission, location off, or
+          // no fix. locate() is fire-and-forget for exactly that reason.
+          create: (_) =>
+              SessionStore(location: const DeviceLocationService())..locate(),
+        ),
         ChangeNotifierProxyProvider<SessionStore, RidesStore>(
           create: (context) => RidesStore(
             context.read<SessionStore>(),

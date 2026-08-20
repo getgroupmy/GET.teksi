@@ -108,6 +108,22 @@ jobs:
           fi
           echo "✅ CanvasKit is served from the app's own origin."
 
+      - name: Assert the web build uses the browser's geolocation
+        run: |
+          # lib/core/location.dart picks its implementation with a conditional
+          # import. Picking the wrong branch compiles fine and fails only at
+          # runtime, as a method channel with nothing on the other end — so
+          # check which one actually landed in the bundle.
+          if ! grep -q 'geolocation' build/web/main.dart.js; then
+            echo "::error::the web build has no geolocation call — the conditional import selected the method-channel implementation, which no browser answers"
+            exit 1
+          fi
+          if grep -q 'get\.teksi/location' build/web/main.dart.js; then
+            echo "::error::the web build carries the native location channel — the conditional import selected the wrong branch"
+            exit 1
+          fi
+          echo "✅ Web locates through the browser, not a dead channel."
+
       - uses: actions/upload-artifact@v4
         with:
           name: web

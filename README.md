@@ -179,8 +179,8 @@ Covering colour contrast (every text token against every surface in both themes)
 
 - **Maps** use OpenStreetMap raster tiles — no key, but also no tiles when offline; pins, routes and cars still render correctly over the empty canvas. OSM's public tile server is not licensed for production traffic: point it at your own before shipping.
 - **Routes** are synthesised geometry, not real road routing. Distances apply a 1.35× urban detour factor to straight-line distance. Wire in OSRM/Valhalla/Mapbox in `lib/core/geo.dart` for real turn-by-turn.
-- **Auth** has no SMS gateway: the OTP screen shows the code it "sent" and accepts it. Anything real needs a server.
-- **Location** ships seeded to the city centre behind a `LocationService` interface, so every target builds without a GPS plugin. See PLATFORMS.md for wiring up `geolocator` or HMS Location Kit.
+- **Auth** sends a real SMS code when a backend is configured; without one the OTP screen shows the code it "sent" and accepts it, which is what keeps the demo runnable with nothing provisioned.
+- **Location** is read from the device — GPS on Android, CoreLocation on iOS, the browser on web — and falls back to the city centre when permission is refused, location is off, or no fix arrives. Android reads `LocationManager` directly rather than using `geolocator`, whose Android implementation would put Play Services back in the graph and break the Huawei build.
 - **Fares** are loosely calibrated to Klang Valley street pricing (MYR). Tariffs live in `lib/services/pricing.dart`.
 - **Release signing** still uses the Android debug key. Replace it before any store submission.
 - Commission is 9.9% of the fare, shown to drivers on every order before they bid.

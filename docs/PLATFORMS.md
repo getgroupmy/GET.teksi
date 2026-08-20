@@ -159,10 +159,11 @@ Configured in `android/app/build.gradle.kts`:
 - **Signing still uses the debug key.** Replace `signingConfig` with a real
   upload key before any store submission.
 
-Permissions declared in `AndroidManifest.xml` are `INTERNET` and
-`ACCESS_NETWORK_STATE` only. Location hardware is declared `required="false"`,
-so the app stays installable on devices without GPS — the pickup pin can always
-be placed on the map.
+Permissions declared in `AndroidManifest.xml` are `INTERNET`,
+`ACCESS_NETWORK_STATE`, `ACCESS_FINE_LOCATION` and `ACCESS_COARSE_LOCATION`.
+Location hardware is declared `required="false"`, so the app stays installable
+on devices without GPS — the pickup pin can always be placed on the map, and a
+rider who declines the permission gets exactly that.
 
 ### iOS
 
@@ -171,18 +172,15 @@ flutter build ipa --release
 ```
 
 Requires macOS with Xcode. Set the team and bundle identifier in
-`ios/Runner.xcodeproj`. Display name is `GET.teksi`. No `Info.plist` usage
-descriptions are needed as shipped, because the app requests no location,
-camera, or contacts permission — add `NSLocationWhenInUseUsageDescription` at
-the same time you wire up a real GPS provider.
+`ios/Runner.xcodeproj`. Display name is `GET.teksi`. The only `Info.plist`
+usage description is `NSLocationWhenInUseUsageDescription`; the app requests no
+camera or contacts permission.
 
 ---
 
-## Wiring up real device location
+## Device location
 
-The app deliberately ships without a GPS plugin so that every target — including
-HarmonyOS — builds without a per-platform dependency. Location lives behind one
-interface in `lib/state/session.dart`:
+Location lives behind one interface in `lib/core/location.dart`:
 
 ```dart
 abstract class LocationService {
@@ -190,14 +188,29 @@ abstract class LocationService {
 }
 ```
 
-To use real GPS, add `geolocator` and implement that interface, then pass it in
-`main.dart`:
+`DeviceLocationService` implements it per platform, chosen by a conditional
+import so no target carries another's code:
 
-```dart
-ChangeNotifierProvider(create: (_) => SessionStore(location: GeolocatorLocation())..locate()),
-```
+| Target | Implementation |
+|---|---|
+| Android | `LocationManager` in `MainActivity.kt`, over a method channel |
+| iOS | `CLLocationManager` in `LocationBridge.swift`, same channel |
+| Web | `navigator.geolocation`, no channel — the browser is the platform |
+| Anything else | No handler, so the channel raises and the seed stands |
 
-Add the matching permissions (`ACCESS_FINE_LOCATION` on Android,
-`NSLocationWhenInUseUsageDescription` on iOS). On HarmonyOS NEXT use the HMS
-Location Kit behind the same interface. Nothing else in the app touches the
-platform.
+**Android does not use `geolocator`.** Its Android implementation depends on
+Play Services' location library, which would put GMS back into the dependency
+graph — the CI dex scan would fail the build, and rightly: an APK that needs
+Play Services to find a rider cannot find one on a Huawei device.
+`android.location.LocationManager` has been in the platform since API 1 and
+needs nothing from Google. What it gives up is the fused provider's sensor
+blending, which for placing a pickup pin the rider can drag is not much.
+
+Every failure returns null rather than throwing — permission refused, location
+switched off, no fix inside the timeout, no implementation at all — and the app
+carries on from the city centre. `test/location_test.dart` covers each of those
+paths, because what matters about a location feature is not that it gets a fix
+but what it does to the app when it cannot.
+
+On HarmonyOS NEXT, implement the same interface over HMS Location Kit; nothing
+above `lib/core/location.dart` touches the platform.

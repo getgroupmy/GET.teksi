@@ -3,6 +3,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <!-- Read by MainActivity through android.location.LocationManager, never
+         through Play Services: the same APK has to locate a rider on a Huawei
+         device. Both are requested because a rider who grants only the coarse
+         one still gets a usable pickup pin. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <!-- Declared, not required: the app runs without a GPS fix (pickup can be
          set on the map). Marked not-required so it stays installable on
          devices without GPS hardware. -->
