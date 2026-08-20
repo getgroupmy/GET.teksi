@@ -280,6 +280,20 @@ class SessionStore extends ChangeNotifier {
     updateUser(u.copyWith(ridesTaken: u.ridesTaken + 1));
   }
 
+  /// The trip happened and the driver's count should reflect it, but the money
+  /// was moved by the server. Splitting this out keeps the tally honest without
+  /// the device inventing a balance it does not own.
+  void recordDriverTrip() {
+    final u = _user;
+    final profile = u?.driverProfile;
+    if (u == null || profile == null) return;
+    updateUser(
+      u.copyWith(
+        driverProfile: profile.copyWith(ridesGiven: profile.ridesGiven + 1),
+      ),
+    );
+  }
+
   void recordDriverEarning(int amount) {
     final u = _user;
     final profile = u?.driverProfile;

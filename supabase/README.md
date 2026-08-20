@@ -10,6 +10,7 @@ supabase/
   migrations/20260815120000_marketplace.sql   the schema, policies and RPCs
   migrations/20260820120000_hide_internal_functions.sql
   migrations/20260820130000_schedule_offer_sweep.sql
+  migrations/20260820140000_wallet_ledger.sql
   tests/harness.sql                           stands in for Supabase's own objects
   tests/policies.sql                          what the database must refuse
   tests/concurrency.sh                        races two accepts of the same ride
@@ -18,10 +19,10 @@ supabase/
 
 ## What is on the server, and what is not
 
-Shared state goes to Postgres: profiles, rides, offers, chat and live driver
-positions. The wallet ledger, promo codes, saved places and the notification
+Shared state goes to Postgres: profiles, rides, offers, chat, live driver
+positions and the wallet ledger. Promo codes, saved places and the notification
 feed stay on the device — they are single-user state, and nothing in the
-marketplace reads them. Moving them later is additive.
+marketplace reads them.
 
 ## The one rule
 
@@ -52,6 +53,8 @@ What the database enforces, all of it verified in `tests/policies.sql`:
 | Chat is readable and writable only by the two participants | `is_ride_participant` |
 | Profiles are not a directory: you see a counterparty only while sharing a ride | `profiles` select policies |
 | The schema's internals are not reachable over HTTP | `private` schema + explicit grants |
+| Nobody writes their own wallet, including the driver being paid | ledger has `select` and no other policy |
+| A settled ride pays exactly once, however many times it completes | unique index on (ride, user, kind) |
 
 The last point is why names, ratings and vehicles are denormalised onto
 `rides` and `offers`. A driver browsing the order feed needs to see who is
@@ -84,6 +87,35 @@ first, and caught exactly this mistake twice.
 security-lint warning this schema keeps on purpose: it is the RPC the client is
 meant to call, and its first act is to check `auth.uid()` against the ride's
 passenger.
+
+### Why the wallet is append-only
+
+Each device used to keep its own wallet: on completion the passenger's app
+debited the passenger and the driver's app credited the driver, each computing
+its own half. A balance in `SharedPreferences` does not survive a reinstall —
+but the real problem is that **the driver's app decided what the driver
+earned**. Nothing stopped a modified build from crediting itself any number,
+because the number never left the device that invented it.
+
+Now the ledger is append-only, the client has `select` on it and no other
+policy, and settlement is an `AFTER UPDATE` trigger on `rides`: it happens
+because a ride completed, not because either side asked. `final_price` was
+already fixed by `accept_offer` from the winning bid, so there is no amount for
+a client to choose. A unique index on `(ride_id, user_id, kind)` makes running
+it twice a no-op rather than a double payment.
+
+The balance on `profiles` is a cache of the ledger's sum, maintained by
+trigger. The ledger can rebuild it; it can never rebuild the ledger.
+
+The platform's cut is 9.9%, and `private.driver_net()` and Dart's `driverNet()`
+are pinned to the same six worked examples from both sides — a fee that differs
+between the app's arithmetic and the database's is a fee nobody can explain to
+a driver.
+
+**Top-ups are not implemented and cannot honestly be.** A balance may only grow
+once a payment provider has taken real money; an RPC letting a client credit
+itself would undo this entire section. With a backend configured, the top-up
+sheet says so instead of pretending.
 
 ### Why `accept_offer` is a function
 

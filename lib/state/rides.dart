@@ -17,7 +17,14 @@ const offerTtl = Duration(seconds: 90);
 const _rideSearchTtl = Duration(minutes: 10);
 
 class RidesStore extends ChangeNotifier {
-  RidesStore(this._session) {
+  /// [settlesRemotely] is true when a backend owns the money. The database
+  /// settles a ride the moment it completes — debiting the passenger, paying
+  /// the driver net of commission — so the client writing its own entries as
+  /// well would count every trip twice.
+  ///
+  /// A plain flag rather than a reference to the backend: these stores stay
+  /// free of Supabase so the suite runs with no bindings and no network.
+  RidesStore(this._session, {this.settlesRemotely = false}) {
     _rides = Store.instance.readJson<Map<String, Ride>>(
       _ridesKey,
       {},
@@ -65,6 +72,9 @@ class RidesStore extends ChangeNotifier {
   static const _txKey = 'transactions';
 
   final SessionStore _session;
+
+  /// Whether the server, rather than this device, moves money on completion.
+  final bool settlesRemotely;
 
   late Map<String, Ride> _rides;
   late Map<String, Offer> _offers;
@@ -232,27 +242,35 @@ class RidesStore extends ChangeNotifier {
     final me = _session.user;
     if (me == null) return;
 
+    // Trip counts are this device's own tally and stay local either way; only
+    // the money is the server's when a backend is settling.
     if (ride.passengerId == me.id) {
       _session.recordPassengerTrip();
-      if (ride.paymentMethod == PaymentMethod.wallet) {
-        _session.debitWallet(fare);
+      if (!settlesRemotely) {
+        if (ride.paymentMethod == PaymentMethod.wallet) {
+          _session.debitWallet(fare);
+        }
+        addTransaction(
+          kind: TransactionKind.ridePayment,
+          amount: -fare,
+          description: 'Ride to ${ride.dropoff.name}',
+          rideId: rideId,
+        );
       }
-      addTransaction(
-        kind: TransactionKind.ridePayment,
-        amount: -fare,
-        description: 'Ride to ${ride.dropoff.name}',
-        rideId: rideId,
-      );
     }
     if (ride.driverId == me.id) {
       final net = driverNet(fare);
-      _session.recordDriverEarning(net);
-      addTransaction(
-        kind: TransactionKind.rideEarning,
-        amount: net,
-        description: 'Trip from ${ride.pickup.name}',
-        rideId: rideId,
-      );
+      if (settlesRemotely) {
+        _session.recordDriverTrip();
+      } else {
+        _session.recordDriverEarning(net);
+        addTransaction(
+          kind: TransactionKind.rideEarning,
+          amount: net,
+          description: 'Trip from ${ride.pickup.name}',
+          rideId: rideId,
+        );
+      }
     }
   }
 

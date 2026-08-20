@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/backend.dart';
 import '../../core/formats.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
@@ -11,8 +12,34 @@ import '../../widgets/ui.dart';
 
 const _topups = [1000, 2000, 5000, 10000];
 
-class WalletScreen extends StatelessWidget {
+class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
+
+  @override
+  State<WalletScreen> createState() => _WalletScreenState();
+}
+
+class _WalletScreenState extends State<WalletScreen> {
+  /// The server's ledger, once it has arrived. Null means either that there is
+  /// no backend — in which case the on-device ledger is the real one — or that
+  /// the read has not come back yet.
+  ({int balance, List<Txn> entries})? _remote;
+  bool _loading = Backend.isLive;
+
+  @override
+  void initState() {
+    super.initState();
+    if (Backend.isLive) _load();
+  }
+
+  Future<void> _load() async {
+    final wallet = await Backend.fetchWallet();
+    if (!mounted) return;
+    setState(() {
+      _remote = wallet;
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +47,16 @@ class WalletScreen extends StatelessWidget {
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
     final user = session.requireUser;
+
+    // With a backend the money is the server's; showing the device's stale
+    // copy beside it would be inventing a number. Until the read lands there
+    // is nothing truthful to display, so the balance waits rather than
+    // guessing.
+    final remote = _remote;
+    final balance = Backend.isLive ? remote?.balance : user.walletBalance;
+    final entries = Backend.isLive
+        ? (remote?.entries ?? const <Txn>[])
+        : rides.transactions;
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +93,7 @@ class WalletScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  money(user.walletBalance),
+                  balance == null ? '—' : money(balance),
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.w800,
@@ -119,7 +156,12 @@ class WalletScreen extends StatelessWidget {
             'Activity',
             padding: EdgeInsets.only(top: 24, bottom: 8),
           ),
-          if (rides.transactions.isEmpty)
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 40),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (entries.isEmpty)
             const EmptyState(
               title: 'No transactions yet',
               body: 'Rides, top-ups and payouts appear here.',
@@ -129,8 +171,8 @@ class WalletScreen extends StatelessWidget {
               padding: EdgeInsets.zero,
               child: Column(
                 children: [
-                  for (var i = 0; i < rides.transactions.length; i++)
-                    _TxnRow(txn: rides.transactions[i], first: i == 0),
+                  for (var i = 0; i < entries.length; i++)
+                    _TxnRow(txn: entries[i], first: i == 0),
                 ],
               ),
             ),
@@ -145,6 +187,31 @@ class WalletScreen extends StatelessWidget {
   }
 
   void _topUp(BuildContext context, SessionStore session, RidesStore rides) {
+    // Without a backend these amounts are demo money in a demo ledger, which
+    // is exactly what the on-device build is. With one, the balance is the
+    // server's and it only grows when a payment provider has actually taken
+    // money — there is no honest way to add to it from here, and an RPC that
+    // let a client credit itself would undo the point of the ledger.
+    if (Backend.isLive) {
+      showAppSheet(
+        context,
+        title: 'Top up your wallet',
+        builder: (sheetContext) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            'Card payments are not connected yet, so there is no way to add '
+            'to your balance. Your balance changes when a trip settles.',
+            style: TextStyle(
+              fontSize: 13.5,
+              color: sheetContext.c.textDim,
+              height: 1.5,
+            ),
+          ),
+        ),
+      );
+      return;
+    }
+
     showAppSheet(
       context,
       title: 'Top up your wallet',

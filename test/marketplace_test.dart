@@ -107,6 +107,49 @@ void main() {
   // policy compares auth.uid() against the ids this account writes. If the
   // local user keeps an id the server has never heard of, nothing it publishes
   // is accepted — and the failure is a silent rejection, not a crash.
+  // With a backend, the database settles a ride the moment it completes. If
+  // the client also wrote its own entries, every trip would be counted twice —
+  // and the driver's device would be deciding what the driver earned, which is
+  // the thing moving the ledger to the server was meant to stop.
+  group('settlement ownership', () {
+    test('the client writes no money when the server settles', () async {
+      final remote = RidesStore(session, settlesRemotely: true);
+      addTearDown(remote.dispose);
+
+      final me = session.requireUser;
+      final balanceBefore = me.walletBalance;
+
+      final ride = buildRide(passengerId: me.id);
+      remote.publishRide(ride);
+      remote.completeRide(ride.id);
+
+      expect(
+        remote.transactions,
+        isEmpty,
+        reason: 'the ledger belongs to the database when one is settling',
+      );
+      expect(
+        session.requireUser.walletBalance,
+        balanceBefore,
+        reason: 'and the device must not invent a balance it does not own',
+      );
+    });
+
+    test('the client still settles locally with no backend', () async {
+      final me = session.requireUser;
+      final ride = buildRide(passengerId: me.id);
+      rides.publishRide(ride);
+      rides.completeRide(ride.id);
+
+      expect(
+        rides.transactions,
+        isNotEmpty,
+        reason:
+            'the on-device demo has to keep working with nothing to talk to',
+      );
+    });
+  });
+
   group('identity', () {
     test('adopts the id the backend supplies', () {
       final fresh = SessionStore();

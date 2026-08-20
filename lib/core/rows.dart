@@ -268,3 +268,19 @@ Map<String, dynamic> driverLocationToRow({
   'online': online,
   'updated_at': _iso(DateTime.now()),
 };
+
+// ---------------------------------------------------------------------------
+// Wallet
+//
+// Read-only: the ledger has a `select` policy and no other, so there is no
+// insert shape to write. Money moves when the database settles a ride.
+// ---------------------------------------------------------------------------
+
+Txn walletTxnFromRow(Map<String, dynamic> row) => Txn(
+  id: row['id'] as String,
+  kind: _enum(TransactionKind.values, row['kind'], TransactionKind.ridePayment),
+  amount: row['amount'] as int,
+  description: row['description'] as String,
+  createdAt: _time(row['created_at'])!,
+  rideId: row['ride_id'] as String?,
+);

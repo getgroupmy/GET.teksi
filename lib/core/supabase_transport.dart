@@ -50,6 +50,13 @@ class SupabaseTransport implements RealtimeTransport {
   /// instead of leaving them staring at a request nobody received.
   Stream<Object> get errors => _errors.stream;
 
+  /// Reports a failure that happened outside this class — a read issued
+  /// directly against the client — onto the same stream, so a listener has one
+  /// place to watch rather than several.
+  void report(Object error) {
+    if (!_errors.isClosed) _errors.add(error);
+  }
+
   String? get _uid => _client.auth.currentUser?.id;
 
   void _subscribe() {

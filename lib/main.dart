@@ -34,7 +34,12 @@ class GetTeksiApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => SessionStore()..locate()),
         ChangeNotifierProxyProvider<SessionStore, RidesStore>(
-          create: (context) => RidesStore(context.read<SessionStore>()),
+          create: (context) => RidesStore(
+            context.read<SessionStore>(),
+            // With a backend the database settles rides itself, so the client
+            // must not also write its own wallet entries.
+            settlesRemotely: Backend.isLive,
+          ),
           update: (_, _, rides) => rides!,
         ),
         ChangeNotifierProvider(create: (_) => DraftStore()),

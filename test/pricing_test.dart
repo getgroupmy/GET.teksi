@@ -113,6 +113,30 @@ void main() {
     test('keeps the driver share above 90%', () {
       expect(driverNet(10000) / 10000, greaterThan(0.9));
     });
+
+    test('agrees with the database, fare for fare', () {
+      // The server settles rides with private.driver_net() and the app shows
+      // the driver what they will earn. If those two ever disagree, a driver
+      // is quoted one number and paid another — so the same worked examples
+      // are pinned on both sides. supabase/tests/policies.sql asserts this
+      // exact list against the SQL implementation.
+      const expected = {
+        500: 451,
+        1005: 906,
+        1234: 1112,
+        1900: 1712,
+        4700: 4235,
+        99999: 90099,
+      };
+      expected.forEach((fare, net) {
+        expect(
+          driverNet(fare),
+          net,
+          reason:
+              'driverNet($fare) must match private.driver_net($fare) in SQL',
+        );
+      });
+    });
   });
 
   group('roundFare', () {

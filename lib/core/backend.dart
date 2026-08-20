@@ -1,7 +1,9 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/models.dart';
 import 'bus.dart';
 import 'config.dart';
+import 'rows.dart';
 import 'supabase_transport.dart';
 
 /// Connects the app to its backend, when it has one.
@@ -60,6 +62,38 @@ class Backend {
     } catch (_) {
       _client = null;
       _transport = null;
+    }
+  }
+
+  /// The server's view of the signed-in user's money: the cached balance and
+  /// the ledger it was derived from.
+  ///
+  /// Read-only by construction — the wallet table grants `select` and nothing
+  /// else, so there is no client-side write to offer here even if one were
+  /// wanted. Entries appear because a ride completed, not because an app asked.
+  static Future<({int balance, List<Txn> entries})?> fetchWallet() async {
+    final uid = _client?.auth.currentUser?.id;
+    if (uid == null) return null;
+    try {
+      final profile = await client
+          .from('profiles')
+          .select('wallet_balance')
+          .eq('id', uid)
+          .single();
+      final rows = await client
+          .from('wallet_transactions')
+          .select()
+          .order('created_at', ascending: false)
+          .limit(120);
+      return (
+        balance: (profile['wallet_balance'] as num?)?.toInt() ?? 0,
+        entries: (rows as List)
+            .map((r) => walletTxnFromRow((r as Map).cast<String, dynamic>()))
+            .toList(),
+      );
+    } catch (e) {
+      _transport?.report(e);
+      return null;
     }
   }
 

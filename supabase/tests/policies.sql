@@ -122,13 +122,13 @@ select test.act_as(:aisyah);
 insert into public.rides (
   id, passenger_id, passenger_name, passenger_avatar_color, passenger_rating,
   pickup, dropoff, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng,
-  asking_price, recommended_price, distance_km, duration_minutes
+  asking_price, recommended_price, distance_km, duration_minutes, payment_method
 ) values (
   '99999999-9999-4999-8999-999999999999', :aisyah, 'Aisyah', -16711936, 4.8,
   '{"id":"p1","name":"KLCC","address":"KLCC, KL","coord":{"lat":3.1578,"lng":101.7123},"category":"landmark"}'::jsonb,
   '{"id":"p2","name":"Mid Valley","address":"Mid Valley, KL","coord":{"lat":3.1177,"lng":101.6771},"category":"mall"}'::jsonb,
   3.1578, 101.7123, 3.1177, 101.6771,
-  1850, 2000, 8.4, 22
+  1850, 2000, 8.4, 22, 'wallet'
 );
 
 do $$ begin
@@ -455,7 +455,123 @@ do $$ begin
     'accepting a bid that has already expired');
 end $$;
 
+-- ---------------------------------------------------------------------------
+\echo ''
+\echo '== the wallet is the database''s to write, not the client''s =='
+-- ---------------------------------------------------------------------------
+
+set role authenticated;
+select test.act_as(:aisyah);
+
+do $$ begin
+  -- The completed ride earlier in this script was a wallet ride, so settlement
+  -- has already run. Nobody asked it to: it happened because the ride
+  -- completed.
+  perform test.eq(
+    (select amount from public.wallet_transactions
+      where ride_id = '99999999-9999-4999-8999-999999999999'
+        and user_id = '11111111-1111-4111-8111-111111111111'),
+    -1900, 'the passenger was debited the settled fare, not the asking price');
+
+  perform test.eq(
+    (select wallet_balance from public.profiles
+      where id = '11111111-1111-4111-8111-111111111111'),
+    -1900, 'and the cached balance followed the ledger');
+
+  -- The driver's earning is the driver's to see.
+  perform test.eq((select count(*)::int from public.wallet_transactions), 1,
+                  'a user reads their own ledger and no one else''s');
+
+  perform test.denied(
+    format('insert into public.wallet_transactions (user_id, kind, amount, description)
+             values (%L, ''topup'', 1000000, ''free money'')',
+           '11111111-1111-4111-8111-111111111111'),
+    'a client crediting its own wallet');
+end $$;
+
+select test.act_as(:ravi);
+do $$ begin
+  perform test.eq(
+    (select amount from public.wallet_transactions
+      where ride_id = '99999999-9999-4999-8999-999999999999'
+        and user_id = '22222222-2222-4222-8222-222222222222'),
+    1712, 'the driver was credited the fare net of commission');
+
+  -- Two independent layers, so two assertions. To the client the rows are
+  -- simply not there to update: no policy grants UPDATE, so the statement
+  -- matches nothing and reports success having changed nothing.
+  perform test.affects_nothing(
+    'update public.wallet_transactions set amount = 999999',
+    'a client rewriting a ledger entry');
+end $$;
+
 reset role;
+
+-- And behind RLS, where rows *are* visible, the append-only trigger refuses.
+-- Without this an owner-level mistake could edit history and leave the cached
+-- balance describing something that never happened.
+do $$ begin
+  perform test.denied(
+    'update public.wallet_transactions set amount = 999999',
+    'rewriting a ledger entry as the owner');
+  perform test.denied(
+    'delete from public.wallet_transactions',
+    'deleting ledger history');
+end $$;
+
+set role authenticated;
+
+reset role;
+
+-- A cash ride pays the driver in cash, at the kerb. Settling it through the
+-- wallet as well would pay them twice.
+do $$
+declare
+  cash_ride uuid;
+  ledger_before integer := (select count(*)::int from public.wallet_transactions);
+begin
+  insert into public.rides (
+    passenger_id, passenger_name, passenger_avatar_color, passenger_rating,
+    pickup, dropoff, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng,
+    asking_price, recommended_price, distance_km, duration_minutes,
+    payment_method, status, driver_id, driver_name, final_price
+  ) values (
+    '33333333-3333-4333-8333-333333333333', 'Siti', 0, 4.9,
+    '{}'::jsonb, '{}'::jsonb, 3.1, 101.7, 3.2, 101.8, 1000, 1000, 5, 15,
+    'cash', 'inProgress', '22222222-2222-4222-8222-222222222222', 'Ravi', 1000
+  ) returning id into cash_ride;
+
+  update public.rides set status = 'completed', completed_at = now()
+   where id = cash_ride;
+
+  perform test.eq(
+    (select count(*)::int from public.wallet_transactions
+      where ride_id = cash_ride and kind = 'ridePayment'),
+    0, 'a cash ride does not debit the passenger''s wallet');
+
+  perform test.eq(
+    (select amount from public.wallet_transactions
+      where ride_id = cash_ride and kind = 'rideEarning'),
+    901, 'but the driver''s earning is still recorded');
+
+  -- Settlement must be idempotent: a second completion writes nothing.
+  update public.rides set completed_at = now() where id = cash_ride;
+  perform test.eq(
+    (select count(*)::int from public.wallet_transactions),
+    ledger_before + 1, 'settling the same ride twice posts one entry, not two');
+end $$;
+
+-- The fee has to mean the same thing in Dart and in SQL, or a driver is shown
+-- one number and paid another. These are the values lib/services/pricing.dart
+-- produces; test/pricing_test.dart pins the same list from the other side.
+do $$ begin
+  perform test.eq(private.driver_net(500),   451,   'driver_net(500) matches Dart');
+  perform test.eq(private.driver_net(1005),  906,   'driver_net(1005) matches Dart');
+  perform test.eq(private.driver_net(1234),  1112,  'driver_net(1234) matches Dart');
+  perform test.eq(private.driver_net(1900),  1712,  'driver_net(1900) matches Dart');
+  perform test.eq(private.driver_net(4700),  4235,  'driver_net(4700) matches Dart');
+  perform test.eq(private.driver_net(99999), 90099, 'driver_net(99999) matches Dart');
+end $$;
 
 \echo ''
 \echo '== the schema internals are not an API =='
