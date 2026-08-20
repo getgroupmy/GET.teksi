@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
 import '../../data/fixtures.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/rides.dart';
@@ -44,6 +45,7 @@ class _OffersSheetState extends State<OffersSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final rides = context.watch<RidesStore>();
     final ride = rides.rides[widget.ride.id] ?? widget.ride;
@@ -65,8 +67,8 @@ class _OffersSheetState extends State<OffersSheet> {
                   children: [
                     Text(
                       pending.isEmpty
-                          ? 'Looking for drivers…'
-                          : '${plural(pending.length, 'offer')} received',
+                          ? l.lookingForDrivers
+                          : l.offersReceived(pending.length),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
@@ -74,8 +76,10 @@ class _OffersSheetState extends State<OffersSheet> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Your price ${money(ride.askingPrice, decimals: false)} · '
-                      'searching ${mins > 0 ? '${mins}m ' : ''}${secs}s',
+                      l.yourPriceSearching(
+                        money(ride.askingPrice, decimals: false),
+                        '${mins > 0 ? '${mins}m ' : ''}${secs}s',
+                      ),
                       style: TextStyle(fontSize: 13, color: c.textDim),
                     ),
                   ],
@@ -83,7 +87,7 @@ class _OffersSheetState extends State<OffersSheet> {
               ),
               IconButton(
                 icon: const Icon(Icons.close_rounded),
-                tooltip: 'Cancel search',
+                tooltip: l.cancelSearch,
                 color: c.textDim,
                 onPressed: () => _confirmCancel(context, rides, ride),
               ),
@@ -102,10 +106,7 @@ class _OffersSheetState extends State<OffersSheet> {
             ),
             if (_elapsed > 20) ...[
               const SizedBox(height: 12),
-              const InfoBanner(
-                'No offers yet. Raising your price is the fastest way to get picked up.',
-                tone: BannerTone.warn,
-              ),
+              InfoBanner(l.noOffersRaisePrompt, tone: BannerTone.warn),
             ],
             const SizedBox(height: 12),
             for (var i = 0; i < 3; i++) const _OfferSkeleton(),
@@ -137,14 +138,14 @@ class _OffersSheetState extends State<OffersSheet> {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.trending_up_rounded, size: 18),
-                SizedBox(width: 8),
+                const Icon(Icons.trending_up_rounded, size: 18),
+                const SizedBox(width: 8),
                 Text(
-                  'Raise your price',
-                  style: TextStyle(fontWeight: FontWeight.w700),
+                  l.raiseYourPrice,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ],
             ),
@@ -155,18 +156,18 @@ class _OffersSheetState extends State<OffersSheet> {
   }
 
   void _showRaise(BuildContext context, RidesStore rides, Ride ride) {
+    final l = AppLocalizations.of(context)!;
     final suggestions = raiseSuggestions(ride.askingPrice);
     showAppSheet(
       context,
-      title: 'Raise your price',
+      title: l.raiseYourPrice,
       builder: (sheetContext) {
         final c = sheetContext.c;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'More drivers see your order when the fare goes up. '
-              "You're currently offering ${money(ride.askingPrice, decimals: false)}.",
+              l.raiseSheetBody(money(ride.askingPrice, decimals: false)),
               style: TextStyle(fontSize: 13.5, color: c.textDim, height: 1.4),
             ),
             const SizedBox(height: 16),
@@ -207,7 +208,7 @@ class _OffersSheetState extends State<OffersSheet> {
                         ),
                         Text(
                           '+${money(suggestions[i] - ride.askingPrice, decimals: false)}'
-                          '${i == 1 ? ' · recommended' : ''}',
+                          '${i == 1 ? l.recommendedSuffix : ''}',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
@@ -226,14 +227,15 @@ class _OffersSheetState extends State<OffersSheet> {
   }
 
   void _confirmCancel(BuildContext context, RidesStore rides, Ride ride) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: 'Cancel your order?',
+      title: l.cancelYourOrder,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Tell us why so we can improve matching.',
+            l.cancelReasonPrompt,
             style: TextStyle(fontSize: 13.5, color: sheetContext.c.textDim),
           ),
           const SizedBox(height: 8),
@@ -244,7 +246,7 @@ class _OffersSheetState extends State<OffersSheet> {
           const SizedBox(height: 16),
           FilledButton.tonal(
             onPressed: () => Navigator.of(sheetContext).pop(),
-            child: const Text('Keep searching'),
+            child: Text(l.keepSearching),
           ),
         ],
       ),
@@ -297,6 +299,7 @@ class _OfferCardState extends State<_OfferCard> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final offer = widget.offer;
     final diff = offer.price - widget.askingPrice;
@@ -380,7 +383,7 @@ class _OfferCardState extends State<_OfferCard> {
                   const SizedBox(height: 4),
                   Text(
                     diff == 0
-                        ? 'Your price'
+                        ? l.yourPrice
                         : diff > 0
                         ? '+${money(diff, decimals: false)}'
                         : '−${money(-diff, decimals: false)}',
@@ -399,14 +402,17 @@ class _OfferCardState extends State<_OfferCard> {
             children: [
               Expanded(
                 child: Text(
-                  '${offer.etaMinutes} min away · ${distanceLabel(offer.distanceKm)} · '
-                  '${compactCount(offer.driverRidesGiven)} trips',
+                  l.offerMetaLine(
+                    offer.etaMinutes,
+                    distanceLabel(offer.distanceKm),
+                    compactCount(offer.driverRidesGiven),
+                  ),
                   style: TextStyle(fontSize: 12.5, color: c.textDim),
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.close_rounded, size: 18),
-                tooltip: 'Decline offer',
+                tooltip: l.declineOffer,
                 onPressed: widget.onDecline,
                 style: IconButton.styleFrom(
                   backgroundColor: c.surface3,
@@ -428,7 +434,7 @@ class _OfferCardState extends State<_OfferCard> {
                   children: [
                     const Icon(Icons.check_rounded, size: 16),
                     const SizedBox(width: 4),
-                    const Text('Accept'),
+                    Text(l.accept),
                     const SizedBox(width: 5),
                     Text(
                       '${_secondsLeft}s',

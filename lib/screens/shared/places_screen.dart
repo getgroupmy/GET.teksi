@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/places.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/draft.dart';
 import '../../state/session.dart';
@@ -14,6 +15,7 @@ class PlacesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final draft = context.read<DraftStore>();
@@ -31,18 +33,16 @@ class PlacesScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Saved places'),
+        title: Text(l.savedPlaces),
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 32),
         children: [
-          const SectionLabel('Shortcuts'),
+          SectionLabel(l.shortcuts),
           AppRow(
             icon: Icons.home_rounded,
-            title: user.homePlace?.name ?? 'Add home',
-            subtitle:
-                user.homePlace?.address ??
-                'Set your home address for one-tap booking',
+            title: user.homePlace?.name ?? l.addHome,
+            subtitle: user.homePlace?.address ?? l.addHomeSubtitle,
             onTap: () => user.homePlace == null
                 ? _pick(context, session, home: true)
                 : go(user.homePlace!),
@@ -54,16 +54,14 @@ class PlacesScreen extends StatelessWidget {
                       size: 17,
                       color: c.textMute,
                     ),
-                    tooltip: 'Remove home',
+                    tooltip: l.removeHome,
                     onPressed: () => session.clearShortcut(home: true),
                   ),
           ),
           AppRow(
             icon: Icons.work_outline_rounded,
-            title: user.workPlace?.name ?? 'Add work',
-            subtitle:
-                user.workPlace?.address ??
-                'Set your work address for one-tap booking',
+            title: user.workPlace?.name ?? l.addWork,
+            subtitle: user.workPlace?.address ?? l.addWorkSubtitle,
             onTap: () => user.workPlace == null
                 ? _pick(context, session, home: false)
                 : go(user.workPlace!),
@@ -75,7 +73,7 @@ class PlacesScreen extends StatelessWidget {
                       size: 17,
                       color: c.textMute,
                     ),
-                    tooltip: 'Remove work',
+                    tooltip: l.removeWork,
                     onPressed: () => session.clearShortcut(home: false),
                   ),
           ),
@@ -87,20 +85,20 @@ class PlacesScreen extends StatelessWidget {
                   Expanded(
                     child: FilledButton.tonal(
                       onPressed: () => _pick(context, session, home: true),
-                      child: const Text('Change home'),
+                      child: Text(l.changeHome),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: FilledButton.tonal(
                       onPressed: () => _pick(context, session, home: false),
-                      child: const Text('Change work'),
+                      child: Text(l.changeWork),
                     ),
                   ),
                 ],
               ),
             ),
-          const SectionLabel('Popular in Kuala Lumpur'),
+          SectionLabel(l.popularInKl),
           for (final place in places.take(10))
             AppRow(
               icon: Icons.place_outlined,
@@ -114,9 +112,10 @@ class PlacesScreen extends StatelessWidget {
   }
 
   void _pick(BuildContext context, SessionStore session, {required bool home}) {
+    final l = AppLocalizations.of(context)!;
     showAppSheet(
       context,
-      title: home ? 'Set your home' : 'Set your work',
+      title: home ? l.setYourHome : l.setYourWork,
       builder: (sheetContext) => _PlacePicker(
         onPick: (place) {
           session.saveShortcut(
@@ -144,6 +143,7 @@ class _PlacePickerState extends State<_PlacePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final results = _query.trim().isEmpty
         ? allPlaces.take(12).toList()
@@ -155,16 +155,16 @@ class _PlacePickerState extends State<_PlacePicker> {
         TextField(
           autofocus: true,
           onChanged: (v) => setState(() => _query = v),
-          decoration: const InputDecoration(
-            hintText: 'Search for an address',
-            prefixIcon: Icon(Icons.search_rounded, size: 20),
+          decoration: InputDecoration(
+            hintText: l.searchForAnAddress,
+            prefixIcon: const Icon(Icons.search_rounded, size: 20),
           ),
         ),
         const SizedBox(height: 8),
         ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 320),
           child: results.isEmpty
-              ? const EmptyState(title: 'No matches', body: 'Try another name.')
+              ? EmptyState(title: l.noMatches, body: l.noMatchesBody)
               : ListView.separated(
                   shrinkWrap: true,
                   itemCount: results.length,

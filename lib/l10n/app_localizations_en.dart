@@ -697,4 +697,472 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveContact => 'Save contact';
+
+  @override
+  String get balanceCaps => 'BALANCE';
+
+  @override
+  String get topUp => 'Top up';
+
+  @override
+  String get promos => 'Promos';
+
+  @override
+  String get paymentMethods => 'Payment methods';
+
+  @override
+  String cardExpires(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get defaultLabel => 'Default';
+
+  @override
+  String get activity => 'Activity';
+
+  @override
+  String get noTransactions => 'No transactions yet';
+
+  @override
+  String get noTransactionsBody => 'Rides, top-ups and payouts appear here.';
+
+  @override
+  String get cashTripsNote =>
+      'Cash trips are settled directly with the driver and don’t move your wallet balance.';
+
+  @override
+  String get topUpTitle => 'Top up your wallet';
+
+  @override
+  String get topUpUnavailable =>
+      'Card payments are not connected yet, so there is no way to add to your balance. Your balance changes when a trip settles.';
+
+  @override
+  String topUpChargedTo(String card) {
+    return 'Charged to $card.';
+  }
+
+  @override
+  String topUpDescription(String card) {
+    return 'Top-up from card $card';
+  }
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get passengerRating => 'Passenger rating';
+
+  @override
+  String get tripsTakenLabel => 'Trips taken';
+
+  @override
+  String get driverProfile => 'Driver profile';
+
+  @override
+  String get verified => 'Verified';
+
+  @override
+  String get driverRating => 'Driver rating';
+
+  @override
+  String get tripsGivenLabel => 'Trips given';
+
+  @override
+  String get earned => 'Earned';
+
+  @override
+  String memberSince(String date) {
+    return 'Member since $date';
+  }
+
+  @override
+  String get ratingExplainer =>
+      'Your rating is the average of your last 50 trips. Passengers and drivers rate each other after every completed ride.';
+
+  @override
+  String get editProfile => 'Edit profile';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get shortcuts => 'Shortcuts';
+
+  @override
+  String get addHome => 'Add home';
+
+  @override
+  String get addHomeSubtitle => 'Set your home address for one-tap booking';
+
+  @override
+  String get removeHome => 'Remove home';
+
+  @override
+  String get addWork => 'Add work';
+
+  @override
+  String get addWorkSubtitle => 'Set your work address for one-tap booking';
+
+  @override
+  String get removeWork => 'Remove work';
+
+  @override
+  String get changeHome => 'Change home';
+
+  @override
+  String get changeWork => 'Change work';
+
+  @override
+  String get popularInKl => 'Popular in Kuala Lumpur';
+
+  @override
+  String get setYourHome => 'Set your home';
+
+  @override
+  String get setYourWork => 'Set your work';
+
+  @override
+  String get searchForAnAddress => 'Search for an address';
+
+  @override
+  String get noMatches => 'No matches';
+
+  @override
+  String get noMatchesBody => 'Try another name.';
+
+  @override
+  String get order => 'Order';
+
+  @override
+  String get orderGoneTitle => 'This order is no longer available';
+
+  @override
+  String get orderGoneBody => 'It was taken or cancelled.';
+
+  @override
+  String get rideRequest => 'Ride request';
+
+  @override
+  String postedAgo(String time) {
+    return 'Posted $time';
+  }
+
+  @override
+  String raisedTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'raised $count times',
+      one: 'raised $count time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String passengerCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count passengers',
+      one: '$count passenger',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get toPickup => 'To pickup';
+
+  @override
+  String get tripLength => 'Trip length';
+
+  @override
+  String get carType => 'Car type';
+
+  @override
+  String get payment => 'Payment';
+
+  @override
+  String get orderClosedToOffers => 'This order is no longer accepting offers.';
+
+  @override
+  String get yourOffer => 'Your offer';
+
+  @override
+  String waitingForReply(String name) {
+    return 'Waiting for $name to reply';
+  }
+
+  @override
+  String get withdrawOffer => 'Withdraw offer';
+
+  @override
+  String get passengerOffers => 'Passenger offers';
+
+  @override
+  String marketPrice(String amount) {
+    return 'Market $amount';
+  }
+
+  @override
+  String get lowerOffer => 'Lower offer';
+
+  @override
+  String get raiseOffer => 'Raise offer';
+
+  @override
+  String youKeepAfterFee(String net, String fee) {
+    return 'You keep $net after $fee fee';
+  }
+
+  @override
+  String resetTo(String amount) {
+    return 'Reset to $amount';
+  }
+
+  @override
+  String get counterOfferWarning =>
+      'Counter-offers take longer to be accepted than taking the passenger’s price.';
+
+  @override
+  String offerAmount(String amount) {
+    return 'Offer $amount';
+  }
+
+  @override
+  String acceptAmount(String amount) {
+    return 'Accept $amount';
+  }
+
+  @override
+  String get skipThisOrder => 'Skip this order';
+
+  @override
+  String get vehicle => 'Vehicle';
+
+  @override
+  String get notADriverTitle => 'You’re not a driver yet';
+
+  @override
+  String get notADriverBody => 'Set up your vehicle to start receiving orders.';
+
+  @override
+  String seatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count seats',
+      one: '$count seat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get editDetails => 'Edit details';
+
+  @override
+  String get documents => 'Documents';
+
+  @override
+  String get documentsNote =>
+      'Documents are verified automatically in this build. In production these would be reviewed against LPKP/APAD records before a driver can go online.';
+
+  @override
+  String get editVehicle => 'Edit vehicle';
+
+  @override
+  String get plateNumber => 'Plate number';
+
+  @override
+  String get colour => 'Colour';
+
+  @override
+  String get saveChanges => 'Save changes';
+
+  @override
+  String get docApproved => 'Approved';
+
+  @override
+  String get docInReview => 'In review';
+
+  @override
+  String get docRejected => 'Rejected';
+
+  @override
+  String get docNotUploaded => 'Not uploaded';
+
+  @override
+  String expiresDate(String date) {
+    return 'Expires $date';
+  }
+
+  @override
+  String get classHintEconomy => 'Perodua, Proton, small sedans';
+
+  @override
+  String get classHintComfort => 'Honda City, Toyota Vios and up';
+
+  @override
+  String get classHintXl => 'MPVs and 7-seaters';
+
+  @override
+  String get driverIntroTitle => 'Start earning with your car';
+
+  @override
+  String get driverIntroBody =>
+      'See ride requests near you, choose the ones worth your time, and set your own price on every trip.';
+
+  @override
+  String perkKeepTitle(String percent) {
+    return 'Keep $percent% of every fare';
+  }
+
+  @override
+  String perkKeepBody(String percent) {
+    return 'Our service fee is $percent% — no surge splits, no hidden cuts.';
+  }
+
+  @override
+  String get perkHoursTitle => 'Drive when you want';
+
+  @override
+  String get perkHoursBody =>
+      'Go online and offline in one tap. No shifts, no quotas.';
+
+  @override
+  String get perkChoiceTitle => 'You choose the order';
+
+  @override
+  String get perkChoiceBody =>
+      'See the destination and the fare before you accept anything.';
+
+  @override
+  String get driverIntroDocsNote =>
+      'This build verifies documents automatically so you can try the driver side right away.';
+
+  @override
+  String get yourVehicle => 'Your vehicle';
+
+  @override
+  String get make => 'Make';
+
+  @override
+  String get model => 'Model';
+
+  @override
+  String get year => 'Year';
+
+  @override
+  String get vehicleCategory => 'Vehicle category';
+
+  @override
+  String get startDriving => 'Start driving';
+
+  @override
+  String get colourHint => 'White';
+
+  @override
+  String get serviceCity => 'City';
+
+  @override
+  String get serviceIntercity => 'Intercity';
+
+  @override
+  String get serviceDelivery => 'Delivery';
+
+  @override
+  String get serviceFreight => 'Freight';
+
+  @override
+  String get serviceMoto => 'Moto';
+
+  @override
+  String cardEndingIn(String tail) {
+    return 'Card $tail';
+  }
+
+  @override
+  String get optionChildSeat => 'Child seat';
+
+  @override
+  String get optionPet => 'Travelling with a pet';
+
+  @override
+  String get optionLuggage => 'Large luggage';
+
+  @override
+  String get optionAirCon => 'Air conditioning';
+
+  @override
+  String get optionNoSmoking => 'Non-smoking car';
+
+  @override
+  String get optionSilentRide => 'Silent ride';
+
+  @override
+  String get optionFemaleDriver => 'Prefer a female driver';
+
+  @override
+  String get whereTo => 'Where to?';
+
+  @override
+  String get home => 'Home';
+
+  @override
+  String get work => 'Work';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String offersReceived(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count offers received',
+      one: '$count offer received',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yourPriceSearching(String amount, String elapsed) {
+    return 'Your price $amount · searching $elapsed';
+  }
+
+  @override
+  String get noOffersRaisePrompt =>
+      'No offers yet. Raising your price is the fastest way to get picked up.';
+
+  @override
+  String raiseSheetBody(String amount) {
+    return 'More drivers see your order when the fare goes up. You’re currently offering $amount.';
+  }
+
+  @override
+  String get recommendedSuffix => ' · recommended';
+
+  @override
+  String get cancelYourOrder => 'Cancel your order?';
+
+  @override
+  String get cancelReasonPrompt => 'Tell us why so we can improve matching.';
+
+  @override
+  String offerMetaLine(int eta, String distance, String trips) {
+    return '$eta min away · $distance · $trips trips';
+  }
 }

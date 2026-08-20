@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
 import '../../state/session.dart';
@@ -15,6 +16,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -35,11 +37,11 @@ class ProfileScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Profile'),
+        title: Text(l.profile),
         actions: [
           TextButton(
             onPressed: () => _edit(context, session, user),
-            child: Text('Edit', style: TextStyle(color: c.accent)),
+            child: Text(l.edit, style: TextStyle(color: c.accent)),
           ),
         ],
       ),
@@ -74,23 +76,23 @@ class ProfileScreen extends StatelessWidget {
           Row(
             children: [
               StatBox(
-                label: 'Passenger rating',
+                label: l.passengerRating,
                 value: user.rating.toStringAsFixed(1),
                 tone: c.accent,
               ),
               const SizedBox(width: 8),
-              StatBox(label: 'Trips taken', value: '$asPassenger'),
+              StatBox(label: l.tripsTakenLabel, value: '$asPassenger'),
               const SizedBox(width: 8),
               StatBox(
-                label: 'Wallet',
+                label: l.wallet,
                 value: money(user.walletBalance, decimals: false),
               ),
             ],
           ),
           if (user.driverProfile != null) ...[
-            const SectionLabel(
-              'Driver profile',
-              padding: EdgeInsets.only(top: 24, bottom: 8),
+            SectionLabel(
+              l.driverProfile,
+              padding: const EdgeInsets.only(top: 24, bottom: 8),
             ),
             AppCard(
               child: Column(
@@ -143,7 +145,7 @@ class ProfileScreen extends StatelessWidget {
                             Icon(Icons.verified_rounded, size: 15, color: c.ok),
                             const SizedBox(width: 4),
                             Text(
-                              'Verified',
+                              l.verified,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -158,19 +160,19 @@ class ProfileScreen extends StatelessWidget {
                   Row(
                     children: [
                       StatBox(
-                        label: 'Driver rating',
+                        label: l.driverRating,
                         value: user.driverProfile!.rating.toStringAsFixed(2),
                         tone: c.accent,
                       ),
                       const SizedBox(width: 8),
                       StatBox(
-                        label: 'Trips given',
+                        label: l.tripsGivenLabel,
                         value:
                             '${asDriver == 0 ? user.driverProfile!.ridesGiven : asDriver}',
                       ),
                       const SizedBox(width: 8),
                       StatBox(
-                        label: 'Earned',
+                        label: l.earned,
                         value: money(
                           user.driverProfile!.earnings,
                           decimals: false,
@@ -190,7 +192,13 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Member since ${DateFormat('MMMM y').format(user.createdAt)}',
+                    // Locale-aware: the month name and the order it appears
+                    // in are the formatter's business, not a hardcoded pattern.
+                    l.memberSince(
+                      DateFormat.yMMMM(
+                        Localizations.localeOf(context).languageCode,
+                      ).format(user.createdAt),
+                    ),
                     style: const TextStyle(fontSize: 14),
                   ),
                 ),
@@ -199,32 +207,30 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const InfoBanner(
-            'Your rating is the average of your last 50 trips. Passengers and drivers '
-            'rate each other after every completed ride.',
-          ),
+          InfoBanner(l.ratingExplainer),
         ],
       ),
     );
   }
 
   void _edit(BuildContext context, SessionStore session, AppUser user) {
+    final l = AppLocalizations.of(context)!;
     final name = TextEditingController(text: user.name);
     final email = TextEditingController(text: user.email ?? '');
     showAppSheet(
       context,
-      title: 'Edit profile',
+      title: l.editProfile,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionLabel('Full name', padding: EdgeInsets.only(bottom: 6)),
+          SectionLabel(l.fullName, padding: const EdgeInsets.only(bottom: 6)),
           TextField(
             controller: name,
             textCapitalization: TextCapitalization.words,
           ),
-          const SectionLabel(
-            'Email',
-            padding: EdgeInsets.only(top: 16, bottom: 6),
+          SectionLabel(
+            l.email,
+            padding: const EdgeInsets.only(top: 16, bottom: 6),
           ),
           TextField(
             controller: email,
@@ -244,7 +250,7 @@ class ProfileScreen extends StatelessWidget {
                 );
                 Navigator.of(sheetContext).pop();
               },
-              child: const Text('Save'),
+              child: Text(l.save),
             ),
           ),
         ],

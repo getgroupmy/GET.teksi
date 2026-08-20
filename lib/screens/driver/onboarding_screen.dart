@@ -3,17 +3,30 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/session.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
 
-const _classHints = <VehicleClass, (String, int)>{
-  VehicleClass.economy: ('Perodua, Proton, small sedans', 4),
-  VehicleClass.comfort: ('Honda City, Toyota Vios and up', 4),
-  VehicleClass.xl: ('MPVs and 7-seaters', 7),
+/// Seats per category. Data rather than copy — this number is written into
+/// the Vehicle record, so it stays a constant.
+const _classSeats = <VehicleClass, int>{
+  VehicleClass.economy: 4,
+  VehicleClass.comfort: 4,
+  VehicleClass.xl: 7,
 };
+
+/// The example cars shown beside each category. Copy, so it is localised and
+/// cannot live in a const map.
+String _classHint(AppLocalizations l, VehicleClass vehicleClass) =>
+    switch (vehicleClass) {
+      VehicleClass.economy => l.classHintEconomy,
+      VehicleClass.comfort => l.classHintComfort,
+      VehicleClass.xl => l.classHintXl,
+    };
 
 class DriverOnboardingScreen extends StatefulWidget {
   const DriverOnboardingScreen({super.key});
@@ -52,16 +65,19 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
 
   void _finish() {
     if (!_valid) return;
+    final l = AppLocalizations.of(context)!;
     final session = context.read<SessionStore>();
     session.becomeDriver(
       Vehicle(
         make: _make.text.trim(),
         model: _model.text.trim(),
         year: int.parse(_year.text),
-        color: _color.text.trim().isEmpty ? 'Silver' : _color.text.trim(),
+        // The same word the field showed as its placeholder, so leaving it
+        // blank stores what the driver was shown rather than something else.
+        color: _color.text.trim().isEmpty ? l.colourHint : _color.text.trim(),
         plate: _plate.text.trim().toUpperCase(),
         vehicleClass: _class,
-        seats: _classHints[_class]!.$2,
+        seats: _classSeats[_class]!,
       ),
     );
     session.setPrefs(
@@ -78,6 +94,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
   }
 
   Widget _buildIntroStep(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     return Scaffold(
       appBar: AppBar(
@@ -94,8 +111,8 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Start earning with your car',
+                  Text(
+                    l.driverIntroTitle,
                     style: TextStyle(
                       fontSize: 27,
                       fontWeight: FontWeight.w800,
@@ -104,8 +121,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'See ride requests near you, choose the ones worth your time, '
-                    'and set your own price on every trip.',
+                    l.driverIntroBody,
                     style: TextStyle(
                       fontSize: 14.5,
                       color: c.textDim,
@@ -115,27 +131,25 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                   const SizedBox(height: 28),
                   _Perk(
                     icon: Icons.account_balance_wallet_outlined,
-                    title:
-                        'Keep ${((1 - commissionRate) * 100).round()}% of every fare',
-                    body:
-                        'Our service fee is ${(commissionRate * 100).toStringAsFixed(1)}% '
-                        '— no surge splits, no hidden cuts.',
+                    title: l.perkKeepTitle(
+                      '${((1 - commissionRate) * 100).round()}',
+                    ),
+                    body: l.perkKeepBody(
+                      (commissionRate * 100).toStringAsFixed(1),
+                    ),
                   ),
-                  const _Perk(
+                  _Perk(
                     icon: Icons.schedule_rounded,
-                    title: 'Drive when you want',
-                    body: 'Go online and offline in one tap. No shifts, no quotas.',
+                    title: l.perkHoursTitle,
+                    body: l.perkHoursBody,
                   ),
-                  const _Perk(
+                  _Perk(
                     icon: Icons.verified_user_outlined,
-                    title: 'You choose the order',
-                    body: 'See the destination and the fare before you accept anything.',
+                    title: l.perkChoiceTitle,
+                    body: l.perkChoiceBody,
                   ),
                   const SizedBox(height: 16),
-                  const InfoBanner(
-                    'This build verifies documents automatically so you can try the '
-                    'driver side right away.',
-                  ),
+                  InfoBanner(l.driverIntroDocsNote),
                 ],
               ),
             ),
@@ -144,7 +158,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             child: FilledButton(
               onPressed: () => setState(() => _onVehicleStep = true),
-              child: const Text('Continue'),
+              child: Text(l.continueLabel),
             ),
           ),
         ],
@@ -153,6 +167,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
   }
 
   Widget _buildVehicleStep(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     return Scaffold(
       appBar: AppBar(
@@ -160,7 +175,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => setState(() => _onVehicleStep = false),
         ),
-        title: const Text('Your vehicle'),
+        title: Text(l.yourVehicle),
       ),
       body: Column(
         children: [
@@ -174,7 +189,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                     children: [
                       Expanded(
                         child: _Field(
-                          label: 'Make',
+                          label: l.make,
                           controller: _make,
                           hint: 'Perodua',
                           autofocus: true,
@@ -184,7 +199,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _Field(
-                          label: 'Model',
+                          label: l.model,
                           controller: _model,
                           hint: 'Myvi',
                           onChanged: () => setState(() {}),
@@ -197,7 +212,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                     children: [
                       Expanded(
                         child: _Field(
-                          label: 'Year',
+                          label: l.year,
                           controller: _year,
                           hint: '2022',
                           numeric: true,
@@ -207,9 +222,9 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _Field(
-                          label: 'Colour',
+                          label: l.colour,
                           controller: _color,
-                          hint: 'White',
+                          hint: l.colourHint,
                           onChanged: () => setState(() {}),
                         ),
                       ),
@@ -217,15 +232,15 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                   ),
                   const SizedBox(height: 12),
                   _Field(
-                    label: 'Plate number',
+                    label: l.plateNumber,
                     controller: _plate,
                     hint: 'WXY 1234',
                     uppercase: true,
                     onChanged: () => setState(() {}),
                   ),
-                  const SectionLabel(
-                    'Vehicle category',
-                    padding: EdgeInsets.only(top: 24, bottom: 8),
+                  SectionLabel(
+                    l.vehicleCategory,
+                    padding: const EdgeInsets.only(top: 24, bottom: 8),
                   ),
                   for (final option in VehicleClass.values)
                     Padding(
@@ -255,14 +270,15 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      option.label,
+                                      option.labelIn(l),
                                       style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                     Text(
-                                      '${_classHints[option]!.$1} · ${_classHints[option]!.$2} seats',
+                                      '${_classHint(l, option)} · '
+                                      '${l.seatCount(_classSeats[option]!)}',
                                       style: TextStyle(
                                         fontSize: 12.5,
                                         color: c.textDim,
@@ -290,7 +306,7 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
             child: FilledButton(
               onPressed: _valid ? _finish : null,
-              child: const Text('Start driving'),
+              child: Text(l.startDriving),
             ),
           ),
         ],

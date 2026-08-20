@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../state/session.dart';
 import '../../theme.dart';
@@ -13,6 +15,7 @@ class VehicleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final profile = session.requireUser.driverProfile;
@@ -24,14 +27,14 @@ class VehicleScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: () => context.pop(),
           ),
-          title: const Text('Vehicle'),
+          title: Text(l.vehicle),
         ),
         body: EmptyState(
-          title: 'You’re not a driver yet',
-          body: 'Set up your vehicle to start receiving orders.',
+          title: l.notADriverTitle,
+          body: l.notADriverBody,
           action: FilledButton(
             onPressed: () => context.push('/d/onboarding'),
-            child: const Text('Become a driver'),
+            child: Text(l.becomeADriver),
           ),
         ),
       );
@@ -45,7 +48,7 @@ class VehicleScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Vehicle & documents'),
+        title: Text(l.vehicleAndDocuments),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -84,7 +87,8 @@ class VehicleScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${vehicle.color} · ${vehicle.year} · ${vehicle.seats} seats',
+                            '${vehicle.color} · ${vehicle.year} · '
+                            '${l.seatCount(vehicle.seats)}',
                             style: TextStyle(fontSize: 13, color: c.textDim),
                           ),
                         ],
@@ -115,11 +119,11 @@ class VehicleScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Category',
+                      l.category,
                       style: TextStyle(fontSize: 13, color: c.textDim),
                     ),
                     Text(
-                      vehicle.vehicleClass.label,
+                      vehicle.vehicleClass.labelIn(l),
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -132,15 +136,15 @@ class VehicleScreen extends StatelessWidget {
                   width: double.infinity,
                   child: FilledButton.tonal(
                     onPressed: () => _edit(context, session, vehicle),
-                    child: const Text('Edit details'),
+                    child: Text(l.editDetails),
                   ),
                 ),
               ],
             ),
           ),
-          const SectionLabel(
-            'Documents',
-            padding: EdgeInsets.only(top: 20, bottom: 8),
+          SectionLabel(
+            l.documents,
+            padding: const EdgeInsets.only(top: 20, bottom: 8),
           ),
           AppCard(
             padding: EdgeInsets.zero,
@@ -152,35 +156,33 @@ class VehicleScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const InfoBanner(
-            'Documents are verified automatically in this build. In production these '
-            'would be reviewed against LPKP/APAD records before a driver can go online.',
-          ),
+          InfoBanner(l.documentsNote),
         ],
       ),
     );
   }
 
   void _edit(BuildContext context, SessionStore session, Vehicle vehicle) {
+    final l = AppLocalizations.of(context)!;
     final plate = TextEditingController(text: vehicle.plate);
     final color = TextEditingController(text: vehicle.color);
     showAppSheet(
       context,
-      title: 'Edit vehicle',
+      title: l.editVehicle,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionLabel(
-            'Plate number',
-            padding: EdgeInsets.only(bottom: 6),
+          SectionLabel(
+            l.plateNumber,
+            padding: const EdgeInsets.only(bottom: 6),
           ),
           TextField(
             controller: plate,
             textCapitalization: TextCapitalization.characters,
           ),
-          const SectionLabel(
-            'Colour',
-            padding: EdgeInsets.only(top: 16, bottom: 6),
+          SectionLabel(
+            l.colour,
+            padding: const EdgeInsets.only(top: 16, bottom: 6),
           ),
           TextField(
             controller: color,
@@ -197,7 +199,7 @@ class VehicleScreen extends StatelessWidget {
                 );
                 Navigator.of(sheetContext).pop();
               },
-              child: const Text('Save changes'),
+              child: Text(l.saveChanges),
             ),
           ),
         ],
@@ -214,17 +216,18 @@ class _DocumentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final (label, color, icon) = switch (document.status) {
-      DocumentStatus.approved => ('Approved', c.ok, Icons.verified_rounded),
-      DocumentStatus.pending => ('In review', c.warn, Icons.schedule_rounded),
+      DocumentStatus.approved => (l.docApproved, c.ok, Icons.verified_rounded),
+      DocumentStatus.pending => (l.docInReview, c.warn, Icons.schedule_rounded),
       DocumentStatus.rejected => (
-        'Rejected',
+        l.docRejected,
         c.danger,
         Icons.error_outline_rounded,
       ),
       DocumentStatus.missing => (
-        'Not uploaded',
+        l.docNotUploaded,
         c.textMute,
         Icons.description_outlined,
       ),
@@ -254,7 +257,11 @@ class _DocumentRow extends StatelessWidget {
                 ),
                 if (document.expiresAt != null)
                   Text(
-                    'Expires ${DateFormat('MMM y').format(document.expiresAt!)}',
+                    l.expiresDate(
+                      DateFormat.yMMM(
+                        Localizations.localeOf(context).languageCode,
+                      ).format(document.expiresAt!),
+                    ),
                     style: TextStyle(fontSize: 12, color: c.textMute),
                   ),
               ],

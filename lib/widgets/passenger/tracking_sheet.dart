@@ -7,6 +7,7 @@ import '../../core/formats.dart';
 import '../../core/geo.dart';
 import '../../data/fixtures.dart';
 import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
 import '../../theme.dart';
@@ -224,7 +225,7 @@ class TrackingSheet extends StatelessWidget {
                     Text(
                       ride.paymentMethod == PaymentMethod.cash
                           ? l.payInCash
-                          : ride.paymentMethod.label,
+                          : ride.paymentMethod.labelIn(l),
                       style: TextStyle(fontSize: 13, color: c.textDim),
                     ),
                     Text(

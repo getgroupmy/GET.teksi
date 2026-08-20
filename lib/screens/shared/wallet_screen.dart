@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/backend.dart';
 import '../../core/formats.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
 import '../../state/session.dart';
@@ -11,6 +12,11 @@ import '../../theme.dart';
 import '../../widgets/ui.dart';
 
 const _topups = [1000, 2000, 5000, 10000];
+
+/// The demo card on file. One constant rather than four literals, so the
+/// number the sheet charges and the number the ledger records cannot drift.
+const _card = 'Visa ···4821';
+const _cardTail = '···4821';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -43,6 +49,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -64,7 +71,7 @@ class _WalletScreenState extends State<WalletScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Wallet'),
+        title: Text(l.wallet),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -83,7 +90,7 @@ class _WalletScreenState extends State<WalletScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'BALANCE',
+                  l.balanceCaps,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -119,7 +126,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 child: FilledButton.tonalIcon(
                   onPressed: () => _topUp(context, session, rides),
                   icon: const Icon(Icons.add_rounded, size: 18),
-                  label: const Text('Top up'),
+                  label: Text(l.topUp),
                 ),
               ),
               const SizedBox(width: 8),
@@ -127,23 +134,23 @@ class _WalletScreenState extends State<WalletScreen> {
                 child: FilledButton.tonalIcon(
                   onPressed: () => context.push('/promos'),
                   icon: const Icon(Icons.receipt_long_rounded, size: 18),
-                  label: const Text('Promos'),
+                  label: Text(l.promos),
                 ),
               ),
             ],
           ),
-          const SectionLabel(
-            'Payment methods',
-            padding: EdgeInsets.only(top: 24, bottom: 8),
+          SectionLabel(
+            l.paymentMethods,
+            padding: const EdgeInsets.only(top: 24, bottom: 8),
           ),
           AppCard(
             padding: EdgeInsets.zero,
             child: AppRow(
               icon: Icons.credit_card_rounded,
-              title: 'Visa ···4821',
-              subtitle: 'Expires 09/28',
+              title: _card,
+              subtitle: l.cardExpires('09/28'),
               trailing: Text(
-                'Default',
+                l.defaultLabel,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -152,9 +159,9 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ),
           ),
-          const SectionLabel(
-            'Activity',
-            padding: EdgeInsets.only(top: 24, bottom: 8),
+          SectionLabel(
+            l.activity,
+            padding: const EdgeInsets.only(top: 24, bottom: 8),
           ),
           if (_loading)
             const Padding(
@@ -162,10 +169,7 @@ class _WalletScreenState extends State<WalletScreen> {
               child: Center(child: CircularProgressIndicator()),
             )
           else if (entries.isEmpty)
-            const EmptyState(
-              title: 'No transactions yet',
-              body: 'Rides, top-ups and payouts appear here.',
-            )
+            EmptyState(title: l.noTransactions, body: l.noTransactionsBody)
           else
             AppCard(
               padding: EdgeInsets.zero,
@@ -177,16 +181,14 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ),
           const SizedBox(height: 16),
-          const InfoBanner(
-            'Cash trips are settled directly with the driver and don’t move your '
-            'wallet balance.',
-          ),
+          InfoBanner(l.cashTripsNote),
         ],
       ),
     );
   }
 
   void _topUp(BuildContext context, SessionStore session, RidesStore rides) {
+    final l = AppLocalizations.of(context)!;
     // Without a backend these amounts are demo money in a demo ledger, which
     // is exactly what the on-device build is. With one, the balance is the
     // server's and it only grows when a payment provider has actually taken
@@ -195,12 +197,11 @@ class _WalletScreenState extends State<WalletScreen> {
     if (Backend.isLive) {
       showAppSheet(
         context,
-        title: 'Top up your wallet',
+        title: l.topUpTitle,
         builder: (sheetContext) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
-            'Card payments are not connected yet, so there is no way to add '
-            'to your balance. Your balance changes when a trip settles.',
+            l.topUpUnavailable,
             style: TextStyle(
               fontSize: 13.5,
               color: sheetContext.c.textDim,
@@ -214,12 +215,12 @@ class _WalletScreenState extends State<WalletScreen> {
 
     showAppSheet(
       context,
-      title: 'Top up your wallet',
+      title: l.topUpTitle,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Charged to Visa ···4821.',
+            l.topUpChargedTo(_card),
             style: TextStyle(fontSize: 13.5, color: sheetContext.c.textDim),
           ),
           const SizedBox(height: 16),
@@ -239,7 +240,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     rides.addTransaction(
                       kind: TransactionKind.topup,
                       amount: amount,
-                      description: 'Top-up from card ···4821',
+                      description: l.topUpDescription(_cardTail),
                     );
                     Navigator.of(sheetContext).pop();
                   },

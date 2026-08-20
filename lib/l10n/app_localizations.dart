@@ -1314,6 +1314,786 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save contact'**
   String get saveContact;
+
+  /// No description provided for @balanceCaps.
+  ///
+  /// In en, this message translates to:
+  /// **'BALANCE'**
+  String get balanceCaps;
+
+  /// No description provided for @topUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up'**
+  String get topUp;
+
+  /// No description provided for @promos.
+  ///
+  /// In en, this message translates to:
+  /// **'Promos'**
+  String get promos;
+
+  /// No description provided for @paymentMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment methods'**
+  String get paymentMethods;
+
+  /// No description provided for @cardExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String cardExpires(String date);
+
+  /// No description provided for @defaultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get defaultLabel;
+
+  /// No description provided for @activity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get activity;
+
+  /// No description provided for @noTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get noTransactions;
+
+  /// No description provided for @noTransactionsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Rides, top-ups and payouts appear here.'**
+  String get noTransactionsBody;
+
+  /// No description provided for @cashTripsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash trips are settled directly with the driver and don’t move your wallet balance.'**
+  String get cashTripsNote;
+
+  /// No description provided for @topUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top up your wallet'**
+  String get topUpTitle;
+
+  /// No description provided for @topUpUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Card payments are not connected yet, so there is no way to add to your balance. Your balance changes when a trip settles.'**
+  String get topUpUnavailable;
+
+  /// No description provided for @topUpChargedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Charged to {card}.'**
+  String topUpChargedTo(String card);
+
+  /// No description provided for @topUpDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Top-up from card {card}'**
+  String topUpDescription(String card);
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @passengerRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger rating'**
+  String get passengerRating;
+
+  /// No description provided for @tripsTakenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips taken'**
+  String get tripsTakenLabel;
+
+  /// No description provided for @driverProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver profile'**
+  String get driverProfile;
+
+  /// No description provided for @verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get verified;
+
+  /// No description provided for @driverRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver rating'**
+  String get driverRating;
+
+  /// No description provided for @tripsGivenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips given'**
+  String get tripsGivenLabel;
+
+  /// No description provided for @earned.
+  ///
+  /// In en, this message translates to:
+  /// **'Earned'**
+  String get earned;
+
+  /// No description provided for @memberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since {date}'**
+  String memberSince(String date);
+
+  /// No description provided for @ratingExplainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Your rating is the average of your last 50 trips. Passengers and drivers rate each other after every completed ride.'**
+  String get ratingExplainer;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get editProfile;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @shortcuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcuts'**
+  String get shortcuts;
+
+  /// No description provided for @addHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add home'**
+  String get addHome;
+
+  /// No description provided for @addHomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your home address for one-tap booking'**
+  String get addHomeSubtitle;
+
+  /// No description provided for @removeHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove home'**
+  String get removeHome;
+
+  /// No description provided for @addWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Add work'**
+  String get addWork;
+
+  /// No description provided for @addWorkSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your work address for one-tap booking'**
+  String get addWorkSubtitle;
+
+  /// No description provided for @removeWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove work'**
+  String get removeWork;
+
+  /// No description provided for @changeHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Change home'**
+  String get changeHome;
+
+  /// No description provided for @changeWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Change work'**
+  String get changeWork;
+
+  /// No description provided for @popularInKl.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular in Kuala Lumpur'**
+  String get popularInKl;
+
+  /// No description provided for @setYourHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your home'**
+  String get setYourHome;
+
+  /// No description provided for @setYourWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your work'**
+  String get setYourWork;
+
+  /// No description provided for @searchForAnAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for an address'**
+  String get searchForAnAddress;
+
+  /// No description provided for @noMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get noMatches;
+
+  /// No description provided for @noMatchesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another name.'**
+  String get noMatchesBody;
+
+  /// No description provided for @order.
+  ///
+  /// In en, this message translates to:
+  /// **'Order'**
+  String get order;
+
+  /// No description provided for @orderGoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This order is no longer available'**
+  String get orderGoneTitle;
+
+  /// No description provided for @orderGoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It was taken or cancelled.'**
+  String get orderGoneBody;
+
+  /// No description provided for @rideRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Ride request'**
+  String get rideRequest;
+
+  /// No description provided for @postedAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted {time}'**
+  String postedAgo(String time);
+
+  /// How many times the passenger raised their asking price. Malay does not inflect for number, so its plural has a single 'other' case.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{raised {count} time} other{raised {count} times}}'**
+  String raisedTimes(int count);
+
+  /// How many people are riding.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{{count} passenger} other{{count} passengers}}'**
+  String passengerCount(int count);
+
+  /// No description provided for @toPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'To pickup'**
+  String get toPickup;
+
+  /// No description provided for @tripLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip length'**
+  String get tripLength;
+
+  /// No description provided for @carType.
+  ///
+  /// In en, this message translates to:
+  /// **'Car type'**
+  String get carType;
+
+  /// No description provided for @payment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get payment;
+
+  /// No description provided for @orderClosedToOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'This order is no longer accepting offers.'**
+  String get orderClosedToOffers;
+
+  /// No description provided for @yourOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Your offer'**
+  String get yourOffer;
+
+  /// No description provided for @waitingForReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {name} to reply'**
+  String waitingForReply(String name);
+
+  /// No description provided for @withdrawOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw offer'**
+  String get withdrawOffer;
+
+  /// No description provided for @passengerOffers.
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger offers'**
+  String get passengerOffers;
+
+  /// No description provided for @marketPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Market {amount}'**
+  String marketPrice(String amount);
+
+  /// No description provided for @lowerOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower offer'**
+  String get lowerOffer;
+
+  /// No description provided for @raiseOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise offer'**
+  String get raiseOffer;
+
+  /// The driver's take-home on a bid, and the commission deducted from it.
+  ///
+  /// In en, this message translates to:
+  /// **'You keep {net} after {fee} fee'**
+  String youKeepAfterFee(String net, String fee);
+
+  /// No description provided for @resetTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to {amount}'**
+  String resetTo(String amount);
+
+  /// No description provided for @counterOfferWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Counter-offers take longer to be accepted than taking the passenger’s price.'**
+  String get counterOfferWarning;
+
+  /// No description provided for @offerAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer {amount}'**
+  String offerAmount(String amount);
+
+  /// No description provided for @acceptAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept {amount}'**
+  String acceptAmount(String amount);
+
+  /// No description provided for @skipThisOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this order'**
+  String get skipThisOrder;
+
+  /// No description provided for @vehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle'**
+  String get vehicle;
+
+  /// No description provided for @notADriverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re not a driver yet'**
+  String get notADriverTitle;
+
+  /// No description provided for @notADriverBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your vehicle to start receiving orders.'**
+  String get notADriverBody;
+
+  /// How many seats a vehicle has.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{{count} seat} other{{count} seats}}'**
+  String seatCount(int count);
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @editDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit details'**
+  String get editDetails;
+
+  /// No description provided for @documents.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get documents;
+
+  /// No description provided for @documentsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents are verified automatically in this build. In production these would be reviewed against LPKP/APAD records before a driver can go online.'**
+  String get documentsNote;
+
+  /// No description provided for @editVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit vehicle'**
+  String get editVehicle;
+
+  /// No description provided for @plateNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate number'**
+  String get plateNumber;
+
+  /// No description provided for @colour.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get colour;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
+
+  /// No description provided for @docApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get docApproved;
+
+  /// No description provided for @docInReview.
+  ///
+  /// In en, this message translates to:
+  /// **'In review'**
+  String get docInReview;
+
+  /// No description provided for @docRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get docRejected;
+
+  /// No description provided for @docNotUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not uploaded'**
+  String get docNotUploaded;
+
+  /// No description provided for @expiresDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires {date}'**
+  String expiresDate(String date);
+
+  /// No description provided for @classHintEconomy.
+  ///
+  /// In en, this message translates to:
+  /// **'Perodua, Proton, small sedans'**
+  String get classHintEconomy;
+
+  /// No description provided for @classHintComfort.
+  ///
+  /// In en, this message translates to:
+  /// **'Honda City, Toyota Vios and up'**
+  String get classHintComfort;
+
+  /// No description provided for @classHintXl.
+  ///
+  /// In en, this message translates to:
+  /// **'MPVs and 7-seaters'**
+  String get classHintXl;
+
+  /// No description provided for @driverIntroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start earning with your car'**
+  String get driverIntroTitle;
+
+  /// No description provided for @driverIntroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See ride requests near you, choose the ones worth your time, and set your own price on every trip.'**
+  String get driverIntroBody;
+
+  /// The driver's share of a fare, as a whole percentage.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep {percent}% of every fare'**
+  String perkKeepTitle(String percent);
+
+  /// The platform's commission, to one decimal place.
+  ///
+  /// In en, this message translates to:
+  /// **'Our service fee is {percent}% — no surge splits, no hidden cuts.'**
+  String perkKeepBody(String percent);
+
+  /// No description provided for @perkHoursTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive when you want'**
+  String get perkHoursTitle;
+
+  /// No description provided for @perkHoursBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Go online and offline in one tap. No shifts, no quotas.'**
+  String get perkHoursBody;
+
+  /// No description provided for @perkChoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You choose the order'**
+  String get perkChoiceTitle;
+
+  /// No description provided for @perkChoiceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See the destination and the fare before you accept anything.'**
+  String get perkChoiceBody;
+
+  /// No description provided for @driverIntroDocsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This build verifies documents automatically so you can try the driver side right away.'**
+  String get driverIntroDocsNote;
+
+  /// No description provided for @yourVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your vehicle'**
+  String get yourVehicle;
+
+  /// No description provided for @make.
+  ///
+  /// In en, this message translates to:
+  /// **'Make'**
+  String get make;
+
+  /// No description provided for @model.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get model;
+
+  /// No description provided for @year.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get year;
+
+  /// No description provided for @vehicleCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle category'**
+  String get vehicleCategory;
+
+  /// No description provided for @startDriving.
+  ///
+  /// In en, this message translates to:
+  /// **'Start driving'**
+  String get startDriving;
+
+  /// Placeholder in the vehicle colour field, and the value stored when the driver leaves it blank.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get colourHint;
+
+  /// No description provided for @serviceCity.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get serviceCity;
+
+  /// No description provided for @serviceIntercity.
+  ///
+  /// In en, this message translates to:
+  /// **'Intercity'**
+  String get serviceIntercity;
+
+  /// No description provided for @serviceDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery'**
+  String get serviceDelivery;
+
+  /// No description provided for @serviceFreight.
+  ///
+  /// In en, this message translates to:
+  /// **'Freight'**
+  String get serviceFreight;
+
+  /// No description provided for @serviceMoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Moto'**
+  String get serviceMoto;
+
+  /// The card on file, named by its last four digits.
+  ///
+  /// In en, this message translates to:
+  /// **'Card {tail}'**
+  String cardEndingIn(String tail);
+
+  /// No description provided for @optionChildSeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Child seat'**
+  String get optionChildSeat;
+
+  /// No description provided for @optionPet.
+  ///
+  /// In en, this message translates to:
+  /// **'Travelling with a pet'**
+  String get optionPet;
+
+  /// No description provided for @optionLuggage.
+  ///
+  /// In en, this message translates to:
+  /// **'Large luggage'**
+  String get optionLuggage;
+
+  /// No description provided for @optionAirCon.
+  ///
+  /// In en, this message translates to:
+  /// **'Air conditioning'**
+  String get optionAirCon;
+
+  /// No description provided for @optionNoSmoking.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-smoking car'**
+  String get optionNoSmoking;
+
+  /// No description provided for @optionSilentRide.
+  ///
+  /// In en, this message translates to:
+  /// **'Silent ride'**
+  String get optionSilentRide;
+
+  /// No description provided for @optionFemaleDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer a female driver'**
+  String get optionFemaleDriver;
+
+  /// No description provided for @whereTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Where to?'**
+  String get whereTo;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @work.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get work;
+
+  /// No description provided for @saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saved;
+
+  /// No description provided for @offersReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{{count} offer received} other{{count} offers received}}'**
+  String offersReceived(int count);
+
+  /// elapsed is an already-formatted duration such as "1m 20s".
+  ///
+  /// In en, this message translates to:
+  /// **'Your price {amount} · searching {elapsed}'**
+  String yourPriceSearching(String amount, String elapsed);
+
+  /// No description provided for @noOffersRaisePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'No offers yet. Raising your price is the fastest way to get picked up.'**
+  String get noOffersRaisePrompt;
+
+  /// No description provided for @raiseSheetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'More drivers see your order when the fare goes up. You’re currently offering {amount}.'**
+  String raiseSheetBody(String amount);
+
+  /// Appended to the middle raise suggestion. Leading separator included so a language can drop it.
+  ///
+  /// In en, this message translates to:
+  /// **' · recommended'**
+  String get recommendedSuffix;
+
+  /// No description provided for @cancelYourOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel your order?'**
+  String get cancelYourOrder;
+
+  /// No description provided for @cancelReasonPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us why so we can improve matching.'**
+  String get cancelReasonPrompt;
+
+  /// No description provided for @offerMetaLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{eta} min away · {distance} · {trips} trips'**
+  String offerMetaLine(int eta, String distance, String trips);
 }
 
 class _AppLocalizationsDelegate

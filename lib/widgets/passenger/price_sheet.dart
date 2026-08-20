@@ -6,6 +6,7 @@ import '../../core/formats.dart';
 import '../../core/geo.dart';
 import '../../core/storage.dart';
 import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/draft.dart';
@@ -131,7 +132,7 @@ class PriceSheet extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      draft.vehicleClass.label,
+                      draft.vehicleClass.labelIn(l),
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -232,7 +233,7 @@ class PriceSheet extends StatelessWidget {
             children: [
               _MetaButton(
                 icon: _paymentIcons[draft.paymentMethod]!,
-                label: draft.paymentMethod.label,
+                label: draft.paymentMethod.labelIn(l),
                 onTap: () =>
                     _choosePayment(context, draft, user.walletBalance, price),
               ),
@@ -292,7 +293,7 @@ class PriceSheet extends StatelessWidget {
           children: [
             for (final option in VehicleClass.values)
               AppRow(
-                title: option.label,
+                title: option.labelIn(l),
                 subtitle: hints[option],
                 trailing: _Radio(selected: draft.vehicleClass == option),
                 onTap: () {
@@ -328,7 +329,7 @@ class PriceSheet extends StatelessWidget {
                     opacity: insufficient ? 0.45 : 1,
                     child: AppRow(
                       icon: _paymentIcons[method],
-                      title: method.label,
+                      title: method.labelIn(l),
                       subtitle: method == PaymentMethod.wallet
                           ? (insufficient
                                 ? l.balanceInsufficient(money(balance))
@@ -407,7 +408,7 @@ class PriceSheet extends StatelessWidget {
                       : innerContext.c.textDim,
                 ),
                 title: Text(
-                  option.label,
+                  option.labelIn(l),
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,

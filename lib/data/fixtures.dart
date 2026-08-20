@@ -1,5 +1,10 @@
 import '../models/models.dart';
 
+/// The demo card on file. One constant so the wallet screen, the payment
+/// picker and the receipt all name the same card.
+const demoCardTail = '···4821';
+const demoCardName = 'Visa ···4821';
+
 const avatarColors = <int>[
   0xFFC1F11D,
   0xFF22D3EE,

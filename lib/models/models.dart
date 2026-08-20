@@ -67,44 +67,6 @@ enum NotificationKind { ride, promo, system, safety }
 
 enum TransactionKind { ridePayment, rideEarning, topup, payout, tip, promo }
 
-extension VehicleClassLabel on VehicleClass {
-  String get label => switch (this) {
-    VehicleClass.economy => 'Economy',
-    VehicleClass.comfort => 'Comfort',
-    VehicleClass.xl => 'XL',
-  };
-}
-
-extension ServiceTypeLabel on ServiceType {
-  String get label => switch (this) {
-    ServiceType.city => 'City',
-    ServiceType.intercity => 'Intercity',
-    ServiceType.delivery => 'Delivery',
-    ServiceType.freight => 'Freight',
-    ServiceType.moto => 'Moto',
-  };
-}
-
-extension PaymentMethodLabel on PaymentMethod {
-  String get label => switch (this) {
-    PaymentMethod.cash => 'Cash',
-    PaymentMethod.card => 'Card ···4821',
-    PaymentMethod.wallet => 'Wallet',
-  };
-}
-
-extension RideOptionLabel on RideOption {
-  String get label => switch (this) {
-    RideOption.childSeat => 'Child seat',
-    RideOption.pet => 'Travelling with a pet',
-    RideOption.luggage => 'Large luggage',
-    RideOption.airCon => 'Air conditioning',
-    RideOption.noSmoking => 'Non-smoking car',
-    RideOption.silentRide => 'Silent ride',
-    RideOption.femaleDriver => 'Prefer a female driver',
-  };
-}
-
 class Place {
   const Place({
     required this.id,

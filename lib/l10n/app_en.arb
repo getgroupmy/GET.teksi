@@ -426,5 +426,315 @@
   "nameLabel": "Name",
   "nameHint": "e.g. Mum",
   "phoneNumberLabel": "Phone number",
-  "saveContact": "Save contact"
+  "saveContact": "Save contact",
+  "balanceCaps": "BALANCE",
+  "topUp": "Top up",
+  "promos": "Promos",
+  "paymentMethods": "Payment methods",
+  "cardExpires": "Expires {date}",
+  "@cardExpires": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultLabel": "Default",
+  "activity": "Activity",
+  "noTransactions": "No transactions yet",
+  "noTransactionsBody": "Rides, top-ups and payouts appear here.",
+  "cashTripsNote": "Cash trips are settled directly with the driver and don’t move your wallet balance.",
+  "topUpTitle": "Top up your wallet",
+  "topUpUnavailable": "Card payments are not connected yet, so there is no way to add to your balance. Your balance changes when a trip settles.",
+  "topUpChargedTo": "Charged to {card}.",
+  "@topUpChargedTo": {
+    "placeholders": {
+      "card": {
+        "type": "String"
+      }
+    }
+  },
+  "topUpDescription": "Top-up from card {card}",
+  "@topUpDescription": {
+    "placeholders": {
+      "card": {
+        "type": "String"
+      }
+    }
+  },
+  "profile": "Profile",
+  "edit": "Edit",
+  "passengerRating": "Passenger rating",
+  "tripsTakenLabel": "Trips taken",
+  "driverProfile": "Driver profile",
+  "verified": "Verified",
+  "driverRating": "Driver rating",
+  "tripsGivenLabel": "Trips given",
+  "earned": "Earned",
+  "memberSince": "Member since {date}",
+  "@memberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingExplainer": "Your rating is the average of your last 50 trips. Passengers and drivers rate each other after every completed ride.",
+  "editProfile": "Edit profile",
+  "fullName": "Full name",
+  "email": "Email",
+  "save": "Save",
+  "shortcuts": "Shortcuts",
+  "addHome": "Add home",
+  "addHomeSubtitle": "Set your home address for one-tap booking",
+  "removeHome": "Remove home",
+  "addWork": "Add work",
+  "addWorkSubtitle": "Set your work address for one-tap booking",
+  "removeWork": "Remove work",
+  "changeHome": "Change home",
+  "changeWork": "Change work",
+  "popularInKl": "Popular in Kuala Lumpur",
+  "setYourHome": "Set your home",
+  "setYourWork": "Set your work",
+  "searchForAnAddress": "Search for an address",
+  "noMatches": "No matches",
+  "noMatchesBody": "Try another name.",
+  "order": "Order",
+  "orderGoneTitle": "This order is no longer available",
+  "orderGoneBody": "It was taken or cancelled.",
+  "rideRequest": "Ride request",
+  "postedAgo": "Posted {time}",
+  "@postedAgo": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "raisedTimes": "{count, plural, =1{raised {count} time} other{raised {count} times}}",
+  "@raisedTimes": {
+    "description": "How many times the passenger raised their asking price. Malay does not inflect for number, so its plural has a single 'other' case.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "passengerCount": "{count, plural, =1{{count} passenger} other{{count} passengers}}",
+  "@passengerCount": {
+    "description": "How many people are riding.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toPickup": "To pickup",
+  "tripLength": "Trip length",
+  "carType": "Car type",
+  "payment": "Payment",
+  "orderClosedToOffers": "This order is no longer accepting offers.",
+  "yourOffer": "Your offer",
+  "waitingForReply": "Waiting for {name} to reply",
+  "@waitingForReply": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "withdrawOffer": "Withdraw offer",
+  "passengerOffers": "Passenger offers",
+  "marketPrice": "Market {amount}",
+  "@marketPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "lowerOffer": "Lower offer",
+  "raiseOffer": "Raise offer",
+  "youKeepAfterFee": "You keep {net} after {fee} fee",
+  "@youKeepAfterFee": {
+    "description": "The driver's take-home on a bid, and the commission deducted from it.",
+    "placeholders": {
+      "net": {
+        "type": "String"
+      },
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "resetTo": "Reset to {amount}",
+  "@resetTo": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "counterOfferWarning": "Counter-offers take longer to be accepted than taking the passenger’s price.",
+  "offerAmount": "Offer {amount}",
+  "@offerAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "acceptAmount": "Accept {amount}",
+  "@acceptAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "skipThisOrder": "Skip this order",
+  "vehicle": "Vehicle",
+  "notADriverTitle": "You’re not a driver yet",
+  "notADriverBody": "Set up your vehicle to start receiving orders.",
+  "seatCount": "{count, plural, =1{{count} seat} other{{count} seats}}",
+  "@seatCount": {
+    "description": "How many seats a vehicle has.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "category": "Category",
+  "editDetails": "Edit details",
+  "documents": "Documents",
+  "documentsNote": "Documents are verified automatically in this build. In production these would be reviewed against LPKP/APAD records before a driver can go online.",
+  "editVehicle": "Edit vehicle",
+  "plateNumber": "Plate number",
+  "colour": "Colour",
+  "saveChanges": "Save changes",
+  "docApproved": "Approved",
+  "docInReview": "In review",
+  "docRejected": "Rejected",
+  "docNotUploaded": "Not uploaded",
+  "expiresDate": "Expires {date}",
+  "@expiresDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "classHintEconomy": "Perodua, Proton, small sedans",
+  "classHintComfort": "Honda City, Toyota Vios and up",
+  "classHintXl": "MPVs and 7-seaters",
+  "driverIntroTitle": "Start earning with your car",
+  "driverIntroBody": "See ride requests near you, choose the ones worth your time, and set your own price on every trip.",
+  "perkKeepTitle": "Keep {percent}% of every fare",
+  "@perkKeepTitle": {
+    "description": "The driver's share of a fare, as a whole percentage.",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "perkKeepBody": "Our service fee is {percent}% — no surge splits, no hidden cuts.",
+  "@perkKeepBody": {
+    "description": "The platform's commission, to one decimal place.",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "perkHoursTitle": "Drive when you want",
+  "perkHoursBody": "Go online and offline in one tap. No shifts, no quotas.",
+  "perkChoiceTitle": "You choose the order",
+  "perkChoiceBody": "See the destination and the fare before you accept anything.",
+  "driverIntroDocsNote": "This build verifies documents automatically so you can try the driver side right away.",
+  "yourVehicle": "Your vehicle",
+  "make": "Make",
+  "model": "Model",
+  "year": "Year",
+  "vehicleCategory": "Vehicle category",
+  "startDriving": "Start driving",
+  "colourHint": "White",
+  "@colourHint": {
+    "description": "Placeholder in the vehicle colour field, and the value stored when the driver leaves it blank."
+  },
+  "serviceCity": "City",
+  "serviceIntercity": "Intercity",
+  "serviceDelivery": "Delivery",
+  "serviceFreight": "Freight",
+  "serviceMoto": "Moto",
+  "cardEndingIn": "Card {tail}",
+  "@cardEndingIn": {
+    "description": "The card on file, named by its last four digits.",
+    "placeholders": {
+      "tail": {
+        "type": "String"
+      }
+    }
+  },
+  "optionChildSeat": "Child seat",
+  "optionPet": "Travelling with a pet",
+  "optionLuggage": "Large luggage",
+  "optionAirCon": "Air conditioning",
+  "optionNoSmoking": "Non-smoking car",
+  "optionSilentRide": "Silent ride",
+  "optionFemaleDriver": "Prefer a female driver",
+  "whereTo": "Where to?",
+  "home": "Home",
+  "work": "Work",
+  "saved": "Saved",
+  "offersReceived": "{count, plural, =1{{count} offer received} other{{count} offers received}}",
+  "@offersReceived": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yourPriceSearching": "Your price {amount} · searching {elapsed}",
+  "@yourPriceSearching": {
+    "description": "elapsed is an already-formatted duration such as \"1m 20s\".",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "elapsed": {
+        "type": "String"
+      }
+    }
+  },
+  "noOffersRaisePrompt": "No offers yet. Raising your price is the fastest way to get picked up.",
+  "raiseSheetBody": "More drivers see your order when the fare goes up. You’re currently offering {amount}.",
+  "@raiseSheetBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "recommendedSuffix": " · recommended",
+  "@recommendedSuffix": {
+    "description": "Appended to the middle raise suggestion. Leading separator included so a language can drop it."
+  },
+  "cancelYourOrder": "Cancel your order?",
+  "cancelReasonPrompt": "Tell us why so we can improve matching.",
+  "offerMetaLine": "{eta} min away · {distance} · {trips} trips",
+  "@offerMetaLine": {
+    "placeholders": {
+      "eta": {
+        "type": "int"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "trips": {
+        "type": "String"
+      }
+    }
+  }
 }

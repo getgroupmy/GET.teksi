@@ -91,6 +91,22 @@ void main() {
     }
   });
 
+  test('plurals inflect in English and stay uninflected in Malay', () {
+    // Malay marks number with the noun or a separate word, not with a suffix,
+    // so "2 penumpang" is correct and "2 penumpangs" is not. These are the two
+    // messages that would otherwise have gone through an English-only helper
+    // that appends an 's'.
+    expect(en.passengerCount(1), '1 passenger');
+    expect(en.passengerCount(3), '3 passengers');
+    expect(ms.passengerCount(1), '1 penumpang');
+    expect(ms.passengerCount(3), '3 penumpang');
+
+    expect(en.raisedTimes(1), contains('time'));
+    expect(en.raisedTimes(2), contains('times'));
+    expect(ms.raisedTimes(1), contains('kali'));
+    expect(ms.raisedTimes(2), contains('kali'));
+  });
+
   test('every English key has a Malay entry', () {
     // gen_l10n falls back to the template for a key with no Malay entry, which
     // is what makes translating screen by screen safe — and also what makes a

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../state/draft.dart';
 import '../../state/rides.dart';
@@ -22,6 +24,7 @@ class IdleSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final draft = context.watch<DraftStore>();
     final session = context.watch<SessionStore>();
@@ -54,7 +57,7 @@ class IdleSheet extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: AppChip(
-                      label: service.label,
+                      label: service.labelIn(l),
                       icon: _serviceIcons[service],
                       selected: draft.service == service,
                       onTap: () => draft.setService(service),
@@ -82,7 +85,7 @@ class IdleSheet extends StatelessWidget {
                   Icon(Icons.search_rounded, color: c.accent, size: 22),
                   const SizedBox(width: 12),
                   Text(
-                    'Where to?',
+                    l.whereTo,
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
@@ -98,7 +101,7 @@ class IdleSheet extends StatelessWidget {
             children: [
               _Shortcut(
                 icon: Icons.home_rounded,
-                label: user.homePlace == null ? 'Add home' : 'Home',
+                label: user.homePlace == null ? l.addHome : l.home,
                 sub: user.homePlace?.name,
                 onTap: () => user.homePlace == null
                     ? context.push('/places')
@@ -107,7 +110,7 @@ class IdleSheet extends StatelessWidget {
               const SizedBox(width: 8),
               _Shortcut(
                 icon: Icons.work_outline_rounded,
-                label: user.workPlace == null ? 'Add work' : 'Work',
+                label: user.workPlace == null ? l.addWork : l.work,
                 sub: user.workPlace?.name,
                 onTap: () => user.workPlace == null
                     ? context.push('/places')
@@ -116,7 +119,7 @@ class IdleSheet extends StatelessWidget {
               const SizedBox(width: 8),
               _Shortcut(
                 icon: Icons.add_rounded,
-                label: 'Saved',
+                label: l.saved,
                 onTap: () => context.push('/places'),
               ),
             ],

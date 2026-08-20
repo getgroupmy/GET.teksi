@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../core/formats.dart';
 import '../../core/geo.dart';
 import '../../core/storage.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/rides.dart';
@@ -28,6 +30,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -41,12 +44,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: () => context.pop(),
           ),
-          title: const Text('Order'),
+          title: Text(l.order),
         ),
-        body: const EmptyState(
-          title: 'This order is no longer available',
-          body: 'It was taken or cancelled.',
-        ),
+        body: EmptyState(title: l.orderGoneTitle, body: l.orderGoneBody),
       );
     }
 
@@ -95,7 +95,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Ride request'),
+        title: Text(l.rideRequest),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
@@ -132,8 +132,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         ],
                       ),
                       Text(
-                        'Posted ${timeAgo(ride.createdAt)}'
-                        '${ride.priceRaises > 0 ? ' · raised ${plural(ride.priceRaises, 'time')}' : ''}',
+                        ride.priceRaises > 0
+                            ? '${l.postedAgo(timeAgo(ride.createdAt))} · '
+                                  '${l.raisedTimes(ride.priceRaises)}'
+                            : l.postedAgo(timeAgo(ride.createdAt)),
                         style: TextStyle(fontSize: 12.5, color: c.textDim),
                       ),
                     ],
@@ -157,12 +159,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   Row(
                     children: [
                       _Meta(
-                        label: 'To pickup',
+                        label: l.toPickup,
                         value:
                             '${distanceLabel(pickupKm)} · ${durationLabel(pickupEta)}',
                       ),
                       _Meta(
-                        label: 'Trip length',
+                        label: l.tripLength,
                         value:
                             '${distanceLabel(ride.distanceKm)} · ${durationLabel(ride.durationMinutes)}',
                       ),
@@ -171,14 +173,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      _Meta(label: 'Car type', value: ride.vehicleClass.label),
                       _Meta(
-                        label: 'Payment',
+                        label: l.carType,
+                        value: ride.vehicleClass.labelIn(l),
+                      ),
+                      _Meta(
+                        label: l.payment,
                         value: ride.paymentMethod == PaymentMethod.card
-                            ? 'Card'
+                            ? l.card
                             : ride.paymentMethod == PaymentMethod.wallet
-                            ? 'Wallet'
-                            : 'Cash',
+                            ? l.wallet
+                            : l.cash,
                       ),
                     ],
                   ),
@@ -197,12 +202,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     if (ride.passengerCount > 1)
                       _Detail(
                         icon: Icons.people_alt_outlined,
-                        text: plural(ride.passengerCount, 'passenger'),
+                        text: l.passengerCount(ride.passengerCount),
                       ),
                     if (ride.options.isNotEmpty)
                       _Detail(
                         icon: Icons.auto_awesome_outlined,
-                        text: ride.options.map((o) => o.label).join(', '),
+                        text: ride.options.map((o) => o.labelIn(l)).join(', '),
                       ),
                     if (ride.comment != null)
                       _Detail(
@@ -217,18 +222,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             const SizedBox(height: 16),
 
             if (gone)
-              const InfoBanner(
-                'This order is no longer accepting offers.',
-                tone: BannerTone.warn,
-              )
+              InfoBanner(l.orderClosedToOffers, tone: BannerTone.warn)
             else if (myOffer != null) ...[
               AppCard(
                 padding: const EdgeInsets.all(18),
                 child: Column(
                   children: [
-                    const SectionLabel(
-                      'Your offer',
-                      padding: EdgeInsets.only(bottom: 8),
+                    SectionLabel(
+                      l.yourOffer,
+                      padding: const EdgeInsets.only(bottom: 8),
                     ),
                     Text(
                       money(myOffer.price, decimals: false),
@@ -240,7 +242,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Waiting for ${ride.passengerName} to reply',
+                      l.waitingForReply(ride.passengerName),
                       style: TextStyle(fontSize: 13, color: c.textDim),
                     ),
                     const SizedBox(height: 14),
@@ -264,7 +266,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text('Withdraw offer'),
+                  child: Text(l.withdrawOffer),
                 ),
               ),
             ] else ...[
@@ -275,12 +277,14 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const SectionLabel(
-                          'Passenger offers',
+                        SectionLabel(
+                          l.passengerOffers,
                           padding: EdgeInsets.zero,
                         ),
                         Text(
-                          'Market ${money(ride.recommendedPrice, decimals: false)}',
+                          l.marketPrice(
+                            money(ride.recommendedPrice, decimals: false),
+                          ),
                           style: TextStyle(fontSize: 12, color: c.textDim),
                         ),
                       ],
@@ -290,7 +294,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       children: [
                         _Round(
                           icon: Icons.remove_rounded,
-                          tooltip: 'Lower offer',
+                          tooltip: l.lowerOffer,
                           onTap: bid <= minBid ? null : () => bump(-50),
                         ),
                         Expanded(
@@ -306,8 +310,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                'You keep ${money(driverNet(bid))} after '
-                                '${money(commissionOn(bid))} fee',
+                                l.youKeepAfterFee(
+                                  money(driverNet(bid)),
+                                  money(commissionOn(bid)),
+                                ),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 12,
@@ -319,7 +325,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         ),
                         _Round(
                           icon: Icons.add_rounded,
-                          tooltip: 'Raise offer',
+                          tooltip: l.raiseOffer,
                           onTap: bid >= maxBid ? null : () => bump(50),
                         ),
                       ],
@@ -328,7 +334,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       TextButton(
                         onPressed: () => setState(() => _counter = null),
                         child: Text(
-                          'Reset to ${money(ride.askingPrice, decimals: false)}',
+                          l.resetTo(money(ride.askingPrice, decimals: false)),
                           style: TextStyle(color: c.accent),
                         ),
                       ),
@@ -337,10 +343,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               ),
               if (isCounter) ...[
                 const SizedBox(height: 12),
-                const InfoBanner(
-                  'Counter-offers take longer to be accepted than taking the passenger’s price.',
-                  tone: BannerTone.warn,
-                ),
+                InfoBanner(l.counterOfferWarning, tone: BannerTone.warn),
               ],
               const SizedBox(height: 14),
               FilledButton.icon(
@@ -348,14 +351,16 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 icon: const Icon(Icons.check_rounded, size: 18),
                 label: Text(
                   isCounter
-                      ? 'Offer ${money(bid, decimals: false)}'
-                      : 'Accept ${money(ride.askingPrice, decimals: false)}',
+                      ? l.offerAmount(money(bid, decimals: false))
+                      : l.acceptAmount(
+                          money(ride.askingPrice, decimals: false),
+                        ),
                 ),
               ),
               TextButton(
                 onPressed: () => context.pop(),
                 child: Text(
-                  'Skip this order',
+                  l.skipThisOrder,
                   style: TextStyle(color: c.textDim),
                 ),
               ),
