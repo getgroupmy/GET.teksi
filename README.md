@@ -58,9 +58,8 @@ Phone + OTP auth · profile and ratings · wallet with top-ups and transaction l
 
 The app runs with no backend at all — on-device transport, simulated
 marketplace, local persistence — which is what lets the whole demo work with
-nothing to provision. Supply two `--dart-define`s and the same build talks to a
-Supabase project instead, with rides, bids and chat travelling between real
-devices.
+nothing to provision. Point the same build at a Supabase project and rides,
+bids and chat travel between real devices instead.
 
 The schema is in [`supabase/`](supabase/), and the marketplace rules are
 enforced there rather than in the client: a driver cannot see a rival's bid, a
@@ -69,6 +68,17 @@ driver, a driver cannot move the fare after winning it, and exactly one bid can
 ever win a ride. Every one of those is a test that runs on each push against a
 real PostgreSQL — including a concurrency test that races two accepts of the
 same ride and fails if the lock protecting it is ever weakened.
+
+A project is live in Singapore and both migrations are applied, so pointing the
+app at it is one flag:
+
+```sh
+flutter run --dart-define-from-file=config/get-teksi.json
+```
+
+Leave the flag off and the app runs entirely on-device with the simulated
+marketplace, exactly as before — which is what keeps it demonstrable with
+nothing provisioned.
 
 **[supabase/README.md](supabase/README.md)** covers the design, the full rule
 table, how to run the suite locally, and what is still missing.
@@ -114,9 +124,9 @@ State is `ChangeNotifier` + `provider`; routing is `go_router`, with the auth an
 
 ### Going multi-device
 
-Today the app is single-device: the simulated marketplace and one real user share a process, so ride events fan out over a plain broadcast stream.
+`lib/core/bus.dart` is the seam. It defines a two-member `RealtimeTransport` interface with two implementations: `LocalTransport`, which keeps ride events in-process for the single-device demo, and `SupabaseTransport`, which carries the same events through Postgres so other devices see them.
 
-`lib/core/bus.dart` is the one seam for changing that. It defines a two-member `RealtimeTransport` interface and ships a `LocalTransport`. A production transport implements the same interface against websockets, Supabase Realtime, or MQTT — publishing `BusEvent`s to a server and surfacing remote ones on `events`. Nothing above that file changes.
+Which one is in use is decided once at startup by whether a backend is configured. Nothing above that file knows the difference — the stores publish `BusEvent`s and react to `BusEvent`s either way, which is why the whole backend integration is four files under `lib/core/` and no screen changed.
 
 ---
 

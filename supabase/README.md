@@ -123,18 +123,33 @@ plus OTP.
 
 ## Pointing the app at it
 
-Both values are needed; either alone leaves the app on its local transport.
+The live project's URL and publishable key are in
+[`config/get-teksi.json`](../config/get-teksi.json):
 
 ```sh
-flutter run \
-  --dart-define=SUPABASE_URL=https://<ref>.supabase.co \
-  --dart-define=SUPABASE_PUBLISHABLE_KEY=<key>
+flutter run --dart-define-from-file=config/get-teksi.json
 ```
+
+Omit the flag and the app runs on its on-device transport instead — every
+screen still works, nothing is provisioned. Both values are needed together;
+either alone leaves the app local.
 
 The publishable key is a public identifier and belongs in the shipped binary.
 It is safe there because row-level security, not key secrecy, is what protects
 the data — which is the reason the policies above are tested as carefully as
 the app itself. Never ship the **service role** key: it bypasses RLS entirely.
+
+### The live project
+
+| | |
+|---|---|
+| Ref | `usrbfyruvqblpufejmxh` |
+| Region | `ap-southeast-1` (Singapore, ~10 ms from Kuala Lumpur) |
+| Postgres | 17 |
+
+Both migrations are applied. Supabase's security linter reports one warning
+against it, kept deliberately: `accept_offer` is callable by signed-in users,
+which is what it is for.
 
 ## How it connects to the app
 

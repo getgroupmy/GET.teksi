@@ -68,3 +68,6 @@ android/key.properties
 # Only the human-readable report is tracked.
 graphify-out/*
 !graphify-out/GRAPH_REPORT.md
+
+# Local build configuration overriding config/get-teksi.json
+config/local.json
