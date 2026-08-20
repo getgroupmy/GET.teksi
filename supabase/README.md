@@ -144,6 +144,42 @@ supabase/tests/concurrency.sh  # the double-accept race
 
 Both run on every push; see the `database` job in `.github/workflows/ci.yml`.
 
+### Testing the deployment rather than the schema
+
+The two suites above prove the rules are right. They cannot prove a *project*
+is right: that phone auth actually sends, that the `on_auth_user_created`
+trigger actually fires on a real sign-in, that PostgREST actually publishes
+`accept_offer` and actually refuses what the policies refuse. Those are
+properties of a deployment, and the only way to check a deployment is to use
+it.
+
+```sh
+supabase/tests/live-ride.sh +60123456789 +60129876543
+```
+
+It signs two real accounts in with real SMS codes, then makes them trade: the
+passenger publishes an order, the driver bids, the passenger accepts, the
+driver drives it to completion, and the wallet is checked for the two rows the
+settlement trigger should have written — a debit of the fare and a credit of it
+net of the 9.9% fee. Between those steps it attempts five things the rules
+forbid and fails if any is allowed: lowering the ask after bids are in,
+assigning yourself a driver, moving the fare after winning it, skipping a trip
+stage, and writing your own wallet.
+
+The fare is 2500 sen deliberately. 2500 × 0.901 is 2252.5 — exactly the
+half-sen where rounding rules disagree, and Postgres, Dart and Python do not
+all round it the same way. Testing on the boundary is the only way that
+assertion means anything.
+
+It is not in CI and should not be: it needs two phones and it sends real SMS.
+Run it after applying a migration to a project, or after changing anything
+about auth.
+
+Nothing is cleaned up afterwards, and the script checks that too — there is no
+delete policy on `rides`, because a completed trip is the receipt for money
+that moved. The two accounts persist, so re-running signs the same people back
+in rather than accumulating users.
+
 ## Applying it to a project
 
 ```sh
@@ -221,7 +257,10 @@ replaced rather than reused when the backend supplies a different one.
   reach the network, because they belong to no real account and row-level
   security would reject them. Turn it off in Settings when testing against a
   real backend, or the map shows local bots alongside real drivers.
-- **Only part of the app is translated.** The Language setting is real and
-  Bahasa Melayu is in place for onboarding, sign-in and Settings. Screens that
-  have not been converted yet fall back to English automatically, which is what
-  makes translating them one at a time safe. See `lib/l10n/`.
+- **The stores' strings are still English.** Every screen is translated, but
+  notification titles and bodies, wallet ledger descriptions and driver
+  document labels are written by the stores and by `settle_completed_ride()`
+  without a locale in hand. The server writes the ledger half in English, so
+  translating only the client half would produce a two-language wallet.
+  Fixing it properly means persisting a key and arguments instead of a
+  sentence. See `lib/l10n/`.
