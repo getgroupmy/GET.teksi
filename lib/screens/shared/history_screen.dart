@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/rides.dart';
@@ -22,6 +23,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
     final user = session.requireUser;
@@ -31,6 +33,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final grouped = <String, List<Ride>>{};
     for (final ride in list) {
       final key = dateLabel(
+        l,
         ride.completedAt ?? ride.cancelledAt ?? ride.createdAt,
       );
       grouped.putIfAbsent(key, () => []).add(ride);
@@ -42,7 +45,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('My rides'),
+        title: Text(l.myRides),
       ),
       body: Column(
         children: [
@@ -52,9 +55,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               child: Segmented<Role>(
                 value: role,
                 onChanged: (v) => setState(() => _role = v),
-                options: const [
-                  (Role.passenger, 'As passenger'),
-                  (Role.driver, 'As driver'),
+                options: [
+                  (Role.passenger, l.asPassenger),
+                  (Role.driver, l.asDriver),
                 ],
               ),
             ),
@@ -62,10 +65,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             child: grouped.isEmpty
                 ? EmptyState(
                     icon: Icons.history_rounded,
-                    title: 'No rides yet',
+                    title: l.noRidesYet,
                     body: role == Role.driver
-                        ? 'Completed trips you drive will appear here.'
-                        : 'Book your first ride and it will show up here.',
+                        ? l.noRidesDriverBody
+                        : l.noRidesPassengerBody,
                   )
                 : ListView(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -98,6 +101,7 @@ class _HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final cancelled = ride.status == RideStatus.cancelled;
     final amount = role == Role.driver ? driverNet(ride.fare) : ride.fare;
@@ -124,7 +128,7 @@ class _HistoryCard extends StatelessWidget {
                     Flexible(
                       child: Text(
                         cancelled
-                            ? 'Cancelled'
+                            ? l.cancelled
                             : '${clockTime(ride.completedAt ?? ride.createdAt)} · '
                                   '${distanceLabel(ride.distanceKm)}',
                         maxLines: 1,
@@ -163,7 +167,7 @@ class _HistoryCard extends StatelessWidget {
                 Icon(Icons.star_rounded, size: 13, color: c.accent),
                 const SizedBox(width: 4),
                 Text(
-                  'You rated ${ride.ratingByPassenger!.stars}',
+                  l.youRated(ride.ratingByPassenger!.stars),
                   style: TextStyle(fontSize: 12, color: c.textMute),
                 ),
               ],

@@ -125,7 +125,7 @@ class _OrderFeedSheetState extends State<OrderFeedSheet> {
                     Text(
                       decorated.isEmpty
                           ? l.waitingForOrders
-                          : '${plural(decorated.length, 'order')} nearby',
+                          : l.ordersNearby(decorated.length),
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
@@ -328,7 +328,7 @@ class _OrderCard extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        timeAgo(ride.createdAt),
+                        timeAgo(l, ride.createdAt),
                         style: TextStyle(fontSize: 11.5, color: c.textMute),
                       ),
                     ],
@@ -366,7 +366,10 @@ class _OrderCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${distanceLabel(pickupKm)} to pickup · ${durationLabel(pickupEta)}',
+                  l.distanceToPickup(
+                    distanceLabel(pickupKm),
+                    durationLabel(l, pickupEta),
+                  ),
                   style: TextStyle(fontSize: 12, color: c.textDim),
                 ),
                 Text(

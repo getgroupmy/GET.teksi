@@ -35,7 +35,7 @@ class SettingsScreen extends StatelessWidget {
                 ? Icons.dark_mode_rounded
                 : Icons.light_mode_rounded,
             title: l.darkTheme,
-            subtitle: prefs.darkTheme ? 'On' : 'Off',
+            subtitle: prefs.darkTheme ? l.on : l.off,
             trailing: Switch(
               value: prefs.darkTheme,
               onChanged: (v) => session.setPrefs(prefs.copyWith(darkTheme: v)),
@@ -64,21 +64,16 @@ class SettingsScreen extends StatelessWidget {
           AppRow(
             icon: Icons.smart_toy_outlined,
             title: l.simulatedMarketplace,
-            subtitle:
-                'Bot drivers bid on your orders and bot passengers post rides',
+            subtitle: l.simulatedMarketplaceRowSubtitle,
             trailing: Switch(
               value: prefs.simulationEnabled,
               onChanged: (v) =>
                   session.setPrefs(prefs.copyWith(simulationEnabled: v)),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: InfoBanner(
-              'With this on you can walk both sides of the marketplace on one device: '
-              'bots bid on your orders as a passenger, and post orders into your feed '
-              'as a driver.',
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: InfoBanner(l.simulationBanner),
           ),
           SectionLabel(l.about),
           AppRow(icon: Icons.description_outlined, title: l.termsOfService),
@@ -86,7 +81,7 @@ class SettingsScreen extends StatelessWidget {
           AppRow(
             icon: Icons.info_outline_rounded,
             title: l.version,
-            subtitle: 'GET.teksi 1.0.0',
+            subtitle: l.appNameVersion,
           ),
           AppRow(
             icon: Icons.delete_outline_rounded,
@@ -98,7 +93,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Center(
             child: Text(
-              'Built with Flutter · Android, iOS, Web, HarmonyOS',
+              l.builtWith,
               style: TextStyle(fontSize: 11.5, color: c.textMute),
             ),
           ),
@@ -108,16 +103,16 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _confirmClear(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final rides = context.read<RidesStore>();
     showAppSheet(
       context,
-      title: 'Clear local data?',
+      title: l.clearLocalDataConfirmTitle,
       builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'This removes all rides, offers, messages and transactions stored on '
-            'this device. Your profile stays signed in.',
+            l.clearLocalDataConfirmBody,
             style: TextStyle(
               fontSize: 13.5,
               color: sheetContext.c.textDim,
@@ -136,7 +131,7 @@ class SettingsScreen extends StatelessWidget {
                 rides.reset();
                 Navigator.of(sheetContext).pop();
               },
-              child: const Text('Clear everything'),
+              child: Text(l.clearEverything),
             ),
           ),
           const SizedBox(height: 8),
@@ -144,7 +139,7 @@ class SettingsScreen extends StatelessWidget {
             width: double.infinity,
             child: FilledButton.tonal(
               onPressed: () => Navigator.of(sheetContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(l.cancel),
             ),
           ),
         ],

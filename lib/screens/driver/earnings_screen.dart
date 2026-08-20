@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/rides.dart';
@@ -24,6 +25,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -54,7 +56,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
 
     final grouped = <String, List<Ride>>{};
     for (final ride in trips) {
-      final key = dateLabel(ride.completedAt ?? ride.createdAt);
+      final key = dateLabel(l, ride.completedAt ?? ride.createdAt);
       grouped.putIfAbsent(key, () => []).add(ride);
     }
 
@@ -64,7 +66,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Earnings'),
+        title: Text(l.earnings),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -72,10 +74,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
           Segmented<_Period>(
             value: _period,
             onChanged: (v) => setState(() => _period = v),
-            options: const [
-              (_Period.today, 'Today'),
-              (_Period.week, 'This week'),
-              (_Period.all, 'All time'),
+            options: [
+              (_Period.today, l.today),
+              (_Period.week, l.thisWeek),
+              (_Period.all, l.allTime),
             ],
           ),
           const SizedBox(height: 12),
@@ -83,9 +85,9 @@ class _EarningsScreenState extends State<EarningsScreen> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                const SectionLabel(
-                  'Net earnings',
-                  padding: EdgeInsets.only(bottom: 8),
+                SectionLabel(
+                  l.netEarnings,
+                  padding: const EdgeInsets.only(bottom: 8),
                 ),
                 Text(
                   money(net),
@@ -106,31 +108,31 @@ class _EarningsScreenState extends State<EarningsScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              StatBox(label: 'Trips', value: '${trips.length}'),
+              StatBox(label: l.trips, value: '${trips.length}'),
               const SizedBox(width: 8),
-              StatBox(label: 'Distance', value: distanceLabel(km)),
+              StatBox(label: l.distance, value: distanceLabel(km)),
               const SizedBox(width: 8),
-              StatBox(label: 'Time', value: durationLabel(minutes)),
+              StatBox(label: l.time, value: durationLabel(l, minutes)),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: [
               StatBox(
-                label: 'Average fare',
+                label: l.averageFare,
                 value: trips.isEmpty
                     ? '—'
                     : money((net / trips.length).round(), decimals: false),
               ),
               const SizedBox(width: 8),
               StatBox(
-                label: 'Rating',
+                label: l.rating,
                 value: avgRating.toStringAsFixed(2),
                 tone: c.accent,
               ),
               const SizedBox(width: 8),
               StatBox(
-                label: 'Per hour',
+                label: l.perHour,
                 value: minutes == 0
                     ? '—'
                     : money((net / minutes * 60).round(), decimals: false),
@@ -140,10 +142,10 @@ class _EarningsScreenState extends State<EarningsScreen> {
           ),
           const SizedBox(height: 20),
           if (grouped.isEmpty)
-            const EmptyState(
+            EmptyState(
               icon: Icons.trending_up_rounded,
-              title: 'No completed trips yet',
-              body: 'Go online and accept an order — your earnings will show up here.',
+              title: l.noCompletedTrips,
+              body: l.noCompletedTripsBody,
             )
           else
             for (final entry in grouped.entries) ...[

@@ -133,9 +133,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       ),
                       Text(
                         ride.priceRaises > 0
-                            ? '${l.postedAgo(timeAgo(ride.createdAt))} · '
+                            ? '${l.postedAgo(timeAgo(l, ride.createdAt))} · '
                                   '${l.raisedTimes(ride.priceRaises)}'
-                            : l.postedAgo(timeAgo(ride.createdAt)),
+                            : l.postedAgo(timeAgo(l, ride.createdAt)),
                         style: TextStyle(fontSize: 12.5, color: c.textDim),
                       ),
                     ],
@@ -161,12 +161,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       _Meta(
                         label: l.toPickup,
                         value:
-                            '${distanceLabel(pickupKm)} · ${durationLabel(pickupEta)}',
+                            '${distanceLabel(pickupKm)} · ${durationLabel(l, pickupEta)}',
                       ),
                       _Meta(
                         label: l.tripLength,
                         value:
-                            '${distanceLabel(ride.distanceKm)} · ${durationLabel(ride.durationMinutes)}',
+                            '${distanceLabel(ride.distanceKm)} · ${durationLabel(l, ride.durationMinutes)}',
                       ),
                     ],
                   ),

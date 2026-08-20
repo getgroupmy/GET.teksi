@@ -736,5 +736,343 @@
         "type": "String"
       }
     }
-  }
+  },
+  "tagSafeDriving": "Safe driving",
+  "tagCleanCar": "Clean car",
+  "tagPolite": "Polite",
+  "tagGoodConversation": "Good conversation",
+  "tagKnowsRoute": "Knows the route",
+  "tagOnTime": "On time",
+  "tagHelpedLuggage": "Helped with luggage",
+  "tagComfortableRide": "Comfortable ride",
+  "tagRudeBehaviour": "Rude behaviour",
+  "tagDirtyCar": "Dirty car",
+  "tagUnsafeDriving": "Unsafe driving",
+  "tagLateArrival": "Late arrival",
+  "tagWrongRoute": "Wrong route",
+  "tagAskedForMoney": "Asked for more money",
+  "tagBadSmell": "Bad smell",
+  "tagNoAirCon": "No air conditioning",
+  "tagPolitePassenger": "Polite passenger",
+  "tagClearPickup": "Clear pickup point",
+  "tagLeftCarClean": "Left car clean",
+  "tagKeptMeWaiting": "Kept me waiting",
+  "tagWrongPickup": "Wrong pickup point",
+  "tagTooManyPassengers": "Too many passengers",
+  "tagMessy": "Messy",
+  "phraseAtPickup": "I’m at the pickup point",
+  "phraseTwoMinutes": "Give me 2 minutes please",
+  "phraseBlueShirt": "I’m wearing a blue shirt",
+  "phraseWhichCar": "Which car are you in?",
+  "phraseCallOnArrival": "Please call me when you arrive",
+  "phraseThankYou": "Thank you!",
+  "phraseOnMyWay": "I’m on my way",
+  "phraseArrivedWaiting": "I’ve arrived, waiting outside",
+  "phraseTrafficLate": "Traffic is heavy, running 5 min late",
+  "phraseWhereToStop": "Where exactly should I stop?",
+  "phraseComeOut": "Please come out, I cannot wait here",
+  "cancelDriverTooLong": "Driver is taking too long",
+  "cancelDriverAsked": "Driver asked me to cancel",
+  "cancelNoLongerNeed": "I no longer need the ride",
+  "cancelWrongPickupAddress": "Wrong pickup address",
+  "cancelFoundAnother": "Found another ride",
+  "cancelPriceTooHigh": "Price is too high",
+  "cancelPassengerSilent": "Passenger is not responding",
+  "cancelPassengerNoShow": "Passenger did not show up",
+  "cancelPickupUnreachable": "Pickup point is unreachable",
+  "cancelTooFar": "Too far from my location",
+  "cancelVehicleProblem": "Vehicle problem",
+  "cancelPassengerAsked": "Passenger asked to cancel",
+  "promoHalfOff": "50% off your next ride, up to RM10",
+  "promoFiveOff": "RM5 off any trip",
+  "promoAirport": "RM15 off an airport transfer",
+  "chat": "Chat",
+  "chatUnavailableTitle": "Conversation unavailable",
+  "chatUnavailableBody": "This ride no longer exists.",
+  "passengerLabel": "Passenger",
+  "yourDriver": "Your driver",
+  "chatSubtitle": "{who} · trip to {destination}",
+  "@chatSubtitle": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "chatOnlyDuringTrip": "Messages are only available during the trip.",
+  "messageHint": "Message…",
+  "send": "Send",
+  "rate": "Rate",
+  "rideNotFound": "Ride not found",
+  "tripCompleted": "Trip completed",
+  "howWasYourTrip": "How was your trip?",
+  "howWasYourTripDriver": "How was your trip with them?",
+  "addACommentOptional": "Add a comment (optional)",
+  "addATipFor": "Add a tip for {name}",
+  "@addATipFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "none": "None",
+  "submitAndTip": "Submit and tip {amount}",
+  "@submitAndTip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "submitRating": "Submit rating",
+  "promoInvalid": "That code isn’t valid or has expired.",
+  "promoApplied": "{code} applied — {label}",
+  "@promoApplied": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "enterAPromoCode": "Enter a promo code",
+  "apply": "Apply",
+  "availableForYou": "Available for you",
+  "minimumFareIs": "Minimum fare {amount}",
+  "@minimumFareIs": {
+    "description": "The spend a promo code requires. Distinct from minimumFare, which labels the driver's filter.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "use": "Use",
+  "inviteFriends": "Invite friends",
+  "referralBody": "Give a friend {amount} off their first ride and get {amount} when they take it.",
+  "@referralBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "copyReferralCode": "Copy referral code",
+  "referralCodeCopied": "Referral code copied",
+  "inviteText": "Use my GET.teksi code {code} and get {amount} off your first ride.",
+  "@inviteText": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteCopied": "Invite copied to clipboard",
+  "shareInvite": "Share invite",
+  "setYourRoute": "Set your route",
+  "pickupLocation": "Pickup location",
+  "stopAlongTheWay": "Stop along the way",
+  "addAStop": "Add a stop",
+  "noMatchingPlaces": "No matching places",
+  "noMatchingPlacesBody": "Try a mall, a station, or a neighbourhood name.",
+  "today": "Today",
+  "thisWeek": "This week",
+  "allTime": "All time",
+  "netEarnings": "Net earnings",
+  "trips": "Trips",
+  "distance": "Distance",
+  "time": "Time",
+  "averageFare": "Average fare",
+  "rating": "Rating",
+  "perHour": "Per hour",
+  "noCompletedTrips": "No completed trips yet",
+  "noCompletedTripsBody": "Go online and accept an order — your earnings will show up here.",
+  "asPassenger": "As passenger",
+  "asDriver": "As driver",
+  "noRidesYet": "No rides yet",
+  "noRidesDriverBody": "Completed trips you drive will appear here.",
+  "noRidesPassengerBody": "Book your first ride and it will show up here.",
+  "cancelled": "Cancelled",
+  "youRated": "You rated {stars}",
+  "@youRated": {
+    "placeholders": {
+      "stars": {
+        "type": "int"
+      }
+    }
+  },
+  "verdictLowLabel": "Below market",
+  "verdictLowHint": "Drivers may skip this. Expect a longer wait.",
+  "verdictFairLabel": "Fair price",
+  "verdictFairHint": "Around what drivers usually accept on this route.",
+  "verdictGoodLabel": "Great price",
+  "verdictGoodHint": "Drivers respond quickly to offers like this.",
+  "verdictHighLabel": "Above market",
+  "verdictHighHint": "You’re offering more than this trip usually costs.",
+  "simulatedMarketplaceRowSubtitle": "Bot drivers bid on your orders and bot passengers post rides",
+  "simulationBanner": "With this on you can walk both sides of the marketplace on one device: bots bid on your orders as a passenger, and post orders into your feed as a driver.",
+  "appNameVersion": "GET.teksi 1.0.0",
+  "builtWith": "Built with Flutter · Android, iOS, Web, HarmonyOS",
+  "tripDetails": "Trip details",
+  "refIs": "Ref {reference}",
+  "@refIs": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "fareBreakdown": "Fare breakdown",
+  "agreedPrice": "Agreed price",
+  "yourOriginalOffer": "Your original offer",
+  "priceRaisedTimes": "{count, plural, =1{Price raised {count}×} other{Price raised {count}×}}",
+  "@priceRaisedTimes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "serviceFee": "Service fee",
+  "youEarned": "You earned",
+  "tip": "Tip",
+  "totalPaid": "Total paid",
+  "paidBy": "Paid by {method}",
+  "@paidBy": {
+    "description": "method is one of paidByCash / paidByCard / paidByWallet.",
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "paidByCash": "cash",
+  "paidByCard": "card {tail}",
+  "@paidByCard": {
+    "placeholders": {
+      "tail": {
+        "type": "String"
+      }
+    }
+  },
+  "paidByWallet": "wallet",
+  "yourRating": "Your rating",
+  "tripReferenceCopied": "Trip reference copied",
+  "copyTripReference": "Copy trip reference",
+  "currentLocation": "Current location",
+  "pickup": "Pickup",
+  "drive": "Drive",
+  "notifications": "Notifications",
+  "switchToPassengerTooltip": "Switch to passenger",
+  "earningsSemantics": "Earnings, {amount}, {status}",
+  "@earningsSemantics": {
+    "description": "Screen-reader label for the driver's earnings pill.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "onlineWord": "online",
+  "offlineWord": "offline",
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "description": "A duration under an hour.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{hours} h",
+  "@durationHours": {
+    "description": "A whole number of hours. Malay abbreviates jam as j.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "justNow": "just now",
+  "secondsAgo": "{seconds}s ago",
+  "@secondsAgo": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{minutes} min ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours} h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{days} d ago",
+  "@daysAgo": {
+    "description": "Malay abbreviates hari as h.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "yesterday": "Yesterday",
+  "ordersNearby": "{count, plural, =1{{count} order nearby} other{{count} orders nearby}}",
+  "@ordersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "distanceToPickup": "{distance} to pickup · {duration}",
+  "@distanceToPickup": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "clearLocalDataConfirmBody": "This removes all rides, offers, messages and transactions stored on this device. Your profile stays signed in.",
+  "nothingNew": "Nothing new",
+  "nothingNewBody": "Ride updates, offers and promos will show up here.",
+  "lowerFareTooltip": "Lower fare",
+  "raiseFareTooltip": "Raise fare"
 }

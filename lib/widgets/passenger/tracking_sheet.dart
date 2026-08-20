@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
 import '../../core/geo.dart';
-import '../../data/fixtures.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
 import '../../models/models.dart';
@@ -72,7 +71,7 @@ class TrackingSheet extends StatelessWidget {
               ),
               if (ride.status != RideStatus.waiting)
                 Text(
-                  durationLabel(eta),
+                  durationLabel(l, eta),
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -320,7 +319,7 @@ class TrackingSheet extends StatelessWidget {
         children: [
           InfoBanner(l.cancelRideBody, tone: BannerTone.warn),
           const SizedBox(height: 12),
-          reasonList(sheetContext, cancelReasonsPassenger, (reason) {
+          reasonList(sheetContext, cancelReasonsPassenger(l), (reason) {
             rides.cancelRide(ride.id, CancelledBy.passenger, reason);
             Navigator.of(sheetContext).pop();
           }),

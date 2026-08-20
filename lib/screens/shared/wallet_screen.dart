@@ -275,6 +275,7 @@ class _TxnRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final positive = txn.amount > 0;
     return Container(
@@ -313,7 +314,7 @@ class _TxnRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  timeAgo(txn.createdAt),
+                  timeAgo(l, txn.createdAt),
                   style: TextStyle(fontSize: 12, color: c.textMute),
                 ),
               ],

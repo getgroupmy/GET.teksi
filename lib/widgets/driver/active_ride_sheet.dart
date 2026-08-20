@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
 import '../../core/geo.dart';
-import '../../data/fixtures.dart';
+import '../../l10n/labels.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
@@ -78,7 +78,7 @@ class ActiveRideSheet extends StatelessWidget {
                 ),
               ),
               Text(
-                '${durationLabel(eta)} · ${distanceLabel(km)}',
+                '${durationLabel(l, eta)} · ${distanceLabel(km)}',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -126,7 +126,7 @@ class ActiveRideSheet extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${plural(ride.passengerCount, 'passenger')} · '
+                        '${l.passengerCount(ride.passengerCount)} · '
                         '${ride.paymentMethod == PaymentMethod.cash
                             ? l.cash
                             : ride.paymentMethod == PaymentMethod.card
@@ -248,7 +248,7 @@ class ActiveRideSheet extends StatelessWidget {
                     Text(
                       l.tripDistanceDuration(
                         distanceLabel(ride.distanceKm),
-                        durationLabel(ride.durationMinutes),
+                        durationLabel(l, ride.durationMinutes),
                       ),
                       style: TextStyle(fontSize: 12.5, color: c.textDim),
                     ),
@@ -290,7 +290,7 @@ class ActiveRideSheet extends StatelessWidget {
         children: [
           InfoBanner(l.cancelOrderBody, tone: BannerTone.warn),
           const SizedBox(height: 12),
-          reasonList(sheetContext, cancelReasonsDriver, (reason) {
+          reasonList(sheetContext, cancelReasonsDriver(l), (reason) {
             rides.cancelRide(ride.id, CancelledBy.driver, reason);
             Navigator.of(sheetContext).pop();
           }),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../core/formats.dart';
 import '../../core/geo.dart';
 import '../../data/places.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/draft.dart';
 import '../../state/rides.dart';
@@ -119,6 +120,7 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final draft = context.watch<DraftStore>();
     final session = context.watch<SessionStore>();
@@ -160,7 +162,7 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Set your route'),
+        title: Text(l.setYourRoute),
       ),
       body: Column(
         children: [
@@ -172,7 +174,8 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                 _Field(
                   controller: _pickupController,
                   focusNode: _pickupFocus,
-                  hint: 'Pickup location',
+                  field: DraftField.pickup,
+                  hint: l.pickupLocation,
                   active: draft.editing == DraftField.pickup,
                   onFocus: () {
                     draft.setEditing(DraftField.pickup);
@@ -189,7 +192,8 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                   _Field(
                     controller: _stopController,
                     focusNode: _stopFocus,
-                    hint: 'Stop along the way',
+                    field: DraftField.stop,
+                    hint: l.stopAlongTheWay,
                     active: draft.editing == DraftField.stop,
                     onFocus: () {
                       draft.setEditing(DraftField.stop);
@@ -211,7 +215,8 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                 _Field(
                   controller: _dropoffController,
                   focusNode: _dropoffFocus,
-                  hint: 'Where to?',
+                  field: DraftField.dropoff,
+                  hint: l.whereTo,
                   active: draft.editing == DraftField.dropoff,
                   onFocus: () {
                     draft.setEditing(DraftField.dropoff);
@@ -234,10 +239,7 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                       _focusActiveField();
                     },
                     icon: Icon(Icons.add_rounded, size: 18, color: c.accent),
-                    label: Text(
-                      'Add a stop',
-                      style: TextStyle(color: c.accent),
-                    ),
+                    label: Text(l.addAStop, style: TextStyle(color: c.accent)),
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   ),
               ],
@@ -246,10 +248,10 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
           Divider(height: 1, color: c.line),
           Expanded(
             child: results.isEmpty
-                ? const EmptyState(
+                ? EmptyState(
                     icon: Icons.search_off_rounded,
-                    title: 'No matching places',
-                    body: 'Try a mall, a station, or a neighbourhood name.',
+                    title: l.noMatchingPlaces,
+                    body: l.noMatchingPlacesBody,
                   )
                 : ListView.separated(
                     itemCount: results.length,
@@ -333,6 +335,7 @@ class _Field extends StatelessWidget {
   const _Field({
     required this.controller,
     required this.focusNode,
+    required this.field,
     required this.hint,
     required this.active,
     required this.onFocus,
@@ -342,6 +345,11 @@ class _Field extends StatelessWidget {
 
   final TextEditingController controller;
   final FocusNode focusNode;
+
+  /// Which leg of the route this box edits. The prefix dot used to be picked
+  /// by comparing the hint to 'Where to?', which was one translation away from
+  /// showing every field the same colour.
+  final DraftField field;
   final String hint;
   final bool active;
   final VoidCallback onFocus;
@@ -385,11 +393,13 @@ class _Field extends StatelessWidget {
         prefixIcon: Padding(
           padding: const EdgeInsets.only(left: 14, right: 10),
           child: Icon(
-            hint == 'Where to?' ? Icons.stop_rounded : Icons.circle,
-            size: hint == 'Where to?' ? 12 : 10,
-            color: hint == 'Pickup location'
-                ? c.accent
-                : (hint == 'Where to?' ? c.text : c.warn),
+            field == DraftField.dropoff ? Icons.stop_rounded : Icons.circle,
+            size: field == DraftField.dropoff ? 12 : 10,
+            color: switch (field) {
+              DraftField.pickup => c.accent,
+              DraftField.dropoff => c.text,
+              DraftField.stop => c.warn,
+            },
           ),
         ),
         prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),

@@ -53,8 +53,8 @@ class PriceSheet extends StatelessWidget {
 
     final price = draft.price == 0 ? trip.recommended : draft.price;
     final bounds = priceBounds(trip.recommended);
-    final verdict = judgePrice(price, trip.recommended);
-    final toneColor = switch (verdict.tone) {
+    final tone = judgePrice(price, trip.recommended);
+    final toneColor = switch (tone) {
       PriceTone.low => c.danger,
       PriceTone.high => c.info,
       PriceTone.good => c.accent,
@@ -124,7 +124,7 @@ class PriceSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${distanceLabel(trip.distanceKm)} · ${durationLabel(trip.durationMinutes)}',
+                '${distanceLabel(trip.distanceKm)} · ${durationLabel(l, trip.durationMinutes)}',
                 style: TextStyle(fontSize: 13, color: c.textDim),
               ),
               InkWell(
@@ -171,7 +171,7 @@ class PriceSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      verdict.label,
+                      tone.labelIn(l),
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -224,7 +224,7 @@ class PriceSheet extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            verdict.hint,
+            tone.hintIn(l),
             style: TextStyle(fontSize: 12.5, color: c.textDim, height: 1.35),
           ),
           const SizedBox(height: 12),

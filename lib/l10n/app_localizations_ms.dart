@@ -1171,4 +1171,552 @@ class AppLocalizationsMs extends AppLocalizations {
   String offerMetaLine(int eta, String distance, String trips) {
     return '$eta min jauh · $distance · $trips perjalanan';
   }
+
+  @override
+  String get tagSafeDriving => 'Pemanduan selamat';
+
+  @override
+  String get tagCleanCar => 'Kereta bersih';
+
+  @override
+  String get tagPolite => 'Sopan';
+
+  @override
+  String get tagGoodConversation => 'Perbualan menyenangkan';
+
+  @override
+  String get tagKnowsRoute => 'Tahu jalan';
+
+  @override
+  String get tagOnTime => 'Tepat masa';
+
+  @override
+  String get tagHelpedLuggage => 'Membantu dengan bagasi';
+
+  @override
+  String get tagComfortableRide => 'Perjalanan selesa';
+
+  @override
+  String get tagRudeBehaviour => 'Kelakuan biadab';
+
+  @override
+  String get tagDirtyCar => 'Kereta kotor';
+
+  @override
+  String get tagUnsafeDriving => 'Pemanduan tidak selamat';
+
+  @override
+  String get tagLateArrival => 'Tiba lewat';
+
+  @override
+  String get tagWrongRoute => 'Jalan yang salah';
+
+  @override
+  String get tagAskedForMoney => 'Meminta wang tambahan';
+
+  @override
+  String get tagBadSmell => 'Bau tidak menyenangkan';
+
+  @override
+  String get tagNoAirCon => 'Tiada penyaman udara';
+
+  @override
+  String get tagPolitePassenger => 'Penumpang sopan';
+
+  @override
+  String get tagClearPickup => 'Tempat ambil yang jelas';
+
+  @override
+  String get tagLeftCarClean => 'Meninggalkan kereta bersih';
+
+  @override
+  String get tagKeptMeWaiting => 'Membuat saya menunggu';
+
+  @override
+  String get tagWrongPickup => 'Tempat ambil yang salah';
+
+  @override
+  String get tagTooManyPassengers => 'Terlalu ramai penumpang';
+
+  @override
+  String get tagMessy => 'Bersepah';
+
+  @override
+  String get phraseAtPickup => 'Saya di tempat ambil';
+
+  @override
+  String get phraseTwoMinutes => 'Beri saya 2 minit ya';
+
+  @override
+  String get phraseBlueShirt => 'Saya pakai baju biru';
+
+  @override
+  String get phraseWhichCar => 'Kereta yang mana satu?';
+
+  @override
+  String get phraseCallOnArrival => 'Sila telefon saya apabila tiba';
+
+  @override
+  String get phraseThankYou => 'Terima kasih!';
+
+  @override
+  String get phraseOnMyWay => 'Saya dalam perjalanan';
+
+  @override
+  String get phraseArrivedWaiting => 'Saya sudah tiba, menunggu di luar';
+
+  @override
+  String get phraseTrafficLate => 'Jalan sesak, lewat 5 minit';
+
+  @override
+  String get phraseWhereToStop => 'Di mana tepatnya saya patut berhenti?';
+
+  @override
+  String get phraseComeOut => 'Sila keluar, saya tidak boleh menunggu di sini';
+
+  @override
+  String get cancelDriverTooLong => 'Pemandu mengambil masa terlalu lama';
+
+  @override
+  String get cancelDriverAsked => 'Pemandu minta saya batalkan';
+
+  @override
+  String get cancelNoLongerNeed => 'Saya tidak lagi memerlukan perjalanan ini';
+
+  @override
+  String get cancelWrongPickupAddress => 'Alamat ambil yang salah';
+
+  @override
+  String get cancelFoundAnother => 'Sudah dapat tumpangan lain';
+
+  @override
+  String get cancelPriceTooHigh => 'Harga terlalu tinggi';
+
+  @override
+  String get cancelPassengerSilent => 'Penumpang tidak menjawab';
+
+  @override
+  String get cancelPassengerNoShow => 'Penumpang tidak muncul';
+
+  @override
+  String get cancelPickupUnreachable => 'Tempat ambil tidak dapat dihubungi';
+
+  @override
+  String get cancelTooFar => 'Terlalu jauh dari lokasi saya';
+
+  @override
+  String get cancelVehicleProblem => 'Masalah kenderaan';
+
+  @override
+  String get cancelPassengerAsked => 'Penumpang minta dibatalkan';
+
+  @override
+  String get promoHalfOff =>
+      'Diskaun 50% untuk perjalanan seterusnya, sehingga RM10';
+
+  @override
+  String get promoFiveOff => 'Potongan RM5 untuk mana-mana perjalanan';
+
+  @override
+  String get promoAirport => 'Potongan RM15 untuk pemindahan lapangan terbang';
+
+  @override
+  String get chat => 'Sembang';
+
+  @override
+  String get chatUnavailableTitle => 'Perbualan tidak tersedia';
+
+  @override
+  String get chatUnavailableBody => 'Perjalanan ini tidak lagi wujud.';
+
+  @override
+  String get passengerLabel => 'Penumpang';
+
+  @override
+  String get yourDriver => 'Pemandu anda';
+
+  @override
+  String chatSubtitle(String who, String destination) {
+    return '$who · perjalanan ke $destination';
+  }
+
+  @override
+  String get chatOnlyDuringTrip => 'Mesej hanya tersedia semasa perjalanan.';
+
+  @override
+  String get messageHint => 'Mesej…';
+
+  @override
+  String get send => 'Hantar';
+
+  @override
+  String get rate => 'Nilai';
+
+  @override
+  String get rideNotFound => 'Perjalanan tidak dijumpai';
+
+  @override
+  String get tripCompleted => 'Perjalanan selesai';
+
+  @override
+  String get howWasYourTrip => 'Bagaimana perjalanan anda?';
+
+  @override
+  String get howWasYourTripDriver =>
+      'Bagaimana perjalanan anda bersama mereka?';
+
+  @override
+  String get addACommentOptional => 'Tambah komen (pilihan)';
+
+  @override
+  String addATipFor(String name) {
+    return 'Tambah tip untuk $name';
+  }
+
+  @override
+  String get none => 'Tiada';
+
+  @override
+  String submitAndTip(String amount) {
+    return 'Hantar dan beri tip $amount';
+  }
+
+  @override
+  String get submitRating => 'Hantar penilaian';
+
+  @override
+  String get promoInvalid => 'Kod itu tidak sah atau telah luput.';
+
+  @override
+  String promoApplied(String code, String label) {
+    return '$code digunakan — $label';
+  }
+
+  @override
+  String get enterAPromoCode => 'Masukkan kod promosi';
+
+  @override
+  String get apply => 'Guna';
+
+  @override
+  String get availableForYou => 'Tersedia untuk anda';
+
+  @override
+  String minimumFareIs(String amount) {
+    return 'Tambang minimum $amount';
+  }
+
+  @override
+  String get use => 'Guna';
+
+  @override
+  String get inviteFriends => 'Jemput rakan';
+
+  @override
+  String referralBody(String amount) {
+    return 'Beri rakan anda potongan $amount untuk perjalanan pertama mereka dan dapat $amount apabila mereka menggunakannya.';
+  }
+
+  @override
+  String get copyReferralCode => 'Salin kod rujukan';
+
+  @override
+  String get referralCodeCopied => 'Kod rujukan disalin';
+
+  @override
+  String inviteText(String code, String amount) {
+    return 'Guna kod GET.teksi saya $code dan dapat potongan $amount untuk perjalanan pertama anda.';
+  }
+
+  @override
+  String get inviteCopied => 'Jemputan disalin ke papan klip';
+
+  @override
+  String get shareInvite => 'Kongsi jemputan';
+
+  @override
+  String get setYourRoute => 'Tetapkan laluan anda';
+
+  @override
+  String get pickupLocation => 'Lokasi ambil';
+
+  @override
+  String get stopAlongTheWay => 'Perhentian di sepanjang jalan';
+
+  @override
+  String get addAStop => 'Tambah perhentian';
+
+  @override
+  String get noMatchingPlaces => 'Tiada tempat yang sepadan';
+
+  @override
+  String get noMatchingPlacesBody =>
+      'Cuba nama pusat beli-belah, stesen, atau kawasan kejiranan.';
+
+  @override
+  String get today => 'Hari ini';
+
+  @override
+  String get thisWeek => 'Minggu ini';
+
+  @override
+  String get allTime => 'Sepanjang masa';
+
+  @override
+  String get netEarnings => 'Pendapatan bersih';
+
+  @override
+  String get trips => 'Perjalanan';
+
+  @override
+  String get distance => 'Jarak';
+
+  @override
+  String get time => 'Masa';
+
+  @override
+  String get averageFare => 'Purata tambang';
+
+  @override
+  String get rating => 'Penilaian';
+
+  @override
+  String get perHour => 'Sejam';
+
+  @override
+  String get noCompletedTrips => 'Belum ada perjalanan selesai';
+
+  @override
+  String get noCompletedTripsBody =>
+      'Pergi dalam talian dan terima pesanan — pendapatan anda akan muncul di sini.';
+
+  @override
+  String get asPassenger => 'Sebagai penumpang';
+
+  @override
+  String get asDriver => 'Sebagai pemandu';
+
+  @override
+  String get noRidesYet => 'Belum ada perjalanan';
+
+  @override
+  String get noRidesDriverBody =>
+      'Perjalanan yang anda pandu dan selesai akan muncul di sini.';
+
+  @override
+  String get noRidesPassengerBody =>
+      'Tempah perjalanan pertama anda dan ia akan muncul di sini.';
+
+  @override
+  String get cancelled => 'Dibatalkan';
+
+  @override
+  String youRated(int stars) {
+    return 'Anda menilai $stars';
+  }
+
+  @override
+  String get verdictLowLabel => 'Bawah harga pasaran';
+
+  @override
+  String get verdictLowHint =>
+      'Pemandu mungkin melangkaunya. Jangkakan menunggu lebih lama.';
+
+  @override
+  String get verdictFairLabel => 'Harga berpatutan';
+
+  @override
+  String get verdictFairHint =>
+      'Lebih kurang apa yang pemandu biasanya terima untuk laluan ini.';
+
+  @override
+  String get verdictGoodLabel => 'Harga menarik';
+
+  @override
+  String get verdictGoodHint => 'Pemandu cepat membalas tawaran seperti ini.';
+
+  @override
+  String get verdictHighLabel => 'Atas harga pasaran';
+
+  @override
+  String get verdictHighHint =>
+      'Anda menawarkan lebih daripada kos biasa perjalanan ini.';
+
+  @override
+  String get simulatedMarketplaceRowSubtitle =>
+      'Pemandu bot membida pesanan anda dan penumpang bot menghantar perjalanan';
+
+  @override
+  String get simulationBanner =>
+      'Dengan ini dihidupkan, anda boleh mencuba kedua-dua belah pasaran pada satu peranti: bot membida pesanan anda sebagai penumpang, dan menghantar pesanan ke dalam suapan anda sebagai pemandu.';
+
+  @override
+  String get appNameVersion => 'GET.teksi 1.0.0';
+
+  @override
+  String get builtWith =>
+      'Dibina dengan Flutter · Android, iOS, Web, HarmonyOS';
+
+  @override
+  String get tripDetails => 'Butiran perjalanan';
+
+  @override
+  String refIs(String reference) {
+    return 'Ruj. $reference';
+  }
+
+  @override
+  String get fareBreakdown => 'Perincian tambang';
+
+  @override
+  String get agreedPrice => 'Harga dipersetujui';
+
+  @override
+  String get yourOriginalOffer => 'Tawaran asal anda';
+
+  @override
+  String priceRaisedTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Harga dinaikkan $count×',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get serviceFee => 'Yuran perkhidmatan';
+
+  @override
+  String get youEarned => 'Anda peroleh';
+
+  @override
+  String get tip => 'Tip';
+
+  @override
+  String get totalPaid => 'Jumlah dibayar';
+
+  @override
+  String paidBy(String method) {
+    return 'Dibayar dengan $method';
+  }
+
+  @override
+  String get paidByCash => 'tunai';
+
+  @override
+  String paidByCard(String tail) {
+    return 'kad $tail';
+  }
+
+  @override
+  String get paidByWallet => 'dompet';
+
+  @override
+  String get yourRating => 'Penilaian anda';
+
+  @override
+  String get tripReferenceCopied => 'Rujukan perjalanan disalin';
+
+  @override
+  String get copyTripReference => 'Salin rujukan perjalanan';
+
+  @override
+  String get currentLocation => 'Lokasi semasa';
+
+  @override
+  String get pickup => 'Tempat ambil';
+
+  @override
+  String get drive => 'Memandu';
+
+  @override
+  String get notifications => 'Pemberitahuan';
+
+  @override
+  String get switchToPassengerTooltip => 'Tukar kepada penumpang';
+
+  @override
+  String earningsSemantics(String amount, String status) {
+    return 'Pendapatan, $amount, $status';
+  }
+
+  @override
+  String get onlineWord => 'dalam talian';
+
+  @override
+  String get offlineWord => 'luar talian';
+
+  @override
+  String durationMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String durationHours(int hours) {
+    return '$hours j';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return '$hours j $minutes min';
+  }
+
+  @override
+  String get justNow => 'sebentar tadi';
+
+  @override
+  String secondsAgo(int seconds) {
+    return '${seconds}s lalu';
+  }
+
+  @override
+  String minutesAgo(int minutes) {
+    return '$minutes min lalu';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '$hours j lalu';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return '$days h lalu';
+  }
+
+  @override
+  String get yesterday => 'Semalam';
+
+  @override
+  String ordersNearby(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pesanan berhampiran',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceToPickup(String distance, String duration) {
+    return '$distance ke tempat ambil · $duration';
+  }
+
+  @override
+  String get clearLocalDataConfirmBody =>
+      'Ini memadamkan semua perjalanan, tawaran, mesej dan transaksi yang disimpan pada peranti ini. Profil anda kekal dilog masuk.';
+
+  @override
+  String get nothingNew => 'Tiada yang baharu';
+
+  @override
+  String get nothingNewBody =>
+      'Kemas kini perjalanan, tawaran dan promosi akan muncul di sini.';
+
+  @override
+  String get lowerFareTooltip => 'Turunkan tambang';
+
+  @override
+  String get raiseFareTooltip => 'Naikkan tambang';
 }

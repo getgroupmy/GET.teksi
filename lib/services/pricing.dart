@@ -73,42 +73,18 @@ PriceBounds priceBounds(int recommended) =>
 
 enum PriceTone { low, fair, good, high }
 
-class PriceVerdict {
-  const PriceVerdict(this.tone, this.label, this.hint);
-  final PriceTone tone;
-  final String label;
-  final String hint;
-}
+// The label and hint that go with each tone used to live on a PriceVerdict
+// record built here. They are copy, so they live in lib/l10n/labels.dart now;
+// this file decides what the price *is*, not what to call it.
 
-/// Feedback shown live as the passenger drags the fare slider.
-PriceVerdict judgePrice(int price, int recommended) {
+/// How the passenger's offer reads against the recommendation. Feedback shown
+/// live as they drag the fare slider.
+PriceTone judgePrice(int price, int recommended) {
   final ratio = price / recommended - 1;
-  if (ratio < -0.18) {
-    return const PriceVerdict(
-      PriceTone.low,
-      'Below market',
-      'Drivers may skip this. Expect a longer wait.',
-    );
-  }
-  if (ratio < 0.06) {
-    return const PriceVerdict(
-      PriceTone.fair,
-      'Fair price',
-      'Around what drivers usually accept on this route.',
-    );
-  }
-  if (ratio < 0.3) {
-    return const PriceVerdict(
-      PriceTone.good,
-      'Great price',
-      'Drivers respond quickly to offers like this.',
-    );
-  }
-  return const PriceVerdict(
-    PriceTone.high,
-    'Above market',
-    "You're offering more than this trip usually costs.",
-  );
+  if (ratio < -0.18) return PriceTone.low;
+  if (ratio < 0.06) return PriceTone.fair;
+  if (ratio < 0.3) return PriceTone.good;
+  return PriceTone.high;
 }
 
 /// Suggested bumps shown when nobody has bid yet.

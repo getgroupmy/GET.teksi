@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
 import '../../core/geo.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
 import '../../state/session.dart';
@@ -25,6 +26,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -103,16 +105,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 children: [
                   FabButton(
                     icon: Icons.menu_rounded,
-                    tooltip: 'Menu',
+                    tooltip: l.menu,
                     onTap: () => context.push('/menu'),
                   ),
                   const Spacer(),
                   Semantics(
                     button: true,
-                    label:
-                        'Earnings, '
-                        '${money(user.driverProfile!.earnings)}, '
-                        '${session.prefs.driverOnline ? 'online' : 'offline'}',
+                    label: l.earningsSemantics(
+                      money(user.driverProfile!.earnings),
+                      session.prefs.driverOnline ? l.onlineWord : l.offlineWord,
+                    ),
                     child: Material(
                       color: c.surface,
                       borderRadius: BorderRadius.circular(999),
@@ -163,7 +165,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                session.prefs.driverOnline ? 'On' : 'Off',
+                                session.prefs.driverOnline ? l.on : l.off,
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -184,7 +186,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: FabButton(
                         icon: Icons.person_outline_rounded,
-                        tooltip: 'Switch to passenger',
+                        tooltip: l.switchToPassengerTooltip,
                         onTap: () {
                           session.setRole(Role.passenger);
                           context.go('/p');
@@ -193,7 +195,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     ),
                   FabButton(
                     icon: Icons.notifications_none_rounded,
-                    tooltip: 'Notifications',
+                    tooltip: l.notifications,
                     badge: rides.unreadNotifications,
                     onTap: () => context.push('/notifications'),
                   ),

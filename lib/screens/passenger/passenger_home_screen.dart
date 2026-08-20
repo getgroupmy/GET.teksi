@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../core/geo.dart';
 import '../../core/storage.dart';
 import '../../data/places.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/draft.dart';
 import '../../state/rides.dart';
@@ -35,13 +36,14 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
 
   void _seedPickup() {
     if (!mounted) return;
+    final l = AppLocalizations.of(context)!;
     final draft = context.read<DraftStore>();
     if (draft.pickup != null) return;
     final session = context.read<SessionStore>();
     draft.setPickup(
       Place(
         id: uid('pin'),
-        name: 'Current location',
+        name: l.currentLocation,
         address: streets[DateTime.now().microsecond % streets.length],
         coord: session.myLocation,
       ),
@@ -50,6 +52,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
     final draft = context.watch<DraftStore>();
@@ -86,7 +89,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
           'pickup',
           activeRide.pickup.coord,
           PinKind.pickup,
-          label: 'Pickup',
+          label: l.pickup,
         ),
       );
       if (activeRide.stop != null) {
@@ -107,7 +110,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
             'pickup',
             draft.pickup!.coord,
             PinKind.pickup,
-            label: 'Pickup',
+            label: l.pickup,
           ),
         );
       } else {
@@ -176,7 +179,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                 children: [
                   FabButton(
                     icon: Icons.menu_rounded,
-                    tooltip: 'Menu',
+                    tooltip: l.menu,
                     onTap: () => context.push('/menu'),
                   ),
                   const Spacer(),
@@ -185,7 +188,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: _RoleSwitch(
                         icon: Icons.directions_car_filled_rounded,
-                        label: 'Drive',
+                        label: l.drive,
                         onTap: () {
                           session.setRole(Role.driver);
                           context.go('/d');
@@ -194,7 +197,7 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                     ),
                   FabButton(
                     icon: Icons.notifications_none_rounded,
-                    tooltip: 'Notifications',
+                    tooltip: l.notifications,
                     badge: rides.unreadNotifications,
                     onTap: () => context.push('/notifications'),
                   ),

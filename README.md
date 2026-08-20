@@ -37,7 +37,9 @@ Map with live nearby cars · destination search with recents, saved places and o
 Onboarding with vehicle and document set · go online/offline · order feed sorted by nearest / highest / newest, filtered by minimum fare and pickup distance · accept the asking price or counter-offer, with net-of-commission shown live · withdraw a pending offer · job card driving the trip forward one button at a time (on my way → arrived → start → finish) · earnings dashboard by day/week/all-time with per-hour and per-trip breakdowns · vehicle and document management.
 
 **Languages**
-English and Bahasa Melayu, switched in Settings. Onboarding, sign-in and Settings are translated; screens not yet converted fall back to English rather than showing a key, so the rest can be done a screen at a time.
+English and Bahasa Melayu, switched in Settings. Every screen is translated — 491 keys, with a test that fails if an English key has no Malay entry. What is still English is text the stores write rather than the screens: notification titles and bodies, wallet ledger descriptions and the driver's document labels. Those are persisted records written without a `BuildContext`, and the server writes the ledger half in English too, so localising the client half alone would produce a two-language wallet. Making them translatable means storing a key and arguments instead of a sentence, which changes the persisted shape.
+
+The Malay is machine-written and wants a native speaker's pass before it ships.
 
 **Shared**
 Phone + OTP auth · profile and ratings · wallet with top-ups and transaction ledger · promo codes and referrals · saved places · notifications · safety centre with emergency contacts and trip sharing · settings with dark/light theme.

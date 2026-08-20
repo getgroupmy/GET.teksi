@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
 import '../../theme.dart';
@@ -27,6 +28,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final notifications = context.watch<RidesStore>().notifications;
 
@@ -36,13 +38,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Notifications'),
+        title: Text(l.notifications),
       ),
       body: notifications.isEmpty
-          ? const EmptyState(
+          ? EmptyState(
               icon: Icons.notifications_none_rounded,
-              title: 'Nothing new',
-              body: 'Ride updates, offers and promos will show up here.',
+              title: l.nothingNew,
+              body: l.nothingNewBody,
             )
           : ListView.separated(
               itemCount: notifications.length,
@@ -107,7 +109,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                timeAgo(n.createdAt),
+                                timeAgo(l, n.createdAt),
                                 style: TextStyle(
                                   fontSize: 11.5,
                                   color: c.textMute,

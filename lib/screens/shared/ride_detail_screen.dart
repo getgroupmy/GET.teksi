@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
+import '../../data/fixtures.dart';
+import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
 import '../../state/rides.dart';
@@ -19,6 +21,7 @@ class RideDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -31,9 +34,9 @@ class RideDetailScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: () => context.pop(),
           ),
-          title: const Text('Trip details'),
+          title: Text(l.tripDetails),
         ),
-        body: const EmptyState(title: 'Ride not found'),
+        body: EmptyState(title: l.rideNotFound),
       );
     }
 
@@ -45,7 +48,7 @@ class RideDetailScreen extends StatelessWidget {
     final other = asDriver
         ? (ride.passengerName, ride.passengerAvatarColor, ride.passengerRating)
         : (
-            ride.driverName ?? 'Driver',
+            ride.driverName ?? l.driverLabel,
             ride.driverAvatarColor ?? 0xFF9AA39D,
             ride.driverRating ?? 5.0,
           );
@@ -62,7 +65,7 @@ class RideDetailScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Trip details'),
+        title: Text(l.tripDetails),
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 32),
@@ -96,7 +99,7 @@ class RideDetailScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${dateLabel(ride.completedAt ?? ride.createdAt)} · '
+                      '${dateLabel(l, ride.completedAt ?? ride.createdAt)} · '
                       '${clockTime(ride.completedAt ?? ride.createdAt)}',
                       style: TextStyle(fontSize: 13, color: c.textDim),
                     ),
@@ -132,11 +135,11 @@ class RideDetailScreen extends StatelessWidget {
                             style: TextStyle(fontSize: 13, color: c.textDim),
                           ),
                           Text(
-                            durationLabel(ride.durationMinutes),
+                            durationLabel(l, ride.durationMinutes),
                             style: TextStyle(fontSize: 13, color: c.textDim),
                           ),
                           Text(
-                            'Ref $reference',
+                            l.refIs(reference),
                             style: TextStyle(fontSize: 13, color: c.textDim),
                           ),
                         ],
@@ -149,41 +152,41 @@ class RideDetailScreen extends StatelessWidget {
                   AppCard(
                     child: Column(
                       children: [
-                        const SectionLabel(
-                          'Fare breakdown',
-                          padding: EdgeInsets.only(bottom: 10),
+                        SectionLabel(
+                          l.fareBreakdown,
+                          padding: const EdgeInsets.only(bottom: 10),
                         ),
-                        _Line(label: 'Agreed price', value: money(ride.fare)),
+                        _Line(label: l.agreedPrice, value: money(ride.fare)),
                         if (ride.askingPrice != ride.fare)
                           _Line(
-                            label: 'Your original offer',
+                            label: l.yourOriginalOffer,
                             value: money(ride.askingPrice),
                             muted: true,
                           ),
                         if (ride.priceRaises > 0)
                           _Line(
-                            label: 'Price raised ${ride.priceRaises}×',
+                            label: l.priceRaisedTimes(ride.priceRaises),
                             value: '',
                             muted: true,
                           ),
                         if (asDriver) ...[
                           _Line(
-                            label: 'Service fee',
+                            label: l.serviceFee,
                             value: '−${money(commissionOn(ride.fare))}',
                             muted: true,
                           ),
                           Divider(height: 18, color: c.line),
                           _Line(
-                            label: 'You earned',
+                            label: l.youEarned,
                             value: money(net),
                             bold: true,
                           ),
                         ] else ...[
                           if (ride.tip != null && ride.tip! > 0)
-                            _Line(label: 'Tip', value: money(ride.tip!)),
+                            _Line(label: l.tip, value: money(ride.tip!)),
                           Divider(height: 18, color: c.line),
                           _Line(
-                            label: 'Total paid',
+                            label: l.totalPaid,
                             value: money(ride.fare + (ride.tip ?? 0)),
                             bold: true,
                           ),
@@ -191,11 +194,13 @@ class RideDetailScreen extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Paid by ${switch (ride.paymentMethod) {
-                                PaymentMethod.cash => 'cash',
-                                PaymentMethod.card => 'card ···4821',
-                                PaymentMethod.wallet => 'wallet',
-                              }}',
+                              l.paidBy(switch (ride.paymentMethod) {
+                                PaymentMethod.cash => l.paidByCash,
+                                PaymentMethod.card => l.paidByCard(
+                                  demoCardTail,
+                                ),
+                                PaymentMethod.wallet => l.paidByWallet,
+                              }),
                               style: TextStyle(fontSize: 12, color: c.textMute),
                             ),
                           ),
@@ -261,9 +266,9 @@ class RideDetailScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SectionLabel(
-                              'Your rating',
-                              padding: EdgeInsets.only(bottom: 8),
+                            SectionLabel(
+                              l.yourRating,
+                              padding: const EdgeInsets.only(bottom: 8),
                             ),
                             Row(
                               children: [
@@ -307,10 +312,10 @@ class RideDetailScreen extends StatelessWidget {
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: reference));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Trip reference copied')),
+                        SnackBar(content: Text(l.tripReferenceCopied)),
                       );
                     },
-                    child: const Text('Copy trip reference'),
+                    child: Text(l.copyTripReference),
                   ),
                 ),
               ],

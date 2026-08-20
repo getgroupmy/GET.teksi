@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
-import '../../data/fixtures.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../state/draft.dart';
 import '../../state/rides.dart';
@@ -45,6 +46,7 @@ class _RateScreenState extends State<RateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.read<RidesStore>();
@@ -53,21 +55,24 @@ class _RateScreenState extends State<RateScreen> {
 
     if (ride == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Rate')),
-        body: const EmptyState(title: 'Ride not found'),
+        appBar: AppBar(title: Text(l.rate)),
+        body: EmptyState(title: l.rideNotFound),
       );
     }
 
     final viewer = ride.driverId == user.id ? Role.driver : Role.passenger;
     final other = viewer == Role.driver
         ? (ride.passengerName, ride.passengerAvatarColor)
-        : (ride.driverName ?? 'Driver', ride.driverAvatarColor ?? 0xFF9AA39D);
+        : (
+            ride.driverName ?? l.driverLabel,
+            ride.driverAvatarColor ?? 0xFF9AA39D,
+          );
 
     final tagPool = _stars == 0
         ? const <String>[]
         : viewer == Role.driver
-        ? (_stars >= 4 ? driverRatingTagsGood : driverRatingTagsBad)
-        : (_stars >= 4 ? ratingTagsGood : ratingTagsBad);
+        ? (_stars >= 4 ? driverRatingTagsGood(l) : driverRatingTagsBad(l))
+        : (_stars >= 4 ? ratingTagsGood(l) : ratingTagsBad(l));
 
     void submit() {
       rides.rateRide(
@@ -97,11 +102,11 @@ class _RateScreenState extends State<RateScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Trip completed'),
+        title: Text(l.tripCompleted),
         actions: [
           TextButton(
             onPressed: skip,
-            child: Text('Skip', style: TextStyle(color: c.textDim)),
+            child: Text(l.skip, style: TextStyle(color: c.textDim)),
           ),
         ],
       ),
@@ -126,7 +131,7 @@ class _RateScreenState extends State<RateScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '${distanceLabel(ride.distanceKm)} · ${durationLabel(ride.durationMinutes)}',
+                              '${distanceLabel(ride.distanceKm)} · ${durationLabel(l, ride.durationMinutes)}',
                               style: TextStyle(fontSize: 13, color: c.textDim),
                             ),
                             Text(
@@ -153,7 +158,9 @@ class _RateScreenState extends State<RateScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'How was your trip${viewer == Role.driver ? ' with them' : ''}?',
+                    viewer == Role.driver
+                        ? l.howWasYourTripDriver
+                        : l.howWasYourTrip,
                     style: TextStyle(fontSize: 13.5, color: c.textDim),
                   ),
                   const SizedBox(height: 16),
@@ -206,15 +213,15 @@ class _RateScreenState extends State<RateScreen> {
                       controller: _comment,
                       maxLines: 2,
                       maxLength: 200,
-                      decoration: const InputDecoration(
-                        hintText: 'Add a comment (optional)',
+                      decoration: InputDecoration(
+                        hintText: l.addACommentOptional,
                       ),
                     ),
                   ],
                   if (viewer == Role.passenger && _stars >= 4) ...[
                     const SizedBox(height: 8),
                     SectionLabel(
-                      'Add a tip for ${other.$1.split(' ').first}',
+                      l.addATipFor(other.$1.split(' ').first),
                       padding: const EdgeInsets.only(bottom: 8),
                     ),
                     Row(
@@ -246,7 +253,7 @@ class _RateScreenState extends State<RateScreen> {
                                   ),
                                   child: Text(
                                     value == 0
-                                        ? 'None'
+                                        ? l.none
                                         : money(value, decimals: false),
                                     style: TextStyle(
                                       fontSize: 15,
@@ -273,8 +280,8 @@ class _RateScreenState extends State<RateScreen> {
                 onPressed: _stars == 0 ? null : submit,
                 child: Text(
                   _tip > 0
-                      ? 'Submit and tip ${money(_tip, decimals: false)}'
-                      : 'Submit rating',
+                      ? l.submitAndTip(money(_tip, decimals: false))
+                      : l.submitRating,
                 ),
               ),
             ),

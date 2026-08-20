@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
-import '../../data/fixtures.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../models/models.dart';
 import '../../state/rides.dart';
 import '../../state/session.dart';
@@ -47,6 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final session = context.watch<SessionStore>();
     final rides = context.watch<RidesStore>();
@@ -60,11 +62,11 @@ class _ChatScreenState extends State<ChatScreen> {
             icon: const Icon(Icons.arrow_back_rounded),
             onPressed: () => context.pop(),
           ),
-          title: const Text('Chat'),
+          title: Text(l.chat),
         ),
-        body: const EmptyState(
-          title: 'Conversation unavailable',
-          body: 'This ride no longer exists.',
+        body: EmptyState(
+          title: l.chatUnavailableTitle,
+          body: l.chatUnavailableBody,
         ),
       );
     }
@@ -79,17 +81,17 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     final other = viewer == Role.driver
-        ? (ride.passengerName, ride.passengerAvatarColor, 'Passenger')
+        ? (ride.passengerName, ride.passengerAvatarColor, l.passengerLabel)
         : (
-            ride.driverName ?? 'Driver',
+            ride.driverName ?? l.driverLabel,
             ride.driverAvatarColor ?? 0xFF9AA39D,
-            'Your driver',
+            l.yourDriver,
           );
 
     final messages = rides.chatFor(widget.rideId);
     final phrases = viewer == Role.driver
-        ? quickPhrasesDriver
-        : quickPhrasesPassenger;
+        ? quickPhrasesDriver(l)
+        : quickPhrasesPassenger(l);
 
     return Scaffold(
       appBar: AppBar(
@@ -116,7 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   Text(
-                    '${other.$3} · trip to ${ride.dropoff.name}',
+                    l.chatSubtitle(other.$3, ride.dropoff.name),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 12, color: c.textDim),
@@ -129,9 +131,9 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.phone_rounded, color: c.accent),
-            tooltip: 'Call',
+            tooltip: l.callLabel,
             onPressed: () => ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('Calling ${other.$1}…'))),
+                .showSnackBar(SnackBar(content: Text(l.callingName(other.$1)))),
           ),
         ],
       ),
@@ -144,7 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Text(
-                        'Messages are only available during the trip.',
+                        l.chatOnlyDuringTrip,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: c.textMute),
                       ),
@@ -238,9 +240,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: TextField(
                       controller: _controller,
                       onSubmitted: (v) => _send(v, viewer),
-                      decoration: const InputDecoration(
-                        hintText: 'Message…',
-                        contentPadding: EdgeInsets.symmetric(
+                      decoration: InputDecoration(
+                        hintText: l.messageHint,
+                        contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 12,
                         ),
@@ -250,7 +252,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   const SizedBox(width: 8),
                   Semantics(
                     button: true,
-                    label: 'Send',
+                    label: l.send,
                     child: Material(
                       color: c.brand,
                       shape: const CircleBorder(),

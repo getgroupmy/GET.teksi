@@ -1165,4 +1165,550 @@ class AppLocalizationsEn extends AppLocalizations {
   String offerMetaLine(int eta, String distance, String trips) {
     return '$eta min away · $distance · $trips trips';
   }
+
+  @override
+  String get tagSafeDriving => 'Safe driving';
+
+  @override
+  String get tagCleanCar => 'Clean car';
+
+  @override
+  String get tagPolite => 'Polite';
+
+  @override
+  String get tagGoodConversation => 'Good conversation';
+
+  @override
+  String get tagKnowsRoute => 'Knows the route';
+
+  @override
+  String get tagOnTime => 'On time';
+
+  @override
+  String get tagHelpedLuggage => 'Helped with luggage';
+
+  @override
+  String get tagComfortableRide => 'Comfortable ride';
+
+  @override
+  String get tagRudeBehaviour => 'Rude behaviour';
+
+  @override
+  String get tagDirtyCar => 'Dirty car';
+
+  @override
+  String get tagUnsafeDriving => 'Unsafe driving';
+
+  @override
+  String get tagLateArrival => 'Late arrival';
+
+  @override
+  String get tagWrongRoute => 'Wrong route';
+
+  @override
+  String get tagAskedForMoney => 'Asked for more money';
+
+  @override
+  String get tagBadSmell => 'Bad smell';
+
+  @override
+  String get tagNoAirCon => 'No air conditioning';
+
+  @override
+  String get tagPolitePassenger => 'Polite passenger';
+
+  @override
+  String get tagClearPickup => 'Clear pickup point';
+
+  @override
+  String get tagLeftCarClean => 'Left car clean';
+
+  @override
+  String get tagKeptMeWaiting => 'Kept me waiting';
+
+  @override
+  String get tagWrongPickup => 'Wrong pickup point';
+
+  @override
+  String get tagTooManyPassengers => 'Too many passengers';
+
+  @override
+  String get tagMessy => 'Messy';
+
+  @override
+  String get phraseAtPickup => 'I’m at the pickup point';
+
+  @override
+  String get phraseTwoMinutes => 'Give me 2 minutes please';
+
+  @override
+  String get phraseBlueShirt => 'I’m wearing a blue shirt';
+
+  @override
+  String get phraseWhichCar => 'Which car are you in?';
+
+  @override
+  String get phraseCallOnArrival => 'Please call me when you arrive';
+
+  @override
+  String get phraseThankYou => 'Thank you!';
+
+  @override
+  String get phraseOnMyWay => 'I’m on my way';
+
+  @override
+  String get phraseArrivedWaiting => 'I’ve arrived, waiting outside';
+
+  @override
+  String get phraseTrafficLate => 'Traffic is heavy, running 5 min late';
+
+  @override
+  String get phraseWhereToStop => 'Where exactly should I stop?';
+
+  @override
+  String get phraseComeOut => 'Please come out, I cannot wait here';
+
+  @override
+  String get cancelDriverTooLong => 'Driver is taking too long';
+
+  @override
+  String get cancelDriverAsked => 'Driver asked me to cancel';
+
+  @override
+  String get cancelNoLongerNeed => 'I no longer need the ride';
+
+  @override
+  String get cancelWrongPickupAddress => 'Wrong pickup address';
+
+  @override
+  String get cancelFoundAnother => 'Found another ride';
+
+  @override
+  String get cancelPriceTooHigh => 'Price is too high';
+
+  @override
+  String get cancelPassengerSilent => 'Passenger is not responding';
+
+  @override
+  String get cancelPassengerNoShow => 'Passenger did not show up';
+
+  @override
+  String get cancelPickupUnreachable => 'Pickup point is unreachable';
+
+  @override
+  String get cancelTooFar => 'Too far from my location';
+
+  @override
+  String get cancelVehicleProblem => 'Vehicle problem';
+
+  @override
+  String get cancelPassengerAsked => 'Passenger asked to cancel';
+
+  @override
+  String get promoHalfOff => '50% off your next ride, up to RM10';
+
+  @override
+  String get promoFiveOff => 'RM5 off any trip';
+
+  @override
+  String get promoAirport => 'RM15 off an airport transfer';
+
+  @override
+  String get chat => 'Chat';
+
+  @override
+  String get chatUnavailableTitle => 'Conversation unavailable';
+
+  @override
+  String get chatUnavailableBody => 'This ride no longer exists.';
+
+  @override
+  String get passengerLabel => 'Passenger';
+
+  @override
+  String get yourDriver => 'Your driver';
+
+  @override
+  String chatSubtitle(String who, String destination) {
+    return '$who · trip to $destination';
+  }
+
+  @override
+  String get chatOnlyDuringTrip =>
+      'Messages are only available during the trip.';
+
+  @override
+  String get messageHint => 'Message…';
+
+  @override
+  String get send => 'Send';
+
+  @override
+  String get rate => 'Rate';
+
+  @override
+  String get rideNotFound => 'Ride not found';
+
+  @override
+  String get tripCompleted => 'Trip completed';
+
+  @override
+  String get howWasYourTrip => 'How was your trip?';
+
+  @override
+  String get howWasYourTripDriver => 'How was your trip with them?';
+
+  @override
+  String get addACommentOptional => 'Add a comment (optional)';
+
+  @override
+  String addATipFor(String name) {
+    return 'Add a tip for $name';
+  }
+
+  @override
+  String get none => 'None';
+
+  @override
+  String submitAndTip(String amount) {
+    return 'Submit and tip $amount';
+  }
+
+  @override
+  String get submitRating => 'Submit rating';
+
+  @override
+  String get promoInvalid => 'That code isn’t valid or has expired.';
+
+  @override
+  String promoApplied(String code, String label) {
+    return '$code applied — $label';
+  }
+
+  @override
+  String get enterAPromoCode => 'Enter a promo code';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get availableForYou => 'Available for you';
+
+  @override
+  String minimumFareIs(String amount) {
+    return 'Minimum fare $amount';
+  }
+
+  @override
+  String get use => 'Use';
+
+  @override
+  String get inviteFriends => 'Invite friends';
+
+  @override
+  String referralBody(String amount) {
+    return 'Give a friend $amount off their first ride and get $amount when they take it.';
+  }
+
+  @override
+  String get copyReferralCode => 'Copy referral code';
+
+  @override
+  String get referralCodeCopied => 'Referral code copied';
+
+  @override
+  String inviteText(String code, String amount) {
+    return 'Use my GET.teksi code $code and get $amount off your first ride.';
+  }
+
+  @override
+  String get inviteCopied => 'Invite copied to clipboard';
+
+  @override
+  String get shareInvite => 'Share invite';
+
+  @override
+  String get setYourRoute => 'Set your route';
+
+  @override
+  String get pickupLocation => 'Pickup location';
+
+  @override
+  String get stopAlongTheWay => 'Stop along the way';
+
+  @override
+  String get addAStop => 'Add a stop';
+
+  @override
+  String get noMatchingPlaces => 'No matching places';
+
+  @override
+  String get noMatchingPlacesBody =>
+      'Try a mall, a station, or a neighbourhood name.';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get thisWeek => 'This week';
+
+  @override
+  String get allTime => 'All time';
+
+  @override
+  String get netEarnings => 'Net earnings';
+
+  @override
+  String get trips => 'Trips';
+
+  @override
+  String get distance => 'Distance';
+
+  @override
+  String get time => 'Time';
+
+  @override
+  String get averageFare => 'Average fare';
+
+  @override
+  String get rating => 'Rating';
+
+  @override
+  String get perHour => 'Per hour';
+
+  @override
+  String get noCompletedTrips => 'No completed trips yet';
+
+  @override
+  String get noCompletedTripsBody =>
+      'Go online and accept an order — your earnings will show up here.';
+
+  @override
+  String get asPassenger => 'As passenger';
+
+  @override
+  String get asDriver => 'As driver';
+
+  @override
+  String get noRidesYet => 'No rides yet';
+
+  @override
+  String get noRidesDriverBody => 'Completed trips you drive will appear here.';
+
+  @override
+  String get noRidesPassengerBody =>
+      'Book your first ride and it will show up here.';
+
+  @override
+  String get cancelled => 'Cancelled';
+
+  @override
+  String youRated(int stars) {
+    return 'You rated $stars';
+  }
+
+  @override
+  String get verdictLowLabel => 'Below market';
+
+  @override
+  String get verdictLowHint => 'Drivers may skip this. Expect a longer wait.';
+
+  @override
+  String get verdictFairLabel => 'Fair price';
+
+  @override
+  String get verdictFairHint =>
+      'Around what drivers usually accept on this route.';
+
+  @override
+  String get verdictGoodLabel => 'Great price';
+
+  @override
+  String get verdictGoodHint => 'Drivers respond quickly to offers like this.';
+
+  @override
+  String get verdictHighLabel => 'Above market';
+
+  @override
+  String get verdictHighHint =>
+      'You’re offering more than this trip usually costs.';
+
+  @override
+  String get simulatedMarketplaceRowSubtitle =>
+      'Bot drivers bid on your orders and bot passengers post rides';
+
+  @override
+  String get simulationBanner =>
+      'With this on you can walk both sides of the marketplace on one device: bots bid on your orders as a passenger, and post orders into your feed as a driver.';
+
+  @override
+  String get appNameVersion => 'GET.teksi 1.0.0';
+
+  @override
+  String get builtWith => 'Built with Flutter · Android, iOS, Web, HarmonyOS';
+
+  @override
+  String get tripDetails => 'Trip details';
+
+  @override
+  String refIs(String reference) {
+    return 'Ref $reference';
+  }
+
+  @override
+  String get fareBreakdown => 'Fare breakdown';
+
+  @override
+  String get agreedPrice => 'Agreed price';
+
+  @override
+  String get yourOriginalOffer => 'Your original offer';
+
+  @override
+  String priceRaisedTimes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Price raised $count×',
+      one: 'Price raised $count×',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get serviceFee => 'Service fee';
+
+  @override
+  String get youEarned => 'You earned';
+
+  @override
+  String get tip => 'Tip';
+
+  @override
+  String get totalPaid => 'Total paid';
+
+  @override
+  String paidBy(String method) {
+    return 'Paid by $method';
+  }
+
+  @override
+  String get paidByCash => 'cash';
+
+  @override
+  String paidByCard(String tail) {
+    return 'card $tail';
+  }
+
+  @override
+  String get paidByWallet => 'wallet';
+
+  @override
+  String get yourRating => 'Your rating';
+
+  @override
+  String get tripReferenceCopied => 'Trip reference copied';
+
+  @override
+  String get copyTripReference => 'Copy trip reference';
+
+  @override
+  String get currentLocation => 'Current location';
+
+  @override
+  String get pickup => 'Pickup';
+
+  @override
+  String get drive => 'Drive';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get switchToPassengerTooltip => 'Switch to passenger';
+
+  @override
+  String earningsSemantics(String amount, String status) {
+    return 'Earnings, $amount, $status';
+  }
+
+  @override
+  String get onlineWord => 'online';
+
+  @override
+  String get offlineWord => 'offline';
+
+  @override
+  String durationMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String durationHours(int hours) {
+    return '$hours h';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String get justNow => 'just now';
+
+  @override
+  String secondsAgo(int seconds) {
+    return '${seconds}s ago';
+  }
+
+  @override
+  String minutesAgo(int minutes) {
+    return '$minutes min ago';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '$hours h ago';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return '$days d ago';
+  }
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String ordersNearby(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count orders nearby',
+      one: '$count order nearby',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String distanceToPickup(String distance, String duration) {
+    return '$distance to pickup · $duration';
+  }
+
+  @override
+  String get clearLocalDataConfirmBody =>
+      'This removes all rides, offers, messages and transactions stored on this device. Your profile stays signed in.';
+
+  @override
+  String get nothingNew => 'Nothing new';
+
+  @override
+  String get nothingNewBody =>
+      'Ride updates, offers and promos will show up here.';
+
+  @override
+  String get lowerFareTooltip => 'Lower fare';
+
+  @override
+  String get raiseFareTooltip => 'Raise fare';
 }

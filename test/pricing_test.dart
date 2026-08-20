@@ -68,19 +68,19 @@ void main() {
 
   group('judgePrice', () {
     test('flags an offer well under the anchor as below market', () {
-      expect(judgePrice(600, 1000).tone, PriceTone.low);
+      expect(judgePrice(600, 1000), PriceTone.low);
     });
 
     test('treats the anchor itself as fair', () {
-      expect(judgePrice(1000, 1000).tone, PriceTone.fair);
+      expect(judgePrice(1000, 1000), PriceTone.fair);
     });
 
     test('calls a modest premium a great price', () {
-      expect(judgePrice(1200, 1000).tone, PriceTone.good);
+      expect(judgePrice(1200, 1000), PriceTone.good);
     });
 
     test('flags a large premium as above market', () {
-      expect(judgePrice(1800, 1000).tone, PriceTone.high);
+      expect(judgePrice(1800, 1000), PriceTone.high);
     });
   });
 

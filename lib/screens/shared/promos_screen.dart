@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
-import '../../data/fixtures.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/labels.dart';
 import '../../state/draft.dart';
 import '../../state/session.dart';
 import '../../theme.dart';
@@ -28,22 +29,24 @@ class _PromosScreenState extends State<PromosScreen> {
   }
 
   void _apply(String code) {
+    final l = AppLocalizations.of(context)!;
     final draft = context.read<DraftStore>();
-    final match = promoCodes()
+    final match = promoCodes(l)
         .where((p) => p.code.toLowerCase() == code.trim().toLowerCase())
         .firstOrNull;
     setState(() {
       if (match == null) {
-        _feedback = (false, 'That code isn’t valid or has expired.');
+        _feedback = (false, l.promoInvalid);
       } else {
         draft.setPromoCode(match.code);
-        _feedback = (true, '${match.code} applied — ${match.label}');
+        _feedback = (true, l.promoApplied(match.code, match.label));
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final c = context.c;
     final user = context.watch<SessionStore>().requireUser;
     final draft = context.watch<DraftStore>();
@@ -56,7 +59,7 @@ class _PromosScreenState extends State<PromosScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Promo codes'),
+        title: Text(l.promoCodes),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
@@ -69,9 +72,7 @@ class _PromosScreenState extends State<PromosScreen> {
                   textCapitalization: TextCapitalization.characters,
                   onChanged: (_) => setState(() => _feedback = null),
                   onSubmitted: _apply,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter a promo code',
-                  ),
+                  decoration: InputDecoration(hintText: l.enterAPromoCode),
                 ),
               ),
               const SizedBox(width: 8),
@@ -80,7 +81,7 @@ class _PromosScreenState extends State<PromosScreen> {
                     ? null
                     : () => _apply(_entered.text),
                 style: FilledButton.styleFrom(minimumSize: const Size(0, 52)),
-                child: const Text('Apply'),
+                child: Text(l.apply),
               ),
             ],
           ),
@@ -91,11 +92,11 @@ class _PromosScreenState extends State<PromosScreen> {
               tone: _feedback!.$1 ? BannerTone.ok : BannerTone.danger,
             ),
           ],
-          const SectionLabel(
-            'Available for you',
-            padding: EdgeInsets.only(top: 24, bottom: 8),
+          SectionLabel(
+            l.availableForYou,
+            padding: const EdgeInsets.only(top: 24, bottom: 8),
           ),
-          for (final promo in promoCodes())
+          for (final promo in promoCodes(l))
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: AppCard(
@@ -141,7 +142,9 @@ class _PromosScreenState extends State<PromosScreen> {
                           ),
                           if (promo.minSpend != null)
                             Text(
-                              'Minimum fare ${money(promo.minSpend!, decimals: false)}',
+                              l.minimumFareIs(
+                                money(promo.minSpend!, decimals: false),
+                              ),
                               style: TextStyle(
                                 fontSize: 11.5,
                                 color: c.textMute,
@@ -160,23 +163,22 @@ class _PromosScreenState extends State<PromosScreen> {
                           minimumSize: const Size(0, 36),
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                         ),
-                        child: const Text('Use'),
+                        child: Text(l.use),
                       ),
                   ],
                 ),
               ),
             ),
-          const SectionLabel(
-            'Invite friends',
-            padding: EdgeInsets.only(top: 16, bottom: 8),
+          SectionLabel(
+            l.inviteFriends,
+            padding: const EdgeInsets.only(top: 16, bottom: 8),
           ),
           AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Give a friend ${money(500, decimals: false)} off their first ride '
-                  'and get ${money(500, decimals: false)} when they take it.',
+                  l.referralBody(money(500, decimals: false)),
                   style: TextStyle(
                     fontSize: 13.5,
                     color: c.textDim,
@@ -211,13 +213,11 @@ class _PromosScreenState extends State<PromosScreen> {
                           size: 18,
                           color: c.accent,
                         ),
-                        tooltip: 'Copy referral code',
+                        tooltip: l.copyReferralCode,
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: referral));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Referral code copied'),
-                            ),
+                            SnackBar(content: Text(l.referralCodeCopied)),
                           );
                         },
                       ),
@@ -231,19 +231,18 @@ class _PromosScreenState extends State<PromosScreen> {
                     onPressed: () {
                       Clipboard.setData(
                         ClipboardData(
-                          text:
-                              'Use my GET.teksi code $referral and get RM5 off your '
-                              'first ride.',
+                          text: l.inviteText(
+                            referral,
+                            money(500, decimals: false),
+                          ),
                         ),
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Invite copied to clipboard'),
-                        ),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(l.inviteCopied)));
                     },
                     icon: const Icon(Icons.ios_share_rounded, size: 17),
-                    label: const Text('Share invite'),
+                    label: Text(l.shareInvite),
                   ),
                 ),
               ],

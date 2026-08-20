@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
-import '../../data/fixtures.dart';
+import '../../l10n/labels.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
 import '../../services/pricing.dart';
@@ -239,7 +239,7 @@ class _OffersSheetState extends State<OffersSheet> {
             style: TextStyle(fontSize: 13.5, color: sheetContext.c.textDim),
           ),
           const SizedBox(height: 8),
-          reasonList(sheetContext, cancelReasonsPassenger, (reason) {
+          reasonList(sheetContext, cancelReasonsPassenger(l), (reason) {
             rides.cancelRide(ride.id, CancelledBy.passenger, reason);
             Navigator.of(sheetContext).pop();
           }),
