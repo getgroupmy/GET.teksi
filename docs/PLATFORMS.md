@@ -18,9 +18,10 @@ also enforces the properties this app's platform story depends on:
 
 - `dart format --set-exit-if-changed` and `flutter analyze --fatal-infos
   --fatal-warnings` — clean, no errors, lints, or infos.
-- `flutter test` — 79 tests covering the fare engine, geometry, the full
-  marketplace state machine (bid → accept → complete → settle), and WCAG
-  contrast for every colour token on every surface in both themes.
+- `flutter test` — 178 tests covering the fare engine, geometry, the full
+  marketplace state machine (bid → accept → complete → settle), what the
+  notification layer declines to send, and WCAG contrast for every colour token
+  on every surface in both themes.
 - **GMS-free is asserted, not assumed.** The `build-android` job
   unpacks the release APK's `classes*.dex`, extracts its strings, and fails the
   build if any `Lcom/google/android/gms`, `Lcom/google/firebase`, or
@@ -54,13 +55,18 @@ This app was built to avoid that dependency from the start:
 - **Maps** use `flutter_map` drawing OpenStreetMap raster tiles over a plain
   HTTP fetch. No Google SDK, no API key, no GMS.
 - **Storage** is `shared_preferences`, which is AndroidX only.
-- **Push, analytics, crash reporting** — none. Nothing pulls in Firebase.
+- **Notifications** go through `android.app.NotificationManager` and
+  `UNUserNotificationCenter` directly — see [Notifications](#notifications).
+  No Firebase Cloud Messaging, which is the usual answer and would put GMS back
+  in the graph for the same reason `google_maps_flutter` does.
+- **Analytics, crash reporting, push transport** — none. Nothing pulls in
+  Firebase.
 
 Verified by scanning every resolved package's Gradle files plus this repo's own
 `android/` and `ios/` trees for `com.google.android.gms`, `com.google.firebase`,
-`google-services`, and `com.huawei.hms`: **zero matches**. The only plugins
-contributing Android code are `shared_preferences_android`,
-`path_provider_android`, `jni`, and `jni_flutter`.
+`google-services`, and `com.huawei.hms`: **zero matches**. The plugins
+contributing Android code are `app_links`, `flutter_local_notifications`, `jni`,
+`jni_flutter`, `shared_preferences_android`, and `url_launcher_android`.
 
 You can re-run that check any time:
 
@@ -156,14 +162,16 @@ flutter build appbundle --release  # Play Store and AppGallery
 Configured in `android/app/build.gradle.kts`:
 - `applicationId` `my.getgroup.get_teksi`
 - `minSdk 23`, R8 shrinking on in release
+- Core library desugaring on, because `flutter_local_notifications` schedules
+  against `java.time`, which is API 26+
 - **Signing still uses the debug key.** Replace `signingConfig` with a real
   upload key before any store submission.
 
 Permissions declared in `AndroidManifest.xml` are `INTERNET`,
-`ACCESS_NETWORK_STATE`, `ACCESS_FINE_LOCATION` and `ACCESS_COARSE_LOCATION`.
-Location hardware is declared `required="false"`, so the app stays installable
-on devices without GPS — the pickup pin can always be placed on the map, and a
-rider who declines the permission gets exactly that.
+`ACCESS_NETWORK_STATE`, `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` and
+`POST_NOTIFICATIONS`. Location hardware is declared `required="false"`, so the
+app stays installable on devices without GPS — the pickup pin can always be
+placed on the map, and a rider who declines the permission gets exactly that.
 
 ### iOS
 
@@ -174,7 +182,54 @@ flutter build ipa --release
 Requires macOS with Xcode. Set the team and bundle identifier in
 `ios/Runner.xcodeproj`. Display name is `GET.teksi`. The only `Info.plist`
 usage description is `NSLocationWhenInUseUsageDescription`; the app requests no
-camera or contacts permission.
+camera or contacts permission. Notification permission is requested at runtime
+after sign-in and needs no `Info.plist` entry.
+
+---
+
+## Notifications
+
+The bell in the app is a screen you have to visit. A driver waiting for orders
+is looking at the road, and a passenger who pocketed their phone finds out the
+driver arrived when they take it out again — so the same events that reach the
+in-app centre are also handed to the platform.
+
+`lib/core/notifier.dart` is the interface; `lib/core/notifier_device.dart` is
+the only implementation, and `SilentNotifier` is what everything falls back to.
+
+| Target | What happens |
+|---|---|
+| Android | `NotificationManager`, one channel, `POST_NOTIFICATIONS` asked on 13+ |
+| iOS | `UNUserNotificationCenter`, permission asked after sign-in |
+| Web | Nothing — see below |
+| Anything else | Nothing, and no error |
+
+**Not Firebase Cloud Messaging.** FCM is how a ride-hailing app normally does
+this, and it is the same trap as `google_maps_flutter`: the APK stops working
+on a Huawei device, and the CI dex scan would fail the build before it got
+there. What the platform's own notification manager gives up in exchange is
+real: **it can only fire while the process is alive.** Kill the app and the
+notifications stop. Closing that gap needs a push transport, and the GMS-free
+routes to one are HMS Push for AppGallery builds, APNs directly for iOS, and
+Web Push for the browser — three transports, three sets of credentials, and a
+server that holds them.
+
+Which alerts are worth interrupting someone for is a decision the store makes,
+not the platform: `RidesStore.notify(alert:)` is false for things this device's
+own user just tapped — raising your own price, cancelling your own ride,
+confirming your own SOS. A phone that buzzes half a second after your own thumb
+is a phone people turn notifications off on. `test/notifier_test.dart` covers
+that split, and covers the backlog, which must not ring at all.
+
+**Web is silent on purpose.** Browsers only honour `Notification.requestPermission()`
+during a user gesture; the app asks a frame after sign-in, by which time the
+gesture has expired and the request is refused — and the browser remembers the
+refusal. Web notifications need a button in the UI, not a platform seam.
+
+**iOS needs one line in `AppDelegate.swift`** — setting the
+`UNUserNotificationCenter` delegate. Without it, a notification raised while
+the app is in the foreground is delivered to nobody, with no error, which is
+most of what this app raises.
 
 ---
 

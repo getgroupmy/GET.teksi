@@ -24,7 +24,7 @@ class RidesStore extends ChangeNotifier {
   ///
   /// A plain flag rather than a reference to the backend: these stores stay
   /// free of Supabase so the suite runs with no bindings and no network.
-  RidesStore(this._session, {this.settlesRemotely = false}) {
+  RidesStore(this._session, {this.settlesRemotely = false, this.onAlert}) {
     _rides = Store.instance.readJson<Map<String, Ride>>(
       _ridesKey,
       {},
@@ -183,6 +183,7 @@ class RidesStore extends ChangeNotifier {
       title: 'Price raised',
       body: 'Nearby drivers have been notified of your new offer.',
       rideId: rideId,
+      alert: false,
     );
   }
 
@@ -213,6 +214,7 @@ class RidesStore extends ChangeNotifier {
       title: by == CancelledBy.driver ? 'Driver cancelled' : 'Ride cancelled',
       body: reason ?? 'The order has been cancelled.',
       rideId: rideId,
+      alert: false,
     );
   }
 
@@ -463,25 +465,37 @@ class RidesStore extends ChangeNotifier {
     if (changed) _commit();
   }
 
+  /// Raised when a notification should also reach the platform's notification
+  /// tray. Injected rather than called directly so this file holds no platform
+  /// code and the suite needs no bindings — the same shape as the wallet's
+  /// settlesRemotely flag and ProfileSync's push.
+  final void Function(AppNotification)? onAlert;
+
+  /// [alert] is false for things this device's own user just did.
+  ///
+  /// Raising your own price or confirming your own SOS belongs in the centre as
+  /// a record; buzzing the phone about it a half-second after the tap is noise.
+  /// Everything that came from the other participant is worth an interruption,
+  /// which is most of what reaches here.
   void notify({
     required NotificationKind kind,
     required String title,
     required String body,
     String? rideId,
+    bool alert = true,
   }) {
-    _notifications = [
-      AppNotification(
-        id: uid('ntf'),
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        read: false,
-        kind: kind,
-        rideId: rideId,
-      ),
-      ..._notifications,
-    ].take(60).toList();
+    final notification = AppNotification(
+      id: uid('ntf'),
+      title: title,
+      body: body,
+      createdAt: DateTime.now(),
+      read: false,
+      kind: kind,
+      rideId: rideId,
+    );
+    _notifications = [notification, ..._notifications].take(60).toList();
     _commit();
+    if (alert) onAlert?.call(notification);
   }
 
   void markNotificationsRead() {

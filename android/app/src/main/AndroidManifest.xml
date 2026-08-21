@@ -10,6 +10,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
+    <!-- Android 13+ asks the user; older versions grant it at install. The
+         notifications themselves come from android.app.NotificationManager, not
+         from a push service, so this is the only permission they need. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <!-- Declared, not required: the app runs without a GPS fix (pickup can be
          set on the map). Marked not-required so it stays installable on
          devices without GPS hardware. -->

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -5,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'core/backend.dart';
 import 'core/location.dart';
+import 'core/notifier.dart';
 import 'core/storage.dart';
 import 'l10n/app_localizations.dart';
 import 'models/models.dart';
@@ -31,6 +34,11 @@ Future<void> main() async {
   runApp(const GetTeksiApp());
 }
 
+/// One notifier for the process. Built here rather than per-store because the
+/// platform plugin is a singleton behind it either way, and a second one would
+/// only re-initialise the same channel.
+final Notifier _notifier = createNotifier();
+
 class GetTeksiApp extends StatelessWidget {
   const GetTeksiApp({super.key});
 
@@ -48,6 +56,9 @@ class GetTeksiApp extends StatelessWidget {
         ChangeNotifierProxyProvider<SessionStore, RidesStore>(
           create: (context) => RidesStore(
             context.read<SessionStore>(),
+            // Puts what the bell records in front of someone who is not
+            // looking at the app.
+            onAlert: (n) => unawaited(_notifier.show(n)),
             // With a backend the database settles rides itself, so the client
             // must not also write its own wallet entries.
             settlesRemotely: Backend.isLive,
@@ -73,6 +84,7 @@ class _RootState extends State<_Root> {
   MarketplaceSimulation? _simulation;
   DriverBeacon? _beacon;
   ProfileSync? _profileSync;
+  bool _askedToNotify = false;
 
   @override
   void initState() {
@@ -98,6 +110,17 @@ class _RootState extends State<_Root> {
     } else if (!wanted && sim.isRunning) {
       sim.stop();
     }
+  }
+
+  /// Asks for the notification permission once, after there is a reason to.
+  ///
+  /// Not at startup: a permission dialog on first launch, before the app has
+  /// shown what it does, is the one people refuse out of hand. By the time
+  /// someone has signed in they have a ride to be told about.
+  void _askToNotify(SessionStore session) {
+    if (_askedToNotify || session.user == null) return;
+    _askedToNotify = true;
+    unawaited(_notifier.requestPermission());
   }
 
   /// Keeps the server's copy of the profile in step with this device's.
@@ -151,6 +174,7 @@ class _RootState extends State<_Root> {
         _syncSimulation(session, rides);
         _syncBeacon(session, rides);
         _syncProfile(session);
+        _askToNotify(session);
       }
     });
 

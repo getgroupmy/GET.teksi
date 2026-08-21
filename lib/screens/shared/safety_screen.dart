@@ -266,6 +266,9 @@ class _SafetyScreenState extends State<SafetyScreen> {
                   title: l.sosTriggered,
                   body: l.sosTriggeredBody,
                   rideId: rideId,
+                  // A record in the centre, not a banner: the phone is in
+                  // their hand and the snackbar below already answered them.
+                  alert: false,
                 );
                 Navigator.of(sheetContext).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -301,6 +304,7 @@ class _SafetyScreenState extends State<SafetyScreen> {
               title: l.reportSubmitted,
               body: l.reportSubmittedBody(reason),
               rideId: rideId,
+              alert: false,
             );
             Navigator.of(sheetContext).pop();
           }),

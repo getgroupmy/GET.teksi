@@ -1,6 +1,7 @@
 import CoreLocation
 import Flutter
 import UIKit
+import UserNotifications
 
 /// Device location on iOS, answering the same channel as the Android side.
 ///
@@ -121,6 +122,13 @@ final class LocationBridge: NSObject, CLLocationManagerDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Without this, iOS delivers a notification raised while the app is in the
+    // foreground to nobody: no banner, no sound, and no error either. That is
+    // most of what this app raises — the driver arrives while the passenger is
+    // looking at the trip screen — so the seam that would look most broken is
+    // exactly the one this line fixes. The optional cast is the plugin's own
+    // recommendation; FlutterAppDelegate already declares the conformance.
+    UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
