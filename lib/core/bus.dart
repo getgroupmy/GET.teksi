@@ -48,6 +48,19 @@ class DriverMoved extends BusEvent {
   final double bearing;
 }
 
+/// State that was already true when this device connected, delivered in one
+/// go so the receiving side can tell history from news.
+///
+/// It matters because the two deserve different treatment. A ride accepted
+/// while you were away should appear in your list; it should not ring a bell
+/// as though it just happened. Replaying two hundred rows through the ordinary
+/// path would greet a fresh sign-in with two hundred notifications about
+/// things that finished days ago.
+class BacklogLoaded extends BusEvent {
+  const BacklogLoaded(this.events);
+  final List<BusEvent> events;
+}
+
 /// A driver stopped working, so their car leaves everyone else's map.
 ///
 /// Distinct from [DriverMoved] rather than a flag on it, because going off duty

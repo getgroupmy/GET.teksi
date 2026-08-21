@@ -41,6 +41,9 @@ English and Bahasa Melayu, switched in Settings. Every screen is translated — 
 
 The Malay is machine-written and wants a native speaker's pass before it ships.
 
+**Notifications**
+An in-app centre with an unread badge, fed by real events from both sides: a driver bidding on your order, your bid being accepted or declined, each stage of the trip, and a cancellation by the other party. There are no *push* notifications — nothing arrives while the app is closed. Firebase Cloud Messaging is the usual answer and is ruled out here: it would put Play Services back in the dependency graph and fail the GMS scan. See [docs/PLATFORMS.md](docs/PLATFORMS.md) for the GMS-free routes.
+
 **Shared**
 Phone + OTP auth · profile and ratings · wallet with top-ups and transaction ledger · promo codes and referrals · saved places · notifications · safety centre with emergency contacts and trip sharing · settings with dark/light theme.
 

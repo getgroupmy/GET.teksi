@@ -579,8 +579,18 @@ class RidesStore extends ChangeNotifier {
   /* Realtime: apply events published by other participants            */
   /* ---------------------------------------------------------------- */
 
-  void _applyRemote(BusEvent event) {
+  /// [announce] is what separates news from history.
+  ///
+  /// A ride accepted while this device was signed out belongs in the list and
+  /// does not belong in the notification bell — replaying a backlog through the
+  /// announcing path would greet a fresh sign-in with a screenful of alerts
+  /// about trips that ended days ago.
+  void _applyRemote(BusEvent event, {bool announce = true}) {
     switch (event) {
+      case BacklogLoaded(:final events):
+        for (final past in events) {
+          _applyRemote(past, announce: false);
+        }
       case RidePublished(:final ride):
       case RideUpdated(:final ride):
         final existing = _rides[ride.id];
@@ -591,6 +601,7 @@ class RidesStore extends ChangeNotifier {
         if (existing != null && identical(existing, ride)) return;
         _rides = {..._rides, ride.id: ride};
         _commit();
+        if (announce) _announceRideChange(existing, ride);
       case RideCancelled(:final rideId, :final by, :final reason):
         final ride = _rides[rideId];
         if (ride == null || ride.status == RideStatus.cancelled) return;
@@ -604,11 +615,23 @@ class RidesStore extends ChangeNotifier {
           ),
         };
         _commit();
+        if (announce) {
+          notify(
+            kind: NotificationKind.ride,
+            title: by == CancelledBy.driver
+                ? 'Driver cancelled'
+                : 'Ride cancelled',
+            body: reason ?? 'The order has been cancelled.',
+            rideId: rideId,
+          );
+        }
       case OfferCreated(:final offer):
       case OfferUpdated(:final offer):
-        if (identical(_offers[offer.id], offer)) return;
+        final existing = _offers[offer.id];
+        if (identical(existing, offer)) return;
         _offers = {..._offers, offer.id: offer};
         _commit();
+        if (announce) _announceOfferChange(existing, offer);
       case ChatSent(:final message):
         if (_messages.any((m) => m.id == message.id)) return;
         _messages = [..._messages, message];
@@ -618,6 +641,92 @@ class RidesStore extends ChangeNotifier {
       case DriverWentOffline(:final driverId):
         driverWentOffline(driverId);
     }
+  }
+
+  /// Tells whichever side is looking at this device that their trip moved.
+  ///
+  /// The local half of the app already notified when *this* device caused the
+  /// change. Nothing did when the other participant did, which is the half
+  /// that matters: the passenger is not the one who marks a driver as arrived.
+  /// Until this existed the bell was full against the simulated marketplace —
+  /// bots run in this process and go through the local path — and silent
+  /// against a real one.
+  void _announceRideChange(Ride? before, Ride after) {
+    final me = _session.user?.id;
+    if (me == null) return;
+    // A ride this device has not seen before is not a transition. It is either
+    // a new order in the feed, which the feed itself shows, or history.
+    if (before == null || before.status == after.status) return;
+
+    if (me == after.passengerId) {
+      final title = switch (after.status) {
+        RideStatus.accepted => 'Driver on the way',
+        RideStatus.arriving => 'Your driver is arriving',
+        RideStatus.waiting => 'Your driver is waiting',
+        RideStatus.inProgress => 'Trip started',
+        RideStatus.completed => 'Trip completed',
+        _ => null,
+      };
+      if (title == null) return;
+      notify(
+        kind: NotificationKind.ride,
+        title: title,
+        body: after.status == RideStatus.completed
+            ? 'You arrived at ${after.dropoff.name}. Rate your driver.'
+            : '${after.driverName ?? 'Your driver'} · ${after.dropoff.name}',
+        rideId: after.id,
+      );
+      return;
+    }
+
+    if (me == after.driverId && after.status == RideStatus.completed) {
+      notify(
+        kind: NotificationKind.ride,
+        title: 'Trip completed',
+        body: 'Fare settled for the trip from ${after.pickup.name}.',
+        rideId: after.id,
+      );
+    }
+  }
+
+  /// A bid arriving on my order, or my bid being answered.
+  void _announceOfferChange(Offer? before, Offer after) {
+    final me = _session.user?.id;
+    if (me == null) return;
+    final ride = _rides[after.rideId];
+    if (ride == null) return;
+
+    if (before == null &&
+        after.status == OfferStatus.pending &&
+        ride.passengerId == me) {
+      notify(
+        kind: NotificationKind.ride,
+        title: '${after.driverName} offered a price',
+        body:
+            '${after.vehicle.make} ${after.vehicle.model} · '
+            '${after.etaMinutes} min away',
+        rideId: ride.id,
+      );
+      return;
+    }
+
+    // The driver learns the outcome of their bid from the other device.
+    if (after.driverId != me) return;
+    if (before?.status == after.status) return;
+    final title = switch (after.status) {
+      OfferStatus.accepted => 'Your offer was accepted',
+      OfferStatus.declined => 'Offer declined',
+      _ => null,
+    };
+    if (title == null) return;
+    notify(
+      kind: NotificationKind.ride,
+      title: title,
+      body: after.status == OfferStatus.accepted
+          ? 'Head to ${ride.pickup.name}.'
+          : 'The passenger went with another driver.',
+      rideId: ride.id,
+    );
   }
 
   /* ---------------------------------------------------------------- */

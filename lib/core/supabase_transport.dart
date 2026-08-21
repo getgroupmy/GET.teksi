@@ -162,12 +162,16 @@ class SupabaseTransport implements RealtimeTransport {
   /// to restate the rules, and could not be trusted to if it did.
   Future<void> _loadBacklog() async {
     await _loadOnlineDrivers();
-    await _loadRides();
-    await _loadOffers();
-    await _loadChat();
+    final history = <BusEvent>[
+      ...await _loadRides(),
+      ...await _loadOffers(),
+      ...await _loadChat(),
+    ];
+    if (history.isNotEmpty) _emit(BacklogLoaded(history));
   }
 
-  Future<void> _loadRides() async {
+  Future<List<BusEvent>> _loadRides() async {
+    final events = <BusEvent>[];
     try {
       final rows = await _client
           .from('rides')
@@ -180,14 +184,16 @@ class SupabaseTransport implements RealtimeTransport {
         // side answers with a dialog; replaying it would greet someone
         // reinstalling with a popup about a ride called off last week. The row
         // still carries the cancelled status, so the state lands either way.
-        _emit(RidePublished(rideFromRow(row)));
+        events.add(RidePublished(rideFromRow(row)));
       }
     } catch (e) {
       _errors.add(e);
     }
+    return events;
   }
 
-  Future<void> _loadOffers() async {
+  Future<List<BusEvent>> _loadOffers() async {
+    final events = <BusEvent>[];
     try {
       final rows = await _client
           .from('offers')
@@ -195,14 +201,16 @@ class SupabaseTransport implements RealtimeTransport {
           .order('created_at', ascending: false)
           .limit(200);
       for (final row in rows) {
-        _emit(OfferCreated(offerFromRow(row)));
+        events.add(OfferCreated(offerFromRow(row)));
       }
     } catch (e) {
       _errors.add(e);
     }
+    return events;
   }
 
-  Future<void> _loadChat() async {
+  Future<List<BusEvent>> _loadChat() async {
+    final events = <BusEvent>[];
     try {
       final rows = await _client
           .from('chat_messages')
@@ -210,11 +218,12 @@ class SupabaseTransport implements RealtimeTransport {
           .order('created_at', ascending: false)
           .limit(200);
       for (final row in rows) {
-        _emit(ChatSent(chatFromRow(row)));
+        events.add(ChatSent(chatFromRow(row)));
       }
     } catch (e) {
       _errors.add(e);
     }
+    return events;
   }
 
   /// The cars that were already on the road when this device opened the app.
@@ -418,6 +427,10 @@ class SupabaseTransport implements RealtimeTransport {
       case ChatSent(:final message):
         _selfWrites.add(message.id);
         await _client.from('chat_messages').insert(chatToInsert(message, uid));
+
+      case BacklogLoaded():
+        // Inbound only. Nothing publishes history.
+        return;
 
       case DriverWentOffline(:final driverId):
         if (driverId != uid) return;
