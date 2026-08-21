@@ -97,6 +97,20 @@ class Backend {
     }
   }
 
+  /// Writes the columns a client is allowed to write on its own profile.
+  ///
+  /// Deliberately not a whole-row upsert: the guard trigger refuses the wallet
+  /// balance, the ratings, the trip counts and the verification flag, so
+  /// sending them would turn every save into a rejected statement. The caller
+  /// decides what those columns are; this only carries them.
+  static Future<void> saveProfile(
+    String userId,
+    Map<String, dynamic> columns,
+  ) async {
+    if (!isLive) return;
+    await client.from('profiles').update(columns).eq('id', userId);
+  }
+
   // ---------------------------------------------------------------------------
   // Auth
   //

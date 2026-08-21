@@ -609,5 +609,103 @@ do $$ begin
     false, 'and a signed-out one cannot');
 end $$;
 
+-- ---------------------------------------------------------------------------
+\echo ''
+\echo '== a profile is not a form you fill in about yourself =='
+-- ---------------------------------------------------------------------------
+-- `own profile is writable` is a rule about the row: id = auth.uid(). It says
+-- nothing about columns, because row-level security cannot. Every one of these
+-- succeeded before the guard trigger existed, and the first is the one that
+-- undoes the entire server-side wallet: the ledger is append-only and
+-- unwritable, and the balance the wallet screen actually reads is a column on
+-- this table.
+
+-- Note the `set role`. The suite leaves the role as the table owner after the
+-- settlement tests, and every guard in this schema steps aside for a
+-- privileged writer — correctly, since that is how the database writes to
+-- itself. A test appended here without this line runs as the owner, is waved
+-- through, and reports that a client can do something no client could. This
+-- block failed exactly that way when it was first written.
+set role authenticated;
+
+-- The intruder is the right persona for these: every column still holds its
+-- default, so each attempt below is a real change rather than a write of the
+-- value that was already there. Two of these passed vacuously at first for
+-- exactly that reason — asserting a denial of something that was not a change.
+select test.act_as(:intruder);
+
+do $$
+declare
+  who constant text := '44444444-4444-4444-8444-444444444444';
+begin
+  perform test.denied(
+    format('update public.profiles set wallet_balance = 99999999 where id = %L', who),
+    'crediting your own wallet balance');
+
+  perform test.denied(
+    format('update public.profiles set driver_verified = true where id = %L', who),
+    'marking yourself a verified driver');
+
+  perform test.denied(
+    format('update public.profiles set driver_rating = 5.00 where id = %L', who),
+    'awarding yourself a driver rating you have never earned');
+
+  perform test.denied(
+    format('update public.profiles set rating = 4.00 where id = %L', who),
+    'editing your own passenger rating');
+
+  perform test.denied(
+    format('update public.profiles set driver_rides_given = 9000 where id = %L', who),
+    'inventing nine thousand completed trips');
+
+  perform test.denied(
+    format('update public.profiles set rides_taken = 9000 where id = %L', who),
+    'inventing nine thousand trips taken');
+
+  perform test.denied(
+    format('update public.profiles set phone = %L where id = %L', '+60123999999', who),
+    'moving your profile onto another phone number');
+end $$;
+
+-- The guard must not have made the profile read-only. What is left is what
+-- genuinely belongs to the account holder.
+do $$
+declare
+  who constant text := '44444444-4444-4444-8444-444444444444';
+begin
+  perform test.allowed(
+    format('update public.profiles set name = %L, email = %L, avatar_color = %s where id = %L',
+           'Nosy Parker', 'nosy@example.com', -12303292, who),
+    'changing your own name, email and colour');
+
+  -- Onboarding as a driver is a client write on purpose: this build verifies
+  -- documents automatically. What it may not do is claim the verification.
+  perform test.allowed(
+    format($q$update public.profiles
+              set is_driver = true,
+                  vehicle = '{"make":"Proton","model":"Saga","year":2020,"color":"Blue","plate":"WAA 1122","vehicleClass":"economy","seats":4}'::jsonb
+            where id = %L$q$, who),
+    'declaring yourself a driver with a vehicle');
+end $$;
+
+-- And the settlement path still works, which is the point of the guard being
+-- invoker-side: with no auth.uid() the database is writing to itself.
+reset role;
+do $$
+declare
+  before_balance integer;
+  after_balance  integer;
+begin
+  select wallet_balance into before_balance
+    from public.profiles where id = '44444444-4444-4444-8444-444444444444';
+  insert into public.wallet_transactions (user_id, kind, amount, description)
+  values ('44444444-4444-4444-8444-444444444444', 'topup', 500, 'guard check');
+  select wallet_balance into after_balance
+    from public.profiles where id = '44444444-4444-4444-8444-444444444444';
+  perform test.eq(after_balance - before_balance, 500,
+    'the ledger still moves the balance the client cannot touch');
+end $$;
+set role authenticated;
+
 \echo ''
 \echo 'ALL POLICY TESTS PASSED'

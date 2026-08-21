@@ -10,6 +10,7 @@ import 'l10n/app_localizations.dart';
 import 'models/models.dart';
 import 'router.dart';
 import 'services/driver_beacon.dart';
+import 'services/profile_sync.dart';
 import 'services/simulation.dart';
 import 'state/draft.dart';
 import 'state/rides.dart';
@@ -71,6 +72,7 @@ class _RootState extends State<_Root> {
   late final GoRouterConfig _routerConfig;
   MarketplaceSimulation? _simulation;
   DriverBeacon? _beacon;
+  ProfileSync? _profileSync;
 
   @override
   void initState() {
@@ -82,6 +84,7 @@ class _RootState extends State<_Root> {
   void dispose() {
     _simulation?.dispose();
     _beacon?.dispose();
+    _profileSync?.dispose();
     _routerConfig.dispose();
     super.dispose();
   }
@@ -94,6 +97,24 @@ class _RootState extends State<_Root> {
       sim.start();
     } else if (!wanted && sim.isRunning) {
       sim.stop();
+    }
+  }
+
+  /// Keeps the server's copy of the profile in step with this device's.
+  ///
+  /// Runs for any signed-in user against a real backend, not just drivers: the
+  /// name and colour a passenger picks are what a driver sees on the order
+  /// card, and they reach the server the same way.
+  void _syncProfile(SessionStore session) {
+    final wanted = Backend.isLive && session.user != null;
+    final sync = _profileSync ??= ProfileSync(
+      session,
+      push: Backend.saveProfile,
+    );
+    if (wanted && !sync.isRunning) {
+      sync.start();
+    } else if (!wanted && sync.isRunning) {
+      sync.stop();
     }
   }
 
@@ -129,6 +150,7 @@ class _RootState extends State<_Root> {
       if (mounted) {
         _syncSimulation(session, rides);
         _syncBeacon(session, rides);
+        _syncProfile(session);
       }
     });
 
