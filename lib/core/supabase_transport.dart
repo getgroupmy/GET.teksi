@@ -28,7 +28,7 @@ import 'rows.dart';
 class SupabaseTransport implements RealtimeTransport {
   SupabaseTransport(this._client) {
     _subscribe();
-    unawaited(_loadOnlineDrivers());
+    _watchAuth();
   }
 
   final SupabaseClient _client;
@@ -42,6 +42,18 @@ class SupabaseTransport implements RealtimeTransport {
   /// optimisation rather than a correctness requirement — which is why it is
   /// safe for entries to fall out of the set.
   final _selfWrites = <String>{};
+
+  StreamSubscription<AuthState>? _authSub;
+
+  /// Which signed-in user the backlog was last read for.
+  ///
+  /// The backlog is only meaningful once there is an identity behind it: every
+  /// policy is written against `auth.uid()`, so reading it while signed out
+  /// returns nothing at all — quietly, since no rows is a perfectly good answer
+  /// to a query. This class is built during startup, before the phone screen
+  /// has been anywhere near a code, so loading once in the constructor would
+  /// have loaded nothing and never tried again.
+  String? _backlogFor;
 
   @override
   Stream<BusEvent> get events => _controller.stream;
@@ -59,6 +71,21 @@ class SupabaseTransport implements RealtimeTransport {
   }
 
   String? get _uid => _client.auth.currentUser?.id;
+
+  /// Reads the backlog when someone signs in, and again if a different account
+  /// does. A restored session arrives here too, as the initial event.
+  void _watchAuth() {
+    _authSub = _client.auth.onAuthStateChange.listen((state) {
+      final uid = state.session?.user.id;
+      if (uid == null) {
+        _backlogFor = null;
+        return;
+      }
+      if (uid == _backlogFor) return;
+      _backlogFor = uid;
+      unawaited(_loadBacklog());
+    });
+  }
 
   void _subscribe() {
     _channels.add(
@@ -112,6 +139,82 @@ class SupabaseTransport implements RealtimeTransport {
 
   void _onStatus(RealtimeSubscribeStatus status, Object? error) {
     if (error != null) _errors.add(error);
+  }
+
+  /// What was already true when this device connected.
+  ///
+  /// Realtime delivers *changes*. Everything that happened before subscribing
+  /// is simply absent, and the effect is not subtle: a driver going online saw
+  /// an empty feed until some passenger happened to publish a *new* order,
+  /// every order already on the market being invisible to them. A passenger
+  /// signing in on a second device, or after a reinstall, had no active ride
+  /// even in the middle of one — the local copy is what survived a cold start,
+  /// and a fresh device has no local copy.
+  ///
+  /// So read the current state once, then let realtime keep it current. Each
+  /// row goes through the same events a live change would, and the store
+  /// resolves them by update stamp, so replaying a backlog converges on the
+  /// same place rather than fighting with what is already there.
+  ///
+  /// Row-level security is what makes the queries this blunt: `select * from
+  /// rides` returns the open market plus this user's own rides and nothing
+  /// else, because that is what the policies permit. The client does not need
+  /// to restate the rules, and could not be trusted to if it did.
+  Future<void> _loadBacklog() async {
+    await _loadOnlineDrivers();
+    await _loadRides();
+    await _loadOffers();
+    await _loadChat();
+  }
+
+  Future<void> _loadRides() async {
+    try {
+      final rows = await _client
+          .from('rides')
+          .select()
+          .order('updated_at', ascending: false)
+          .limit(200);
+      for (final row in rows) {
+        // Deliberately RidePublished even for a ride that ended cancelled.
+        // RideCancelled is the *event* of being cancelled, which the receiving
+        // side answers with a dialog; replaying it would greet someone
+        // reinstalling with a popup about a ride called off last week. The row
+        // still carries the cancelled status, so the state lands either way.
+        _emit(RidePublished(rideFromRow(row)));
+      }
+    } catch (e) {
+      _errors.add(e);
+    }
+  }
+
+  Future<void> _loadOffers() async {
+    try {
+      final rows = await _client
+          .from('offers')
+          .select()
+          .order('created_at', ascending: false)
+          .limit(200);
+      for (final row in rows) {
+        _emit(OfferCreated(offerFromRow(row)));
+      }
+    } catch (e) {
+      _errors.add(e);
+    }
+  }
+
+  Future<void> _loadChat() async {
+    try {
+      final rows = await _client
+          .from('chat_messages')
+          .select()
+          .order('created_at', ascending: false)
+          .limit(200);
+      for (final row in rows) {
+        _emit(ChatSent(chatFromRow(row)));
+      }
+    } catch (e) {
+      _errors.add(e);
+    }
   }
 
   /// The cars that were already on the road when this device opened the app.
@@ -357,6 +460,8 @@ class SupabaseTransport implements RealtimeTransport {
 
   @override
   void dispose() {
+    unawaited(_authSub?.cancel());
+    _authSub = null;
     for (final channel in _channels) {
       unawaited(_client.removeChannel(channel));
     }
