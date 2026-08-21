@@ -93,6 +93,8 @@ table, how to run the suite locally, and what is still missing.
 
 **[docs/PLATFORMS.md](docs/PLATFORMS.md)** has the full picture: exact build commands per target, what was and wasn't verified here, the HarmonyOS NEXT toolchain steps, and the map-tile and CanvasKit changes you need before shipping into mainland China.
 
+**[docs/RELEASING.md](docs/RELEASING.md)** covers getting it into a store: the signed-build workflow and the seven secrets it needs, what only an Apple Developer account holder can do, and the three things about this app most likely to come back from App Review. Android still signs with the debug key, which is the one blocker there.
+
 ---
 
 ## Trying it out

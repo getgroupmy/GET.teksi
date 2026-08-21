@@ -10,7 +10,7 @@ versus which still need a machine with the relevant SDK.
 |---|---|---|
 | **Web** | `flutter build web --release --no-web-resources-cdn` | ✅ Built in CI; served and driven end-to-end in Chromium |
 | **Android** | `flutter build apk --release` / `appbundle` | ✅ Release APK and AAB built in CI (`build-android`) |
-| **iOS** | `flutter build ios --release --no-codesign` | ✅ Compiled unsigned in CI on macOS (`build-ios`); a signed `ipa` still needs your certificates |
+| **iOS** | `flutter build ios --release --no-codesign` | ✅ Compiled unsigned in CI on macOS (`build-ios`). A signed `ipa` and a TestFlight upload are wired up in the `Release iOS` workflow but have never been run — see [RELEASING.md](RELEASING.md) |
 | **HarmonyOS NEXT** | `flutter build hap --release` (OpenHarmony fork) | ⚠️ Not built — needs the OpenHarmony Flutter SDK fork, which has no hosted runner |
 
 Every push runs [`.github/workflows/ci.yml`](../.github/workflows/ci.yml), which
@@ -32,6 +32,11 @@ also enforces the properties this app's platform story depends on:
 - **The marketplace rules are enforced by the database.** The `database` job
   applies the migration to a stock PostgreSQL and runs the policy suite and a
   concurrency test; see [supabase/README.md](../supabase/README.md).
+- **The privacy manifest is in the bundle, not just in the repo.** The iOS job
+  looks inside the built `Runner.app` for `PrivacyInfo.xcprivacy` and lints it.
+  A resource missing from the target's resources phase builds perfectly and
+  ships nothing, and the first sign of that is App Store Connect asking about
+  undeclared data collection.
 - **CanvasKit is bundled, not fetched.** The web job asserts
   `canvaskit.wasm` is in the output *and* that the build config carries
   `"useLocalCanvasKit":true` — the flag that makes the loader resolve to the

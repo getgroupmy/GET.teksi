@@ -244,3 +244,23 @@ jobs:
       # which is enough to prove the iOS target actually builds.
       - name: Build
         run: flutter build ios --release --no-codesign
+
+      # A resource that is in the repo but not in the target's Copy Bundle
+      # Resources phase builds perfectly and ships nothing — the failure is
+      # entirely silent, and the first sign of it is App Store Connect asking
+      # about undeclared data collection. So look inside the bundle that was
+      # actually produced rather than trusting the project file.
+      - name: Assert the privacy manifest is in the built app
+        run: |
+          APP=build/ios/iphoneos/Runner.app
+          MANIFEST="$APP/PrivacyInfo.xcprivacy"
+          if [ ! -f "$MANIFEST" ]; then
+            echo "::error::PrivacyInfo.xcprivacy is missing from $APP"
+            echo "It is probably not in the Runner target's resources phase."
+            ls -la "$APP" || true
+            exit 1
+          fi
+          # Self-check: a plist that parses proves the file arrived intact
+          # rather than as an empty placeholder that happens to exist.
+          plutil -lint "$MANIFEST"
+          /usr/libexec/PlistBuddy -c 'Print :NSPrivacyCollectedDataTypes:0:NSPrivacyCollectedDataType' "$MANIFEST"
