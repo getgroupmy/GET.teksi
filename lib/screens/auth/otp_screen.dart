@@ -165,40 +165,54 @@ class _OtpScreenState extends State<OtpScreen> {
               const SizedBox(height: 32),
               Stack(
                 children: [
-                  Row(
-                    children: [
-                      for (var i = 0; i < _length; i++)
-                        Expanded(
-                          child: Container(
-                            height: 58,
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(
-                              right: i == _length - 1 ? 0 : 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: c.surface2,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: i == _code.length
-                                    ? c.accent
-                                    : (_error.isNotEmpty ? c.danger : c.line),
-                                width: 1.5,
+                  // Decoration, not content. Each box is a Text holding one
+                  // digit, and a screen reader reading six of them out
+                  // separately is not how anyone wants to hear a code. The
+                  // field below is the thing to interact with.
+                  ExcludeSemantics(
+                    child: Row(
+                      children: [
+                        for (var i = 0; i < _length; i++)
+                          Expanded(
+                            child: Container(
+                              height: 58,
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.only(
+                                right: i == _length - 1 ? 0 : 8,
                               ),
-                            ),
-                            child: Text(
-                              i < _code.length ? _code[i] : '',
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
+                              decoration: BoxDecoration(
+                                color: c.surface2,
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: i == _code.length
+                                      ? c.accent
+                                      : (_error.isNotEmpty ? c.danger : c.line),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Text(
+                                i < _code.length ? _code[i] : '',
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                   Positioned.fill(
                     child: Opacity(
                       opacity: 0,
+                      // Without this the field is not merely invisible, it is
+                      // absent: Opacity drops a fully transparent subtree from
+                      // the semantics tree, and this is the only input on the
+                      // screen. Worse than an unlabelled control — with a
+                      // screen reader running, Flutter routes text input
+                      // through the semantics node, so there is nothing to
+                      // type into and the code cannot be entered at all.
+                      alwaysIncludeSemantics: true,
                       child: TextField(
                         controller: _controller,
                         focusNode: _focus,
