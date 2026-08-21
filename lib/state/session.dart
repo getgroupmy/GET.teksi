@@ -24,9 +24,9 @@ class Prefs {
   /// Drivers go on/off duty; only online drivers receive the order feed.
   final bool driverOnline;
 
-  /// Persisted, and deliberately not read anywhere yet: the app ships only in
-  /// English. It is kept so a stored preference survives until there is a
-  /// translation to apply it to — see the Language row in Settings.
+  /// Drives MaterialApp's locale. A key with no Malay entry falls back to the
+  /// English template rather than throwing, so a screen translated late stays
+  /// readable in the meantime.
   final String language;
   final bool soundEnabled;
 
@@ -195,6 +195,19 @@ class SessionStore extends ChangeNotifier {
     Store.instance.writeJson(_prefsKey, next.toJson());
     notifyListeners();
   }
+
+  /// Working right now: a driver, in the driver half of the app, on duty.
+  ///
+  /// All three, and one place to read them. The beacon that publishes a
+  /// position and the foreground service that keeps the app alive to publish
+  /// it have to agree on when a driver is working; two copies of this
+  /// condition is one copy that can be edited alone, and either mistake is
+  /// quiet. Reporting a position after going off duty is a privacy failure,
+  /// and staying awake after going off duty is a battery one.
+  bool get isDriverOnDuty =>
+      _user?.isDriver == true &&
+      _prefs.role == Role.driver &&
+      _prefs.driverOnline;
 
   void setRole(Role role) => setPrefs(_prefs.copyWith(role: role));
 

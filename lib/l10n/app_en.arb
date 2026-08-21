@@ -156,6 +156,8 @@
   "goOffline": "Go offline",
   "goOnlinePrompt": "Go online to see ride requests near you and send your price.",
   "waitingForOrders": "Waiting for orders",
+  "dutyNotificationTitle": "You’re online",
+  "dutyNotificationBody": "Keeping you reachable for new orders. Go offline in the app to stop.",
   "stayOnlinePrompt": "Stay online — new requests appear here as passengers publish them.",
   "noOrdersMatch": "No orders match right now",
   "offerWaitingReply": "Your offer is waiting for a reply",

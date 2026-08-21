@@ -740,6 +740,18 @@ abstract class AppLocalizations {
   /// **'Waiting for orders'**
   String get waitingForOrders;
 
+  /// No description provided for @dutyNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re online'**
+  String get dutyNotificationTitle;
+
+  /// No description provided for @dutyNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeping you reachable for new orders. Go offline in the app to stop.'**
+  String get dutyNotificationBody;
+
   /// No description provided for @stayOnlinePrompt.
   ///
   /// In en, this message translates to:

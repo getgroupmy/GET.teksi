@@ -15,6 +15,14 @@
          from a push service, so this is the only permission they need. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+    <!-- A driver on duty must keep reporting their position while the app is
+         behind another one. FOREGROUND_SERVICE_LOCATION is the API 34 half of
+         the same permission. The type matters from API 29: without it Android
+         throttles a backgrounded app's location updates to a handful an hour,
+         which for a passenger watching a car approach is the same as nothing. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+
     <!-- Declared, not required: the app runs without a GPS fix (pickup can be
          set on the map). Marked not-required so it stays installable on
          devices without GPS hardware. -->
@@ -47,6 +55,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Not exported: nothing outside this app has any business putting a
+             driver on duty. -->
+        <service
+            android:name=".DutyService"
+            android:exported="false"
+            android:foregroundServiceType="location"/>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

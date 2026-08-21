@@ -42,7 +42,7 @@ English and Bahasa Melayu, switched in Settings. Every screen is translated — 
 The Malay is machine-written and wants a native speaker's pass before it ships.
 
 **Notifications**
-An in-app centre with an unread badge, fed by real events from both sides: a driver bidding on your order, your bid being accepted or declined, each stage of the trip, and a cancellation by the other party. Those also surface as ordinary OS notifications — Android's `NotificationManager` and iOS's `UNUserNotificationCenter`, asked for once after sign-in — with one exception: things you did yourself are recorded in the centre but never buzz the phone that just tapped them. What still does not exist is *push*: the notification manager can only fire while the process is alive, so nothing arrives while the app is closed. Firebase Cloud Messaging is the usual answer and is ruled out here: it would put Play Services back in the dependency graph and fail the GMS scan. See [docs/PLATFORMS.md](docs/PLATFORMS.md) for what a GMS-free push transport would take.
+An in-app centre with an unread badge, fed by real events from both sides: a driver bidding on your order, your bid being accepted or declined, each stage of the trip, and a cancellation by the other party. Those also surface as ordinary OS notifications — Android's `NotificationManager` and iOS's `UNUserNotificationCenter`, asked for once after sign-in — with one exception: things you did yourself are recorded in the centre but never buzz the phone that just tapped them. While a driver is on duty an Android foreground service holds the process open, so those keep arriving with the app behind another one — Waze, WhatsApp, the lock screen. What still does not exist is *push*: nothing arrives while the app is closed, or after it has been swiped out of recents. Firebase Cloud Messaging is the usual answer and is ruled out here: it would put Play Services back in the dependency graph and fail the GMS scan. See [docs/PLATFORMS.md](docs/PLATFORMS.md) for what a GMS-free push transport would take.
 
 **Shared**
 Phone + OTP auth · profile and ratings · wallet with top-ups and transaction ledger · promo codes and referrals · saved places · notifications · safety centre with emergency contacts and trip sharing · settings with dark/light theme.
@@ -113,6 +113,7 @@ lib/
     routing.dart        Road routes via OSRM, with the on-device estimate behind the same seam
     formats.dart        Money (sen everywhere), distance, time, phone
     bus.dart            Realtime transport seam
+    duty.dart           Keeping the app alive while a driver is on duty
     location.dart       Device position, per platform, behind one interface
     notifier.dart       OS notifications, silent where the platform has none
     storage.dart        Namespaced persistence over SharedPreferences

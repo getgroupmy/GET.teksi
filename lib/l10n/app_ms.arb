@@ -107,6 +107,8 @@
   "goOffline": "Keluar dari talian",
   "goOnlinePrompt": "Mulakan dalam talian untuk melihat permintaan berhampiran dan hantar harga anda.",
   "waitingForOrders": "Menunggu pesanan",
+  "dutyNotificationTitle": "Anda dalam talian",
+  "dutyNotificationBody": "Memastikan anda boleh dihubungi untuk pesanan baharu. Keluar dari talian dalam apl untuk berhenti.",
   "stayOnlinePrompt": "Kekal dalam talian — permintaan baharu muncul di sini apabila penumpang menghantarnya.",
   "noOrdersMatch": "Tiada pesanan sepadan buat masa ini",
   "offerWaitingReply": "Tawaran anda menunggu jawapan",

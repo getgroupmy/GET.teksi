@@ -361,6 +361,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get waitingForOrders => 'Waiting for orders';
 
   @override
+  String get dutyNotificationTitle => 'You’re online';
+
+  @override
+  String get dutyNotificationBody =>
+      'Keeping you reachable for new orders. Go offline in the app to stop.';
+
+  @override
   String get stayOnlinePrompt =>
       'Stay online — new requests appear here as passengers publish them.';
 

@@ -6,13 +6,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'core/backend.dart';
+import 'core/duty.dart';
 import 'core/location.dart';
 import 'core/notifier.dart';
 import 'core/storage.dart';
 import 'l10n/app_localizations.dart';
-import 'models/models.dart';
 import 'router.dart';
 import 'services/driver_beacon.dart';
+import 'services/duty_presence.dart';
 import 'services/profile_sync.dart';
 import 'services/simulation.dart';
 import 'state/draft.dart';
@@ -38,6 +39,10 @@ Future<void> main() async {
 /// platform plugin is a singleton behind it either way, and a second one would
 /// only re-initialise the same channel.
 final Notifier _notifier = createNotifier();
+
+/// One duty service for the process, for the same reason: there is a single
+/// Android service behind it either way.
+final DutyService _dutyService = createDutyService();
 
 class GetTeksiApp extends StatelessWidget {
   const GetTeksiApp({super.key});
@@ -84,6 +89,7 @@ class _RootState extends State<_Root> {
   MarketplaceSimulation? _simulation;
   DriverBeacon? _beacon;
   ProfileSync? _profileSync;
+  DutyPresence? _duty;
   bool _askedToNotify = false;
 
   @override
@@ -97,6 +103,8 @@ class _RootState extends State<_Root> {
     _simulation?.dispose();
     _beacon?.dispose();
     _profileSync?.dispose();
+    final duty = _duty;
+    if (duty != null) unawaited(duty.dispose());
     _routerConfig.dispose();
     super.dispose();
   }
@@ -150,19 +158,31 @@ class _RootState extends State<_Root> {
   /// followed — going offline is the control that has to actually stop the
   /// reporting, not merely hide the car.
   void _syncBeacon(SessionStore session, RidesStore rides) {
-    final user = session.user;
-    final wanted =
-        Backend.isLive &&
-        user != null &&
-        user.isDriver &&
-        session.prefs.role == Role.driver &&
-        session.prefs.driverOnline;
+    final wanted = Backend.isLive && session.isDriverOnDuty;
     final beacon = _beacon ??= DriverBeacon(session, rides);
     if (wanted && !beacon.isRunning) {
       beacon.start();
     } else if (!wanted && beacon.isRunning) {
       beacon.stop();
     }
+  }
+
+  /// Asks Android to keep the process alive while a driver is on duty.
+  ///
+  /// The same condition as the beacon, because it exists for the beacon: a
+  /// frozen process reports no position, and a driver who switched to Waze has
+  /// backgrounded this app by definition. The strings come from here rather
+  /// than from the Kotlin so the driver's own language reaches the one
+  /// notification they will be looking at all evening.
+  void _syncDuty(SessionStore session, AppLocalizations l) {
+    final duty = _duty ??= DutyPresence(
+      session,
+      service: _dutyService,
+      backendLive: Backend.isLive,
+    );
+    unawaited(
+      duty.sync(title: l.dutyNotificationTitle, body: l.dutyNotificationBody),
+    );
   }
 
   @override
@@ -197,6 +217,17 @@ class _RootState extends State<_Root> {
       ],
       routerConfig: _routerConfig.router,
       builder: (context, child) {
+        // The one context below MaterialApp's Localizations, and so the only
+        // place the duty notification's own words can be read. Doing it here
+        // also means a language change reaches the notification: this rebuilds
+        // when the locale does.
+        final l = AppLocalizations.of(context);
+        if (l != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _syncDuty(session, l);
+          });
+        }
+
         // The UI is designed as a phone-shaped column; on desktop and wide
         // web it stays centred at phone width rather than stretching.
         return Container(

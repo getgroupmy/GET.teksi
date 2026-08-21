@@ -1,10 +1,12 @@
 package my.getgroup.get_teksi
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -35,6 +37,7 @@ class MainActivity : FlutterActivity() {
 
     private companion object {
         const val CHANNEL = "get.teksi/location"
+        const val DUTY_CHANNEL = "get.teksi/duty"
         const val PERMISSION_REQUEST = 4821
 
         /** Older than this and a cached fix is a place the rider has left. */
@@ -60,6 +63,82 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, DUTY_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "start" -> result.success(
+                        startDuty(call.argument("title"), call.argument("body")),
+                    )
+                    "stop" -> {
+                        stopDuty()
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    /**
+     * Asks the OS to keep this process alive, and answers whether it agreed.
+     *
+     * The location permission is checked first rather than left to fail inside
+     * the service. From API 34 the framework refuses a location-typed
+     * foreground service without it, and the type is not decoration here: from
+     * API 29 onwards it is the thing that stops Android throttling a
+     * backgrounded app's location updates down to a handful an hour, which for
+     * a driver a passenger is watching is the same as not reporting at all.
+     */
+    private fun startDuty(title: String?, body: String?): Boolean {
+        if (!hasLocationPermission()) return false
+        val intent = Intent(this, DutyService::class.java).apply {
+            action = DutyService.ACTION_START
+            putExtra(DutyService.EXTRA_TITLE, title)
+            putExtra(DutyService.EXTRA_BODY, body)
+        }
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
+            true
+        } catch (_: Exception) {
+            // API 31+ refuses a foreground service started from the background,
+            // which this should never be — the driver taps a switch — but a
+            // race with the app being backgrounded loses the argument, and so
+            // does an OEM battery manager with opinions. Answering false lets
+            // Dart carry on without the guarantee rather than believing it has
+            // one.
+            false
+        }
+    }
+
+    /**
+     * The Activity is going away, and the Flutter engine with it.
+     *
+     * DutyService.onTaskRemoved covers the swipe-from-recents case, but not
+     * backing out of the app or the system reclaiming this Activity while the
+     * process lives on. Either way the thing the service exists to keep alive
+     * is already gone, so the notification has to go too.
+     */
+    override fun onDestroy() {
+        stopDuty()
+        super.onDestroy()
+    }
+
+    private fun stopDuty() {
+        val intent = Intent(this, DutyService::class.java).apply {
+            action = DutyService.ACTION_STOP
+        }
+        // Through the service rather than stopService(), so it takes its
+        // notification down before it goes.
+        try {
+            startService(intent)
+        } catch (_: Exception) {
+            // Nothing running to stop, or the OS will not deliver to it. Either
+            // way the service ends with the process.
+            stopService(Intent(this, DutyService::class.java))
+        }
     }
 
     private fun onCurrentRequested(result: MethodChannel.Result) {

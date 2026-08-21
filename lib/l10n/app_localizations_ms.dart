@@ -364,6 +364,13 @@ class AppLocalizationsMs extends AppLocalizations {
   String get waitingForOrders => 'Menunggu pesanan';
 
   @override
+  String get dutyNotificationTitle => 'Anda dalam talian';
+
+  @override
+  String get dutyNotificationBody =>
+      'Memastikan anda boleh dihubungi untuk pesanan baharu. Keluar dari talian dalam apl untuk berhenti.';
+
+  @override
   String get stayOnlinePrompt =>
       'Kekal dalam talian — permintaan baharu muncul di sini apabila penumpang menghantarnya.';
 

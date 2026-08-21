@@ -18,7 +18,7 @@ also enforces the properties this app's platform story depends on:
 
 - `dart format --set-exit-if-changed` and `flutter analyze --fatal-infos
   --fatal-warnings` — clean, no errors, lints, or infos.
-- `flutter test` — 178 tests covering the fare engine, geometry, the full
+- `flutter test` — 191 tests covering the fare engine, geometry, the full
   marketplace state machine (bid → accept → complete → settle), what the
   notification layer declines to send, and WCAG contrast for every colour token
   on every surface in both themes.
@@ -169,7 +169,8 @@ Configured in `android/app/build.gradle.kts`:
 
 Permissions declared in `AndroidManifest.xml` are `INTERNET`,
 `ACCESS_NETWORK_STATE`, `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` and
-`POST_NOTIFICATIONS`. Location hardware is declared `required="false"`, so the
+`POST_NOTIFICATIONS`, `FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_LOCATION`.
+Location hardware is declared `required="false"`, so the
 app stays installable on devices without GPS — the pickup pin can always be
 placed on the map, and a rider who declines the permission gets exactly that.
 
@@ -204,15 +205,20 @@ the only implementation, and `SilentNotifier` is what everything falls back to.
 | Web | Nothing — see below |
 | Anything else | Nothing, and no error |
 
+While a driver is on duty the process is also held open by a foreground
+service, so those notifications keep arriving with the app behind another one.
+
 **Not Firebase Cloud Messaging.** FCM is how a ride-hailing app normally does
 this, and it is the same trap as `google_maps_flutter`: the APK stops working
 on a Huawei device, and the CI dex scan would fail the build before it got
 there. What the platform's own notification manager gives up in exchange is
-real: **it can only fire while the process is alive.** Kill the app and the
-notifications stop. Closing that gap needs a push transport, and the GMS-free
-routes to one are HMS Push for AppGallery builds, APNs directly for iOS, and
-Web Push for the browser — three transports, three sets of credentials, and a
-server that holds them.
+real: **it can only fire while the process is alive.** Closing that gap
+entirely needs a push transport, and the GMS-free routes to one are HMS Push
+for AppGallery builds, APNs directly for iOS, and Web Push for the browser —
+three transports, three sets of credentials, and a server that holds them.
+
+Keeping the process alive is the cheaper half of that problem, and on Android
+it is solved — see [Staying awake on duty](#staying-awake-on-duty).
 
 Which alerts are worth interrupting someone for is a decision the store makes,
 not the platform: `RidesStore.notify(alert:)` is false for things this device's
@@ -230,6 +236,51 @@ refusal. Web notifications need a button in the UI, not a platform seam.
 `UNUserNotificationCenter` delegate. Without it, a notification raised while
 the app is in the foreground is delivered to nobody, with no error, which is
 most of what this app raises.
+
+---
+
+## Staying awake on duty
+
+A backgrounded Android process gets frozen. It reports no position, receives no
+realtime event and raises no notification, while still looking online to the
+server — and on the devices this app cares about most, the ones with no Play
+Services, OEM battery managers make that happen within a minute or two of
+leaving the app. A driver who switches to Waze has backgrounded this app by
+definition, so this is the normal case rather than the edge one.
+
+`DutyService.kt` is an ordinary Android foreground service: an ongoing
+notification in exchange for not being killed. `MainActivity` starts and stops
+it over the `get.teksi/duty` channel, and Dart decides when — `DutyPresence`
+in `lib/services/duty_presence.dart`, on the same condition as the position
+beacon, which is the point of it.
+
+The service is declared `foregroundServiceType="location"`, which is not
+paperwork: from API 29 that type is what stops Android throttling a
+backgrounded app's location updates to a handful an hour, and from API 34 the
+framework refuses to start such a service unless the location permission is
+already granted. `MainActivity` checks that before asking, and answers `false`
+rather than throwing when it is missing.
+
+**A refusal is a normal outcome.** The permission may be gone, or the OS may
+decline the start outright. `DutyPresence.start` returns false, the app keeps
+working exactly as it did before any of this existed — fine in the foreground,
+at the mercy of the OS behind it — and the same request is not made again until
+something actually changes. There is no retry loop.
+
+**What still ends it:** swiping the app out of the recents list. That destroys
+the Activity and the Flutter engine with it, so the service takes its own
+notification down (`onTaskRemoved`) rather than advertising a driver as online
+with nothing behind it able to take an order. `MainActivity.onDestroy` does the
+same for the other ways an Activity can go. A notification that lies is worse
+than no notification.
+
+iOS has no equivalent that can be had for the asking — staying alive in the
+background there means a background mode entitlement and a conversation with
+App Review — so `NoDutyService` says no and means it. Web has no concept of it.
+
+The notification's own words come from the ARB files rather than from the
+Kotlin, so the one notification a driver looks at all evening is in their own
+language, and switching language while on duty updates it in place.
 
 ---
 
