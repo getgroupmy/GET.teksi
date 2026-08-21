@@ -41,7 +41,12 @@ class MapView extends StatefulWidget {
 
   final LatLng center;
   final List<MapPin> pins;
-  final List<NearbyDriver> drivers;
+
+  /// Cars to draw. Deliberately not [NearbyDriver]: the map needs a position
+  /// and a heading, and a passenger looking at traffic before they book is not
+  /// entitled to know whose car it is. Asking for less here is what lets a real
+  /// driver — whose profile a passenger cannot read — be drawn at all.
+  final List<MapCar> drivers;
   final List<LatLng>? route;
 
   /// Second polyline, drawn dashed — the driver's leg to the pickup.

@@ -76,11 +76,12 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
       });
     }
 
+    // Before a driver is assigned, every car in the area. Once one is, only
+    // theirs — the rest of the traffic is noise on a map the passenger is now
+    // using to watch one particular car approach.
     final drivers = activeRide?.driverId == null
-        ? rides.nearbyDrivers.values.toList()
-        : rides.nearbyDrivers.values
-              .where((d) => d.id == activeRide!.driverId)
-              .toList();
+        ? rides.carsOnMap
+        : rides.carsOnMap.where((c) => c.id == activeRide!.driverId).toList();
 
     final pins = <MapPin>[];
     if (activeRide != null) {

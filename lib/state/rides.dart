@@ -354,11 +354,30 @@ class RidesStore extends ChangeNotifier {
   /* Live positions                                                   */
   /* ---------------------------------------------------------------- */
 
+  /// Positions of drivers this device has no profile for.
+  ///
+  /// A real driver reporting from another phone is exactly that: the passenger
+  /// can read their position, because a car in traffic is public, and cannot
+  /// read their profile, because profiles are not a directory. So there is
+  /// nothing to build a [NearbyDriver] out of, and until this existed the
+  /// position was received and then dropped — the driver moved and the map
+  /// stayed empty.
+  final Map<String, MapCar> _reportedDrivers = {};
+
+  /// Every car to draw, whoever it belongs to.
+  List<MapCar> get carsOnMap => [
+    for (final d in _nearbyDrivers.values) MapCar(d.id, d.coord, d.bearing),
+    ..._reportedDrivers.values,
+  ];
+
   void setDriverLocation(String driverId, LatLng coord, double bearing) {
     final nearby = _nearbyDrivers[driverId];
     if (nearby != null) {
       nearby.coord = coord;
       nearby.bearing = bearing;
+    } else {
+      // Someone this device knows only as a moving car.
+      _reportedDrivers[driverId] = MapCar(driverId, coord, bearing);
     }
     // Mirror onto any live ride so the passenger's map follows the car.
     var touched = false;
@@ -387,9 +406,24 @@ class RidesStore extends ChangeNotifier {
     bus.publish(DriverMoved(driverId, coord, bearing));
   }
 
+  /// A real driver going off duty, told to everyone else.
+  void reportDriverOffline(String driverId) {
+    driverWentOffline(driverId);
+    bus.publish(DriverWentOffline(driverId));
+  }
+
   void upsertNearbyDriver(NearbyDriver driver) {
     _nearbyDrivers[driver.id] = driver;
     notifyListeners();
+  }
+
+  /// A driver went off duty. Their car has to leave the map, and leaving it to
+  /// a staleness sweep would mean a parked ghost for however long that took.
+  void driverWentOffline(String driverId) {
+    final had =
+        _reportedDrivers.remove(driverId) != null ||
+        _nearbyDrivers.remove(driverId) != null;
+    if (had) notifyListeners();
   }
 
   void removeNearbyDriver(String driverId) {
@@ -581,6 +615,8 @@ class RidesStore extends ChangeNotifier {
         _commit();
       case DriverMoved(:final driverId, :final coord, :final bearing):
         setDriverLocation(driverId, coord, bearing);
+      case DriverWentOffline(:final driverId):
+        driverWentOffline(driverId);
     }
   }
 

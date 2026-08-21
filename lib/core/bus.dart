@@ -48,6 +48,17 @@ class DriverMoved extends BusEvent {
   final double bearing;
 }
 
+/// A driver stopped working, so their car leaves everyone else's map.
+///
+/// Distinct from [DriverMoved] rather than a flag on it, because going off duty
+/// is not a kind of movement. Folding the two together is how a car ends up
+/// parked on a passenger's map forever: the offline write is still a row
+/// change, and a listener that only knows how to move things moves it.
+class DriverWentOffline extends BusEvent {
+  const DriverWentOffline(this.driverId);
+  final String driverId;
+}
+
 /// How ride state reaches other participants.
 ///
 /// The app ships with [LocalTransport], which keeps everything on-device: the

@@ -83,11 +83,18 @@ class DriverBeacon {
   }
 
   void stop() {
+    final wasRunning = isRunning;
     _timer?.cancel();
     _timer = null;
     _cadence = null;
     _lastPublished = null;
     _generation++;
+
+    // Say so, rather than leaving the car parked on every passenger's map
+    // until something else notices it has gone quiet. Going off duty is the
+    // driver's decision and it should take effect at once.
+    final user = _session.user;
+    if (wasRunning && user != null) _rides.reportDriverOffline(user.id);
   }
 
   void dispose() => stop();

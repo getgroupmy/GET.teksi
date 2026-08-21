@@ -28,6 +28,7 @@ import 'rows.dart';
 class SupabaseTransport implements RealtimeTransport {
   SupabaseTransport(this._client) {
     _subscribe();
+    unawaited(_loadOnlineDrivers());
   }
 
   final SupabaseClient _client;
@@ -113,6 +114,40 @@ class SupabaseTransport implements RealtimeTransport {
     if (error != null) _errors.add(error);
   }
 
+  /// The cars that were already on the road when this device opened the app.
+  ///
+  /// Realtime delivers *changes*, so a driver parked at a rank and reporting
+  /// nothing new is invisible to a passenger who arrives after them — the map
+  /// fills in only as drivers happen to move. This reads the current state
+  /// once so it starts full and realtime keeps it that way.
+  Future<void> _loadOnlineDrivers() async {
+    try {
+      final rows = await _client
+          .from('driver_locations')
+          .select('driver_id, lat, lng, bearing')
+          .eq('online', true);
+      final uid = _uid;
+      for (final row in rows) {
+        final id = row['driver_id'] as String;
+        if (id == uid) continue;
+        _emit(
+          DriverMoved(
+            id,
+            LatLng(
+              (row['lat'] as num).toDouble(),
+              (row['lng'] as num).toDouble(),
+            ),
+            (row['bearing'] as num?)?.toDouble() ?? 0,
+          ),
+        );
+      }
+    } catch (e) {
+      // A map that fills in as drivers move is worse than one that starts
+      // full, and much better than a screen that failed to open.
+      _errors.add(e);
+    }
+  }
+
   // -------------------------------------------------------------------------
   // Inbound
   // -------------------------------------------------------------------------
@@ -185,6 +220,12 @@ class SupabaseTransport implements RealtimeTransport {
     try {
       final id = row['driver_id'] as String;
       if (id == _uid) return;
+      // Going off duty is an update to this row like any other, so without this
+      // the car is "moved" to wherever it last was and parks there forever.
+      if (row['online'] == false) {
+        _emit(DriverWentOffline(id));
+        return;
+      }
       _emit(
         DriverMoved(
           id,
@@ -274,6 +315,13 @@ class SupabaseTransport implements RealtimeTransport {
       case ChatSent(:final message):
         _selfWrites.add(message.id);
         await _client.from('chat_messages').insert(chatToInsert(message, uid));
+
+      case DriverWentOffline(:final driverId):
+        if (driverId != uid) return;
+        await _client
+            .from('driver_locations')
+            .update({'online': false})
+            .eq('driver_id', driverId);
 
       case DriverMoved(:final driverId, :final coord, :final bearing):
         if (driverId != uid) return;

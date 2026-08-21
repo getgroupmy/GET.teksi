@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_teksi/core/bus.dart';
 import 'package:get_teksi/core/location.dart';
 import 'package:get_teksi/core/storage.dart';
+import 'package:get_teksi/models/models.dart';
 import 'package:get_teksi/services/driver_beacon.dart';
 import 'package:get_teksi/state/rides.dart';
 import 'package:get_teksi/state/session.dart';
@@ -51,8 +52,12 @@ const _jitter = LatLng(3.1338, 101.68693);
 const _northJitter = LatLng(3.1347, 101.68693);
 
 void main() {
+  group('the receiving half', _receivingHalf);
+
   late SessionStore session;
-  late RidesStore rides;
+  // Nullable rather than late: this tearDown also runs for the nested group,
+  // which builds its own store and never touches this one.
+  RidesStore? rides;
   late List<DriverMoved> published;
   late StreamSubscription<BusEvent> sub;
 
@@ -67,7 +72,8 @@ void main() {
 
   tearDown(() async {
     await sub.cancel();
-    rides.dispose();
+    rides?.dispose();
+    rides = null;
   });
 
   /// Signs in a driver and returns a beacon over a scripted location source.
@@ -78,10 +84,11 @@ void main() {
   }) {
     session = SessionStore(location: location);
     session.signIn('+60123456789', name: 'Driver', id: 'driver-1');
-    rides = RidesStore(session);
+    final store = RidesStore(session);
+    rides = store;
     return DriverBeacon(
       session,
-      rides,
+      store,
       idleInterval: idle,
       activeInterval: active,
     );
@@ -208,7 +215,7 @@ void main() {
     await Future<void>.delayed(const Duration(milliseconds: 120));
     idleBeacon.stop();
     final idleCalls = idleLocation.calls;
-    rides.dispose();
+    rides?.dispose();
 
     final busyLocation = _ScriptedLocation([_origin]);
     final busyBeacon = beaconWith(
@@ -216,7 +223,7 @@ void main() {
       idle: const Duration(milliseconds: 50),
       active: const Duration(milliseconds: 5),
     );
-    rides.publishRide(
+    rides!.publishRide(
       buildRide(passengerId: 'p1').copyWith(driverId: 'driver-1'),
     );
     busyBeacon.start();
@@ -229,10 +236,11 @@ void main() {
   test('a signed-out device reports nothing', () async {
     final location = _ScriptedLocation([_origin]);
     session = SessionStore(location: location);
-    rides = RidesStore(session);
+    final store = RidesStore(session);
+    rides = store;
     final beacon = DriverBeacon(
       session,
-      rides,
+      store,
       idleInterval: const Duration(milliseconds: 10),
     );
     beacon.start();
@@ -240,5 +248,110 @@ void main() {
     beacon.stop();
 
     expect(published, isEmpty);
+  });
+}
+
+/// The receiving half. A driver reporting from another phone is a car the
+/// passenger can see the position of and nothing else — their profile is not
+/// readable, by design — so there is nothing to build a NearbyDriver from.
+/// Until the store kept these separately, the position arrived and was dropped:
+/// the driver moved and the map stayed empty.
+void _receivingHalf() {
+  late SessionStore session;
+  late RidesStore rides;
+
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    await Store.init();
+    session = SessionStore();
+    session.signIn('+60111111111', name: 'Passenger', id: 'passenger-1');
+    rides = RidesStore(session);
+  });
+
+  tearDown(() => rides.dispose());
+
+  test('a driver this device has never seen appears on the map', () {
+    expect(rides.carsOnMap, isEmpty);
+
+    rides.setDriverLocation('stranger-1', _origin, 90);
+
+    expect(rides.carsOnMap, hasLength(1));
+    expect(rides.carsOnMap.single.id, 'stranger-1');
+    expect(rides.carsOnMap.single.coord, _origin);
+    expect(rides.carsOnMap.single.bearing, 90);
+  });
+
+  test('a second report moves the same car rather than adding one', () {
+    rides.setDriverLocation('stranger-1', _origin, 0);
+    rides.setDriverLocation('stranger-1', _north, 180);
+
+    expect(rides.carsOnMap, hasLength(1));
+    expect(rides.carsOnMap.single.coord, _north);
+    expect(rides.carsOnMap.single.bearing, 180);
+  });
+
+  test('going off duty takes the car off the map', () {
+    rides.setDriverLocation('stranger-1', _origin, 0);
+    expect(rides.carsOnMap, hasLength(1));
+
+    rides.driverWentOffline('stranger-1');
+
+    expect(rides.carsOnMap, isEmpty);
+  });
+
+  test('bots and reported drivers are drawn side by side', () {
+    rides.upsertNearbyDriver(
+      NearbyDriver(
+        id: 'bot-1',
+        name: 'Bot',
+        avatarColor: 0,
+        rating: 5,
+        ridesGiven: 10,
+        vehicle: const Vehicle(
+          make: 'Perodua',
+          model: 'Myvi',
+          year: 2022,
+          color: 'White',
+          plate: 'WXY 1234',
+          vehicleClass: VehicleClass.economy,
+          seats: 4,
+        ),
+        coord: _origin,
+        bearing: 0,
+      ),
+    );
+    rides.setDriverLocation('stranger-1', _north, 45);
+
+    expect(
+      rides.carsOnMap.map((c) => c.id),
+      containsAll(['bot-1', 'stranger-1']),
+    );
+  });
+
+  test('a known driver still updates in place, not as a second car', () {
+    rides.upsertNearbyDriver(
+      NearbyDriver(
+        id: 'bot-1',
+        name: 'Bot',
+        avatarColor: 0,
+        rating: 5,
+        ridesGiven: 10,
+        vehicle: const Vehicle(
+          make: 'Perodua',
+          model: 'Myvi',
+          year: 2022,
+          color: 'White',
+          plate: 'WXY 1234',
+          vehicleClass: VehicleClass.economy,
+          seats: 4,
+        ),
+        coord: _origin,
+        bearing: 0,
+      ),
+    );
+    rides.setDriverLocation('bot-1', _north, 90);
+
+    expect(rides.carsOnMap, hasLength(1));
+    expect(rides.carsOnMap.single.coord, _north);
   });
 }

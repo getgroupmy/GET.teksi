@@ -377,6 +377,19 @@ class AppUser {
 }
 
 /// A driver visible on the map. Bot drivers come from the simulation engine.
+/// A car on the map: where it is, which way it is pointing, and nothing else.
+///
+/// Bots and real drivers both arrive here, which is the point — the map cannot
+/// tell them apart and should not need to.
+class MapCar {
+  const MapCar(this.id, this.coord, this.bearing);
+  final String id;
+  final LatLng coord;
+  final double bearing;
+}
+
+/// A driver this device knows in full: the bot fleet, and the counterparty on
+/// a ride already under way.
 class NearbyDriver {
   NearbyDriver({
     required this.id,
