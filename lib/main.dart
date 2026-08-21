@@ -7,7 +7,9 @@ import 'core/backend.dart';
 import 'core/location.dart';
 import 'core/storage.dart';
 import 'l10n/app_localizations.dart';
+import 'models/models.dart';
 import 'router.dart';
+import 'services/driver_beacon.dart';
 import 'services/simulation.dart';
 import 'state/draft.dart';
 import 'state/rides.dart';
@@ -68,6 +70,7 @@ class _Root extends StatefulWidget {
 class _RootState extends State<_Root> {
   late final GoRouterConfig _routerConfig;
   MarketplaceSimulation? _simulation;
+  DriverBeacon? _beacon;
 
   @override
   void initState() {
@@ -78,6 +81,7 @@ class _RootState extends State<_Root> {
   @override
   void dispose() {
     _simulation?.dispose();
+    _beacon?.dispose();
     _routerConfig.dispose();
     super.dispose();
   }
@@ -93,12 +97,39 @@ class _RootState extends State<_Root> {
     }
   }
 
+  /// The position beacon runs only for a real driver who is on duty against a
+  /// real backend.
+  ///
+  /// Without a backend there is nobody to tell: the only other participants are
+  /// bots in this same process, which read the store directly. Off duty it
+  /// stays stopped, because a driver who is not working has not agreed to be
+  /// followed — going offline is the control that has to actually stop the
+  /// reporting, not merely hide the car.
+  void _syncBeacon(SessionStore session, RidesStore rides) {
+    final user = session.user;
+    final wanted =
+        Backend.isLive &&
+        user != null &&
+        user.isDriver &&
+        session.prefs.role == Role.driver &&
+        session.prefs.driverOnline;
+    final beacon = _beacon ??= DriverBeacon(session, rides);
+    if (wanted && !beacon.isRunning) {
+      beacon.start();
+    } else if (!wanted && beacon.isRunning) {
+      beacon.stop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final session = context.watch<SessionStore>();
     final rides = context.read<RidesStore>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _syncSimulation(session, rides);
+      if (mounted) {
+        _syncSimulation(session, rides);
+        _syncBeacon(session, rides);
+      }
     });
 
     return MaterialApp.router(

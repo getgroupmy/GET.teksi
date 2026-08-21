@@ -372,6 +372,21 @@ class RidesStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// A real driver reporting where they are, as opposed to [setDriverLocation]
+  /// which only records where someone else said they were.
+  ///
+  /// Applied locally first and then published, which is the contract every
+  /// other write in this file follows: the transport must not echo a change
+  /// back to the device that made it.
+  ///
+  /// Bot drivers deliberately do not come through here. They exist only in the
+  /// process that invented them, and publishing their positions would put
+  /// imaginary cars on other people's maps.
+  void reportDriverPosition(String driverId, LatLng coord, double bearing) {
+    setDriverLocation(driverId, coord, bearing);
+    bus.publish(DriverMoved(driverId, coord, bearing));
+  }
+
   void upsertNearbyDriver(NearbyDriver driver) {
     _nearbyDrivers[driver.id] = driver;
     notifyListeners();
