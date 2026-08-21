@@ -1632,6 +1632,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
+  String get notificationsDeniedSubtitle => 'Off — tap to turn them on';
+
+  @override
+  String get notificationsUnavailableSubtitle => 'Not available on this device';
+
+  @override
+  String get notificationsBlockedHint =>
+      'Your browser is blocking notifications for this site. Change it there and come back.';
+
+  @override
   String get switchToPassengerTooltip => 'Switch to passenger';
 
   @override

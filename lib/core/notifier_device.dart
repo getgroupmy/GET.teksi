@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../models/models.dart';
@@ -16,6 +17,13 @@ const _channelId = 'get_teksi_rides';
 const _channelName = 'Ride updates';
 const _channelDescription =
     'Offers on your order, trip progress, and safety alerts.';
+
+/// Answered by MainActivity on Android and AppDelegate on iOS.
+///
+/// Not the notification plugin's own channel: sending someone to the system
+/// screen where this permission is granted is a thing about the app, not about
+/// notifications, and the plugin has no method for it.
+const _appChannel = MethodChannel('get.teksi/app');
 
 class _DeviceNotifier implements Notifier {
   const _DeviceNotifier();
@@ -57,6 +65,17 @@ class _DeviceNotifier implements Notifier {
   Future<void> requestPermission() async {
     if (!await _ensureReady()) return;
     try {
+      // kIsWeb rather than another case in the switch: on the web
+      // defaultTargetPlatform reports the machine the browser runs on, so a
+      // phone browser is indistinguishable from a phone in here.
+      if (kIsWeb) {
+        await _plugin
+            .resolvePlatformSpecificImplementation<
+              WebFlutterLocalNotificationsPlugin
+            >()
+            ?.requestNotificationsPermission();
+        return;
+      }
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
           // Android 13+ only. Older versions grant it at install, where the
@@ -74,12 +93,6 @@ class _DeviceNotifier implements Notifier {
               >()
               ?.requestPermissions(alert: true, badge: true, sound: true);
         case _:
-          // Web included, deliberately. Browsers only honour a permission
-          // request made during a user gesture, and this is called a frame
-          // after sign-in — by then the gesture has expired and the request
-          // is refused outright, which is worse than not asking: the browser
-          // remembers the refusal. Web needs a button, which is a screen, not
-          // a platform seam.
           return;
       }
     } catch (_) {
@@ -89,7 +102,69 @@ class _DeviceNotifier implements Notifier {
   }
 
   @override
-  Future<void> show(AppNotification notification) async {
+  Future<NotificationPermission> status() async {
+    if (!await _ensureReady()) return NotificationPermission.unavailable;
+    try {
+      if (kIsWeb) {
+        final web = _plugin
+            .resolvePlatformSpecificImplementation<
+              WebFlutterLocalNotificationsPlugin
+            >();
+        if (web == null) return NotificationPermission.unavailable;
+        return web.permissionStatus == WebNotificationPermission.granted
+            ? NotificationPermission.granted
+            : NotificationPermission.denied;
+      }
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.android:
+          final android = _plugin
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
+          if (android == null) return NotificationPermission.unavailable;
+          // Null means the platform declined to answer. Reading that as
+          // granted would put an "On" in Settings with nothing behind it.
+          final enabled = await android.areNotificationsEnabled();
+          return enabled == true
+              ? NotificationPermission.granted
+              : NotificationPermission.denied;
+        case TargetPlatform.iOS:
+          final ios = _plugin
+              .resolvePlatformSpecificImplementation<
+                IOSFlutterLocalNotificationsPlugin
+              >();
+          if (ios == null) return NotificationPermission.unavailable;
+          final options = await ios.checkPermissions();
+          return options?.isEnabled == true
+              ? NotificationPermission.granted
+              : NotificationPermission.denied;
+        case _:
+          return NotificationPermission.unavailable;
+      }
+    } catch (_) {
+      return NotificationPermission.unavailable;
+    }
+  }
+
+  @override
+  Future<bool> openSettings() async {
+    // Nowhere to send anyone. A browser keeps this permission behind its own
+    // chrome, which a page is not allowed to open — so the row has to say so
+    // rather than pretend to be a button.
+    if (kIsWeb) return false;
+    try {
+      final opened = await _appChannel.invokeMethod<bool>(
+        'openNotificationSettings',
+      );
+      return opened ?? false;
+    } catch (_) {
+      // MissingPluginException on a platform with no handler for it.
+      return false;
+    }
+  }
+
+  @override
+  Future<void> show(AppNotification notification, {bool sound = true}) async {
     if (!await _ensureReady()) return;
     try {
       await _plugin.show(
@@ -106,13 +181,16 @@ class _DeviceNotifier implements Notifier {
             channelDescription: _channelDescription,
             importance: Importance.high,
             priority: Priority.high,
+            // The Sounds setting. Still posted either way — it belongs in the
+            // tray regardless — it just arrives without a noise.
+            playSound: sound,
             // Safety is the one thing that should carry through Do Not
             // Disturb.
             category: notification.kind == NotificationKind.safety
                 ? AndroidNotificationCategory.alarm
                 : AndroidNotificationCategory.event,
           ),
-          iOS: const DarwinNotificationDetails(),
+          iOS: DarwinNotificationDetails(presentSound: sound),
         ),
         payload: notification.rideId,
       );

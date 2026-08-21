@@ -28,6 +28,10 @@ class Prefs {
   /// English template rather than throwing, so a screen translated late stays
   /// readable in the meantime.
   final String language;
+
+  /// Whether an OS notification makes a noise. It still appears either way:
+  /// a driver's offer belongs in the tray whether or not the phone is meant to
+  /// be quiet.
   final bool soundEnabled;
 
   /// Bot drivers/passengers that make the app demonstrable on one device.

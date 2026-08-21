@@ -974,6 +974,9 @@
   "pickup": "Pickup",
   "drive": "Drive",
   "notifications": "Notifications",
+  "notificationsDeniedSubtitle": "Off — tap to turn them on",
+  "notificationsUnavailableSubtitle": "Not available on this device",
+  "notificationsBlockedHint": "Your browser is blocking notifications for this site. Change it there and come back.",
   "switchToPassengerTooltip": "Switch to passenger",
   "earningsSemantics": "Earnings, {amount}, {status}",
   "@earningsSemantics": {

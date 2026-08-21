@@ -111,6 +111,34 @@ final class LocationBridge: NSObject, CLLocationManagerDelegate {
   }
 }
 
+/// The app's own settings page, which is where the notification permission
+/// actually lives once iOS has stopped offering the prompt.
+///
+/// iOS asks for notification permission exactly once. After a refusal the
+/// request call returns immediately and silently, so a Notifications row in
+/// the app with nothing behind it would be a control that is not one.
+enum AppBridge {
+
+  static let channelName = "get.teksi/app"
+
+  static func register(with messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: channelName, binaryMessenger: messenger)
+    channel.setMethodCallHandler { call, result in
+      guard call.method == "openNotificationSettings" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      guard let url = URL(string: UIApplication.openSettingsURLString),
+        UIApplication.shared.canOpenURL(url)
+      else {
+        result(false)
+        return
+      }
+      UIApplication.shared.open(url, options: [:]) { opened in result(opened) }
+    }
+  }
+}
+
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   /// Held for the process lifetime: it owns the CLLocationManager and the
@@ -136,6 +164,8 @@ final class LocationBridge: NSObject, CLLocationManagerDelegate {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     // applicationRegistrar is the application-level counterpart to a plugin's
     // registrar; its messenger is the engine's.
-    location.register(with: engineBridge.applicationRegistrar.messenger())
+    let messenger = engineBridge.applicationRegistrar.messenger()
+    location.register(with: messenger)
+    AppBridge.register(with: messenger)
   }
 }

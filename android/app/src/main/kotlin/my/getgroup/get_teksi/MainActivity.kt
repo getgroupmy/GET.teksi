@@ -6,10 +6,12 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -38,6 +40,7 @@ class MainActivity : FlutterActivity() {
     private companion object {
         const val CHANNEL = "get.teksi/location"
         const val DUTY_CHANNEL = "get.teksi/duty"
+        const val APP_CHANNEL = "get.teksi/app"
         const val PERMISSION_REQUEST = 4821
 
         /** Older than this and a cached fix is a place the rider has left. */
@@ -76,6 +79,44 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, APP_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "openNotificationSettings" ->
+                        result.success(openNotificationSettings())
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    /**
+     * Sends the user to where this app's notifications are actually switched
+     * on, and answers whether there was anywhere to send them.
+     *
+     * Android stops offering the permission prompt once it has been refused,
+     * so past that point asking again does nothing at all — silently. Without
+     * a way through to Settings, a Notifications row would be a control that
+     * looks like a control and is not one.
+     */
+    private fun openNotificationSettings(): Boolean {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        } else {
+            // Below API 26 there is no per-app notification screen; the app
+            // detail page is the nearest thing that exists.
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                .setData(Uri.fromParts("package", packageName, null))
+        }
+        return try {
+            startActivity(intent)
+            true
+        } catch (_: Exception) {
+            // No activity to handle it. Rare, and an OEM build with the
+            // Settings app locked down is exactly the sort of place it would
+            // happen.
+            false
+        }
     }
 
     /**

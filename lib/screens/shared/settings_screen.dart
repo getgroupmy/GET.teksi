@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../state/rides.dart';
 import '../../state/session.dart';
 import '../../theme.dart';
+import '../../widgets/notification_setting_row.dart';
 import '../../widgets/ui.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -50,6 +51,7 @@ class SettingsScreen extends StatelessWidget {
               prefs.copyWith(language: prefs.language == 'en' ? 'ms' : 'en'),
             ),
           ),
+          const NotificationSettingRow(),
           AppRow(
             icon: Icons.volume_up_rounded,
             title: l.sounds,

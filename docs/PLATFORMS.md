@@ -18,7 +18,7 @@ also enforces the properties this app's platform story depends on:
 
 - `dart format --set-exit-if-changed` and `flutter analyze --fatal-infos
   --fatal-warnings` — clean, no errors, lints, or infos.
-- `flutter test` — 191 tests covering the fare engine, geometry, the full
+- `flutter test` — 199 tests covering the fare engine, geometry, the full
   marketplace state machine (bid → accept → complete → settle), what the
   notification layer declines to send, and WCAG contrast for every colour token
   on every surface in both themes.
@@ -227,10 +227,23 @@ confirming your own SOS. A phone that buzzes half a second after your own thumb
 is a phone people turn notifications off on. `test/notifier_test.dart` covers
 that split, and covers the backlog, which must not ring at all.
 
-**Web is silent on purpose.** Browsers only honour `Notification.requestPermission()`
-during a user gesture; the app asks a frame after sign-in, by which time the
-gesture has expired and the request is refused — and the browser remembers the
-refusal. Web notifications need a button in the UI, not a platform seam.
+**Asking twice is not possible, so there is a row in Settings.** Every platform
+offers this permission once and then stops: Android will not show the prompt
+again after a refusal, iOS never shows it twice, and a browser remembers a
+denial for the origin. A single reflexive dismissal used to turn the feature
+off permanently with nothing anywhere to say so. The Notifications row in
+Settings reads the live status, asks when there is still a prompt to show, and
+falls through to the system screen when there is not —
+`MainActivity.openNotificationSettings()` on Android, `UIApplication`'s
+settings URL on iOS, over the `get.teksi/app` channel. It re-reads on resume,
+because the answer changes somewhere the app cannot see.
+
+**That row is also how the web gets asked at all.** Browsers honour
+`Notification.requestPermission()` during a user gesture and nowhere else, and
+a frame after sign-in is not one — so the app does not ask there on startup. A
+tap is a gesture. There is no settings screen to fall through to on the web,
+so `openSettings()` returns false and the row says so rather than doing
+nothing.
 
 **iOS needs one line in `AppDelegate.swift`** — setting the
 `UNUserNotificationCenter` delegate. Without it, a notification raised while

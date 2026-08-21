@@ -58,16 +58,29 @@ class GetTeksiApp extends StatelessWidget {
           create: (_) =>
               SessionStore(location: const DeviceLocationService())..locate(),
         ),
+        // Read by the Notifications row in Settings, which is the only way
+        // back in once a platform has stopped offering its permission prompt —
+        // and the only place a browser can be asked at all, since the request
+        // is honoured during a user gesture and nowhere else.
+        Provider<Notifier>.value(value: _notifier),
         ChangeNotifierProxyProvider<SessionStore, RidesStore>(
-          create: (context) => RidesStore(
-            context.read<SessionStore>(),
-            // Puts what the bell records in front of someone who is not
-            // looking at the app.
-            onAlert: (n) => unawaited(_notifier.show(n)),
-            // With a backend the database settles rides itself, so the client
-            // must not also write its own wallet entries.
-            settlesRemotely: Backend.isLive,
-          ),
+          create: (context) {
+            final session = context.read<SessionStore>();
+            return RidesStore(
+              session,
+              // Puts what the bell records in front of someone who is not
+              // looking at the app. The Sounds setting is read at the moment
+              // of the alert rather than captured here, so turning it off
+              // takes effect on the next notification rather than the next
+              // launch.
+              onAlert: (n) => unawaited(
+                _notifier.show(n, sound: session.prefs.soundEnabled),
+              ),
+              // With a backend the database settles rides itself, so the
+              // client must not also write its own wallet entries.
+              settlesRemotely: Backend.isLive,
+            );
+          },
           update: (_, _, rides) => rides!,
         ),
         ChangeNotifierProvider(create: (_) => DraftStore()),

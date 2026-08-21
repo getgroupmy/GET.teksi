@@ -2947,6 +2947,24 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get notifications;
 
+  /// No description provided for @notificationsDeniedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Off — tap to turn them on'**
+  String get notificationsDeniedSubtitle;
+
+  /// No description provided for @notificationsUnavailableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available on this device'**
+  String get notificationsUnavailableSubtitle;
+
+  /// No description provided for @notificationsBlockedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your browser is blocking notifications for this site. Change it there and come back.'**
+  String get notificationsBlockedHint;
+
   /// No description provided for @switchToPassengerTooltip.
   ///
   /// In en, this message translates to:

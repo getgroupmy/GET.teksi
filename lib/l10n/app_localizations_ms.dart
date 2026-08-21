@@ -1641,6 +1641,17 @@ class AppLocalizationsMs extends AppLocalizations {
   String get notifications => 'Pemberitahuan';
 
   @override
+  String get notificationsDeniedSubtitle => 'Mati — ketik untuk hidupkan';
+
+  @override
+  String get notificationsUnavailableSubtitle =>
+      'Tidak tersedia pada peranti ini';
+
+  @override
+  String get notificationsBlockedHint =>
+      'Pelayar anda menyekat pemberitahuan untuk laman ini. Tukar di sana dan kembali semula.';
+
+  @override
   String get switchToPassengerTooltip => 'Tukar kepada penumpang';
 
   @override
