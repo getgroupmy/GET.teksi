@@ -25,6 +25,11 @@ dependencies:
   supabase_flutter: ^2.17.2
   web: ^1.1.1
 
+  # Used by the OSRM route service. supabase_flutter already pulls http in
+  # transitively, but a direct dependency is what this code actually has —
+  # relying on a transitive one means a Supabase upgrade can break routing.
+  http: ^1.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -33,4 +33,19 @@ class AppConfig {
   /// no key would fail at the first request rather than at startup, which is a
   /// much worse place to discover a misconfiguration.
   static const hasBackend = supabaseUrl != '' && supabaseKey != '';
+
+  /// An OSRM instance to route against, if there is one.
+  ///
+  /// Unset, the app estimates distances on-device — straight line times an
+  /// urban detour factor — and makes no network call. That estimate is what
+  /// makes the whole app work with nothing provisioned, and it is also wrong
+  /// for any particular trip, which is why this exists.
+  ///
+  /// A URL rather than an API key because OSRM is open source and
+  /// self-hostable, so routing stays a line of config rather than a vendor
+  /// account. The public demo server at router.project-osrm.org is explicitly
+  /// not for production traffic; point this at your own.
+  static const osrmUrl = String.fromEnvironment('OSRM_URL');
+
+  static const hasRouting = osrmUrl != '';
 }

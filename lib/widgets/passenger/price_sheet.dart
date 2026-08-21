@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
-import '../../core/geo.dart';
 import '../../core/storage.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/labels.dart';
@@ -89,7 +88,9 @@ class PriceSheet extends StatelessWidget {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           priceRaises: 0,
-          routeGeometry: syntheticRoute(pickup.coord, dropoff.coord, 3),
+          // The routed line when routing answered, otherwise null — publishRide
+          // synthesises one, so the map always has something to draw.
+          routeGeometry: draft.routeGeometry,
         ),
       );
       draft.setStep(DraftStep.idle);

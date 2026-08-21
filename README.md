@@ -107,6 +107,7 @@ lib/
   models/models.dart    One domain model shared by both roles
   core/
     geo.dart            Haversine, bearings, route synthesis, path interpolation
+    routing.dart        Road routes via OSRM, with the on-device estimate behind the same seam
     formats.dart        Money (sen everywhere), distance, time, phone
     bus.dart            Realtime transport seam
     storage.dart        Namespaced persistence over SharedPreferences
@@ -178,7 +179,7 @@ Covering colour contrast (every text token against every surface in both themes)
 ## Notes and limits
 
 - **Maps** use OpenStreetMap raster tiles — no key, but also no tiles when offline; pins, routes and cars still render correctly over the empty canvas. OSM's public tile server is not licensed for production traffic: point it at your own before shipping.
-- **Routes** are synthesised geometry, not real road routing. Distances apply a 1.35× urban detour factor to straight-line distance. Wire in OSRM/Valhalla/Mapbox in `lib/core/geo.dart` for real turn-by-turn.
+- **Routes** come from a real road network when one is configured, and from an on-device estimate when not. Point `OSRM_URL` at an [OSRM](https://project-osrm.org) instance and distances, durations and the drawn line are measured along the roads; leave it unset and the app applies a 1.35× urban detour factor to straight-line distance, which is right on average across a city and wrong for any particular trip. The estimate always shows first — the fare never waits on a network call — and the routed numbers replace it when they arrive. The public demo server at `router.project-osrm.org` is explicitly not for production traffic; run your own.
 - **Auth** sends a real SMS code when a backend is configured; without one the OTP screen shows the code it "sent" and accepts it, which is what keeps the demo runnable with nothing provisioned.
 - **Location** is read from the device — GPS on Android, CoreLocation on iOS, the browser on web — and falls back to the city centre when permission is refused, location is off, or no fix arrives. Android reads `LocationManager` directly rather than using `geolocator`, whose Android implementation would put Play Services back in the graph and break the Huawei build.
 - **Fares** are loosely calibrated to Klang Valley street pricing (MYR). Tariffs live in `lib/services/pricing.dart`.
