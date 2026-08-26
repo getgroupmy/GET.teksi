@@ -18,7 +18,7 @@ also enforces the properties this app's platform story depends on:
 
 - `dart format --set-exit-if-changed` and `flutter analyze --fatal-infos
   --fatal-warnings` — clean, no errors, lints, or infos.
-- `flutter test` — 199 tests covering the fare engine, geometry, the full
+- `flutter test` — 221 tests covering the fare engine, geometry, the full
   marketplace state machine (bid → accept → complete → settle), what the
   notification layer declines to send, and WCAG contrast for every colour token
   on every surface in both themes.
@@ -58,7 +58,9 @@ no map, and often no app launch at all.
 This app was built to avoid that dependency from the start:
 
 - **Maps** use `flutter_map` drawing OpenStreetMap raster tiles over a plain
-  HTTP fetch. No Google SDK, no API key, no GMS.
+  HTTP fetch. No Google SDK, no API key, no GMS. Routes come from OSRM and
+  place search from Nominatim — the same OpenStreetMap data all the way down.
+  See [The map is OpenStreetMap](#the-map-is-openstreetmap).
 - **Storage** is `shared_preferences`, which is AndroidX only.
 - **Notifications** go through `android.app.NotificationManager` and
   `UNUserNotificationCenter` directly — see [Notifications](#notifications).
@@ -190,6 +192,57 @@ Requires macOS with Xcode. Set the team and bundle identifier in
 usage description is `NSLocationWhenInUseUsageDescription`; the app requests no
 camera or contacts permission. Notification permission is requested at runtime
 after sign-in and needs no `Info.plist` entry.
+
+---
+
+## The map is OpenStreetMap
+
+Three separate things, all from the same project, each behind its own seam so a
+deployment changes a URL rather than a widget.
+
+| | Default (nothing configured) | Configured |
+|---|---|---|
+| **Tiles** | `tile.openstreetmap.org` | `TILE_URL` |
+| **Routes** | on-device estimate, no network | `OSRM_URL` |
+| **Place search** | the offline index in `lib/data/places.dart` | `NOMINATIM_URL` |
+
+The defaults are what make the app work with nothing provisioned, which is what
+makes the demo a demo. **None of them is a production configuration**, and two
+of them are somebody else's server:
+
+```sh
+flutter run \
+  --dart-define=TILE_URL=https://tiles.example.com/{z}/{x}/{y}.png \
+  --dart-define=OSRM_URL=https://osrm.example.com \
+  --dart-define=NOMINATIM_URL=https://nominatim.example.com
+```
+
+**The tile server is the one that will bite first.** The default is the
+OpenStreetMap Foundation's own, and their
+[tile usage policy](https://operations.osmfoundation.org/policies/tiles)
+excludes apps with substantial traffic — a passenger watching a car approach is
+exactly the pattern it names. It is enforced by blocking, not by invoicing, so
+the failure mode is a grey grid rather than a bill. `flutter_map` prints a
+warning about this on every run, which is worth leaving switched on. Point
+`TILE_URL` at your own renderer or a commercial OpenStreetMap provider before
+any real traffic. Nominatim's public instance has the same shape of policy: one
+request per second, no bulk use.
+
+**Attribution is a licence term, not a courtesy.** OpenStreetMap data is under
+the Open Database Licence, which requires the credit. It is drawn inside
+`MapView` rather than added by each screen, so no screen can forget it, and it
+is offset by the same `bottomPadding` the camera uses so it sits above whatever
+sheet is over the map — a credit behind an opaque panel is not a credit.
+`test/map_attribution_test.dart` asserts both halves; deleting either one fails
+a test.
+
+**Search falls back rather than failing.** The offline index answers instantly
+and covers a few hundred hand-listed Malaysian places; Nominatim covers
+everywhere else and answers a moment later. Local matches are listed first and
+remote ones appended, deduplicated by name. Every failure — unreachable, timed
+out, rate-limited, nonsense on the wire — comes back as an empty list, so a
+passenger typing during an outage sees the offline matches rather than an
+error.
 
 ---
 

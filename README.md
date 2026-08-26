@@ -112,6 +112,7 @@ lib/
   models/models.dart    One domain model shared by both roles
   core/
     geo.dart            Haversine, bearings, route synthesis, path interpolation
+    geocoding.dart      Place search via OpenStreetMap's Nominatim, over the offline index
     routing.dart        Road routes via OSRM, with the on-device estimate behind the same seam
     formats.dart        Money (sen everywhere), distance, time, phone
     bus.dart            Realtime transport seam
@@ -186,7 +187,8 @@ Covering colour contrast (every text token against every surface in both themes)
 
 ## Notes and limits
 
-- **Maps** use OpenStreetMap raster tiles — no key, but also no tiles when offline; pins, routes and cars still render correctly over the empty canvas. OSM's public tile server is not licensed for production traffic: point it at your own before shipping.
+- **Maps** use OpenStreetMap raster tiles — no key, but also no tiles when offline; pins, routes and cars still render correctly over the empty canvas. The map carries the `© OpenStreetMap` credit the Open Database Licence requires, drawn inside `MapView` so no screen can drop it and offset above whatever sheet is over the map. OSM's public tile server is not licensed for production traffic: set `TILE_URL` to your own renderer or a commercial provider before shipping.
+- **Place search** reads an offline index of a few hundred hand-listed Malaysian places, which is why search works with no network — and is also the ceiling on where anyone can go, since a passenger whose house is not on the list cannot be collected from it. Set `NOMINATIM_URL` and the same search asks OpenStreetMap for anywhere, with the offline matches still listed first so a familiar place appears the instant it is typed. Every remote failure — unreachable, timed out, rate-limited — comes back as no results rather than an error, so the offline index is always the floor. Nominatim's public instance has the same policy limits as the tile server.
 - **Routes** come from a real road network when one is configured, and from an on-device estimate when not. Point `OSRM_URL` at an [OSRM](https://project-osrm.org) instance and distances, durations and the drawn line are measured along the roads; leave it unset and the app applies a 1.35× urban detour factor to straight-line distance, which is right on average across a city and wrong for any particular trip. The estimate always shows first — the fare never waits on a network call — and the routed numbers replace it when they arrive. The public demo server at `router.project-osrm.org` is explicitly not for production traffic; run your own.
 - **Auth** sends a real SMS code when a backend is configured; without one the OTP screen shows the code it "sent" and accepts it, which is what keeps the demo runnable with nothing provisioned.
 - **Location** is read from the device — GPS on Android, CoreLocation on iOS, the browser on web — and falls back to the city centre when permission is refused, location is off, or no fix arrives. Android reads `LocationManager` directly rather than using `geolocator`, whose Android implementation would put Play Services back in the graph and break the Huawei build.

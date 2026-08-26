@@ -29,6 +29,10 @@ const _allowed = <String>{
   'WXY 1234', // what a plate looks like
   '2022',
   'GET.teksi', // the brand
+  // A licence term and a project name, not a sentence. The Open Database
+  // Licence requires this credit on the map; "OpenStreetMap" is the same word
+  // in every language, and translating a licence notice is not a kindness.
+  '© OpenStreetMap',
 };
 
 /// Where a rendered string can appear.

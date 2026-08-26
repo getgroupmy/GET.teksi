@@ -48,4 +48,37 @@ class AppConfig {
   static const osrmUrl = String.fromEnvironment('OSRM_URL');
 
   static const hasRouting = osrmUrl != '';
+
+  /// Where the map's raster tiles come from.
+  ///
+  /// The default is the OpenStreetMap Foundation's own server, which is what
+  /// makes the demo draw a map with nothing provisioned. **It is not a
+  /// production tile source.** The OSMF tile usage policy forbids apps with
+  /// substantial traffic, is enforced by blocking, and owes you nothing if it
+  /// stops answering — a ride-hailing app watching a car move is exactly the
+  /// pattern it excludes.
+  ///
+  /// Point this at your own renderer or a commercial OpenStreetMap provider
+  /// before shipping. The data is the same OpenStreetMap data either way,
+  /// which is the point of the format being open: the URL changes and nothing
+  /// else does.
+  static const tileUrl = String.fromEnvironment(
+    'TILE_URL',
+    defaultValue: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  );
+
+  /// A Nominatim instance to search for places against, if there is one.
+  ///
+  /// Unset, destination search reads the offline index in lib/data/places.dart
+  /// — a few hundred hand-listed Malaysian places, which works with no network
+  /// and cannot find anywhere nobody thought to list. Set, the same search
+  /// asks OpenStreetMap for anywhere in the world.
+  ///
+  /// Nominatim's public instance at nominatim.openstreetmap.org has the same
+  /// shape of usage policy as the tile server — one request per second,
+  /// absolutely no bulk or heavy use — so it is fine while you are trying this
+  /// out and not fine in production. Self-host, or use a provider.
+  static const nominatimUrl = String.fromEnvironment('NOMINATIM_URL');
+
+  static const hasGeocoding = nominatimUrl != '';
 }

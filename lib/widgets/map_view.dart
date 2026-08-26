@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 // latlong2 exports its own `Path`, which shadows dart:ui's.
 import 'package:latlong2/latlong.dart' hide Path;
 
+import '../core/config.dart';
 import '../models/models.dart';
 import '../theme.dart';
 
@@ -25,6 +26,11 @@ class MapPin {
 /// API key, renders identically on every target, and — critically — keeps the
 /// app free of Google Play Services, so the same build works on Huawei
 /// devices that ship without GMS.
+///
+/// OpenStreetMap is under the Open Database Licence, which requires the credit
+/// drawn in the corner. It is a licence term rather than a courtesy, and it is
+/// the reason the attribution is part of this widget instead of something a
+/// screen can forget to add.
 class MapView extends StatefulWidget {
   const MapView({
     super.key,
@@ -141,7 +147,10 @@ class _MapViewState extends State<MapView> {
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          // Configurable because the default is the OpenStreetMap Foundation's
+          // own server, whose usage policy excludes exactly this kind of app.
+          // See AppConfig.tileUrl.
+          urlTemplate: AppConfig.tileUrl,
           userAgentPackageName: 'my.getgroup.get_teksi',
           maxZoom: 19,
           // Tiles are unavailable offline; the pins and routes above still
@@ -199,7 +208,54 @@ class _MapViewState extends State<MapView> {
               ),
           ],
         ),
+        _Attribution(bottomPadding: widget.bottomPadding),
       ],
+    );
+  }
+}
+
+/// The credit the Open Database Licence requires.
+///
+/// Last in the stack so nothing draws over it, and offset by the same
+/// bottomPadding the camera uses, so it sits above whichever sheet is up
+/// rather than behind it. A credit nobody can see is not a credit.
+///
+/// Not translated, and in the allow-list of the hardcoded-string test for that
+/// reason: it is the name of a project and the wording of a licence term, and
+/// "OpenStreetMap" is the same word everywhere.
+class _Attribution extends StatelessWidget {
+  const _Attribution({required this.bottomPadding});
+
+  final double bottomPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: Padding(
+          padding: EdgeInsets.only(left: 8, bottom: bottomPadding + 8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              // Legible over a light tile and a dark one, which is the whole
+              // job: this sits over map imagery nobody controls.
+              color: const Color(0x99000000),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+              child: Text(
+                '© OpenStreetMap',
+                style: TextStyle(
+                  fontSize: 10,
+                  height: 1.2,
+                  color: Color(0xCCFFFFFF),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

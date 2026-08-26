@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/formats.dart';
 import '../../core/geo.dart';
+import '../../core/geocoding.dart';
 import '../../data/places.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/models.dart';
@@ -31,6 +34,20 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
 
   String _query = '';
 
+  /// What OpenStreetMap said about [_query], if anything.
+  ///
+  /// The offline index answers instantly and covers a few hundred hand-listed
+  /// places; this covers everywhere else, and arrives a moment later. Keeping
+  /// them separate is what lets the list stay useful during the wait rather
+  /// than emptying and refilling.
+  List<Place> _remote = const [];
+  Timer? _remoteDebounce;
+
+  /// Which query the in-flight request belongs to. A slow answer to "Sun" must
+  /// not land in a list that now says "Sunway" — the same guard the driver
+  /// beacon needs, for the same reason.
+  int _remoteGeneration = 0;
+
   /// The stop field only exists once the passenger asks for one.
   bool _wantStop = false;
 
@@ -43,6 +60,34 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
     _dropoffController.text = draft.dropoff?.name ?? '';
     _stopController.text = draft.stop?.name ?? '';
     WidgetsBinding.instance.addPostFrameCallback((_) => _focusActiveField());
+  }
+
+  /// Sets the query and, after a pause, asks OpenStreetMap about it.
+  ///
+  /// Debounced because this fires on every keystroke and Nominatim's usage
+  /// policy is explicit about not doing that. The pause is also what makes the
+  /// remote results feel like an addition rather than a flicker: by the time
+  /// they arrive, the typing has stopped.
+  void _setQuery(String value) {
+    setState(() {
+      _query = value;
+      // Drop the previous query's answers immediately. Leaving them up while
+      // the new ones are fetched shows results for a word no longer on screen.
+      _remote = const [];
+    });
+
+    _remoteDebounce?.cancel();
+    if (!Geocoding.hasRemote || value.trim().length < 3) return;
+
+    final generation = ++_remoteGeneration;
+    _remoteDebounce = Timer(const Duration(milliseconds: 350), () async {
+      final near = context.mounted
+          ? context.read<SessionStore>().myLocation
+          : null;
+      final found = await Geocoding.remote.search(value, near: near);
+      if (!mounted || generation != _remoteGeneration) return;
+      setState(() => _remote = found);
+    });
   }
 
   void _focusActiveField() {
@@ -65,6 +110,10 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
 
   @override
   void dispose() {
+    _remoteDebounce?.cancel();
+    // Bumping the generation as well: a request already in flight resolves
+    // after this and must not call setState on a dead State.
+    _remoteGeneration++;
     _pickupController.dispose();
     _stopController.dispose();
     _dropoffController.dispose();
@@ -100,12 +149,10 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
       context.pop();
       return;
     }
-    setState(() {
-      _query = '';
-      draft.setEditing(
-        draft.dropoff == null ? DraftField.dropoff : DraftField.pickup,
-      );
-    });
+    draft.setEditing(
+      draft.dropoff == null ? DraftField.dropoff : DraftField.pickup,
+    );
+    _setQuery('');
     _focusActiveField();
   }
 
@@ -152,8 +199,20 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
         ).compareTo(haversineKm(b.coord, session.myLocation)),
       );
 
-    final results = _query.trim().isNotEmpty
+    // Offline matches first and remote ones after, deduplicated by name. The
+    // order is the point: a place already in the index is somewhere this app
+    // knows how to price and route, and it appears the instant it is typed,
+    // while OpenStreetMap's answer for the same word arrives a moment later
+    // and would otherwise push it down the list.
+    final local = _query.trim().isNotEmpty
         ? fuzzySearch(_query, pool: pool)
+        : <Place>[];
+    final seenNames = local.map((p) => p.name.toLowerCase()).toSet();
+    final results = _query.trim().isNotEmpty
+        ? [
+            ...local,
+            ..._remote.where((p) => seenNames.add(p.name.toLowerCase())),
+          ]
         : [...recents, ...suggestions.take(10)];
 
     return Scaffold(
@@ -179,12 +238,12 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                   active: draft.editing == DraftField.pickup,
                   onFocus: () {
                     draft.setEditing(DraftField.pickup);
-                    setState(() => _query = '');
+                    _setQuery('');
                   },
-                  onChanged: (v) => setState(() => _query = v),
+                  onChanged: _setQuery,
                   onClear: () {
                     _pickupController.clear();
-                    setState(() => _query = '');
+                    _setQuery('');
                   },
                 ),
                 if (_wantStop) ...[
@@ -197,17 +256,15 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                     active: draft.editing == DraftField.stop,
                     onFocus: () {
                       draft.setEditing(DraftField.stop);
-                      setState(() => _query = '');
+                      _setQuery('');
                     },
-                    onChanged: (v) => setState(() => _query = v),
+                    onChanged: _setQuery,
                     onClear: () {
                       _stopController.clear();
                       draft.setStop(null);
                       draft.setEditing(DraftField.dropoff);
-                      setState(() {
-                        _wantStop = false;
-                        _query = '';
-                      });
+                      setState(() => _wantStop = false);
+                      _setQuery('');
                     },
                   ),
                 ],
@@ -220,21 +277,19 @@ class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
                   active: draft.editing == DraftField.dropoff,
                   onFocus: () {
                     draft.setEditing(DraftField.dropoff);
-                    setState(() => _query = '');
+                    _setQuery('');
                   },
-                  onChanged: (v) => setState(() => _query = v),
+                  onChanged: _setQuery,
                   onClear: () {
                     _dropoffController.clear();
-                    setState(() => _query = '');
+                    _setQuery('');
                   },
                 ),
                 if (!_wantStop)
                   TextButton.icon(
                     onPressed: () {
-                      setState(() {
-                        _wantStop = true;
-                        _query = '';
-                      });
+                      setState(() => _wantStop = true);
+                      _setQuery('');
                       draft.setEditing(DraftField.stop);
                       _focusActiveField();
                     },
