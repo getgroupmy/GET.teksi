@@ -37,7 +37,7 @@ class _DeviceNotifier implements Notifier {
   Future<bool> _ensureReady() async {
     if (_ready) return true;
     try {
-      await _plugin.initialize(
+      final result = await _plugin.initialize(
         settings: const InitializationSettings(
           // The launcher icon, which the manifest also names as the app
           // icon — so the release build's resource shrinker keeps it. An icon
@@ -52,10 +52,19 @@ class _DeviceNotifier implements Notifier {
             requestBadgePermission: false,
             requestSoundPermission: false,
           ),
+          // Nothing to configure yet, but the platform is declared rather
+          // than omitted: Android and iOS both throw when their settings are
+          // absent, and web is the odd one out only until it isn't.
+          web: WebInitializationSettings(),
         ),
       );
-      _ready = true;
-      return true;
+      // Not `_ready = true`. On the web this answers whether the service
+      // worker registered, and without one every show() throws a StateError
+      // that nobody sees — a Settings row reading "On" over a notifier that
+      // silently does nothing. See readyAfterInitialize for why the same
+      // value is ignored everywhere else.
+      _ready = readyAfterInitialize(result, onWeb: kIsWeb);
+      return _ready;
     } catch (_) {
       return false;
     }

@@ -108,6 +108,26 @@ jobs:
           fi
           echo "✅ CanvasKit is served from the app's own origin."
 
+      # Nothing about a missing federated plugin is loud. The app compiles, the
+      # build passes, and the Notifications row in Settings quietly reads
+      # "Not available on this device" — which took hours to tell apart from a
+      # stale build cache once, and should take one job step from now on.
+      - name: Assert notifications are wired up on the web
+        run: |
+          SW=build/web/assets/packages/flutter_local_notifications_web/web/notifications_service_worker.js
+          test -f "$SW" \
+            || { echo "::error::the notification service worker asset is missing from the web build"; exit 1; }
+
+          # Class names are minified in a release build, so look for a string
+          # literal instead: the path the web implementation registers its
+          # service worker from. If the implementation were tree-shaken out or
+          # never registered, this string would not be in the bundle.
+          if ! grep -q 'notifications_service_worker' build/web/main.dart.js; then
+            echo "::error::the web notification implementation is not in the bundle — flutter_local_notifications_web did not reach the app, and Settings will say notifications are unavailable"
+            exit 1
+          fi
+          echo "✅ The web notification implementation is compiled in."
+
       - name: Assert the web build uses the browser's geolocation
         run: |
           # lib/core/location.dart picks its implementation with a conditional

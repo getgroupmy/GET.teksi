@@ -200,6 +200,34 @@ void main() {
     expect(quiet.notifications, hasLength(1));
   });
 
+  group('what initialize() answering means', () {
+    // One bool?, three unrelated meanings. Getting this wrong in either
+    // direction is bad in a different way, so both directions are pinned.
+
+    test('the web is taken at its word', () {
+      // False there means the service worker did not register, and without one
+      // every show() throws where nobody sees it. A Settings row reading "On"
+      // over a notifier that silently drops everything is the worst of the
+      // available outcomes.
+      expect(readyAfterInitialize(true, onWeb: true), isTrue);
+      expect(readyAfterInitialize(false, onWeb: true), isFalse);
+      // Null means no implementation resolved at all.
+      expect(readyAfterInitialize(null, onWeb: true), isFalse);
+    });
+
+    test('iOS answering false is not a broken iPhone', () {
+      // The trap. On iOS the return value is whether permission was granted
+      // *during init*, and this app deliberately requests none there — it asks
+      // later, from a button, so no dialog appears before anyone has seen why.
+      // A healthy iPhone therefore answers false. Honouring it would put "Not
+      // available on this device" in Settings on every Apple device and show
+      // nothing ever again.
+      expect(readyAfterInitialize(false, onWeb: false), isTrue);
+      expect(readyAfterInitialize(null, onWeb: false), isTrue);
+      expect(readyAfterInitialize(true, onWeb: false), isTrue);
+    });
+  });
+
   test('the silent notifier accepts everything and does nothing', () async {
     const notifier = SilentNotifier();
     await notifier.requestPermission();

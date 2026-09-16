@@ -78,5 +78,25 @@ class SilentNotifier implements Notifier {
   Future<void> show(AppNotification notification, {bool sound = true}) async {}
 }
 
+/// Whether `FlutterLocalNotificationsPlugin.initialize` saying [result] means
+/// the platform can actually show a notification.
+///
+/// It is a different question on each platform, which is the trap. The return
+/// value is one `bool?` and it means three unrelated things:
+///
+///   * **Web** — whether the service worker registered. Notifications on the
+///     web go through one, so false means every later `show()` throws. This is
+///     the one answer worth acting on.
+///   * **iOS and macOS** — whether *permission was granted during init*. This
+///     app deliberately asks for none there, so it is false on a perfectly
+///     healthy iPhone. Reading it as a failure would report "Not available on
+///     this device" on every Apple device and show nothing ever again.
+///   * **Android** — whether the plugin initialised.
+///
+/// So the web answer is honoured and the rest are not. That asymmetry looks
+/// like an oversight and is the opposite of one; it has a test.
+bool readyAfterInitialize(bool? result, {required bool onWeb}) =>
+    onWeb ? result == true : true;
+
 /// The platform's notification manager, or a silent one where there is none.
 Notifier createNotifier() => buildNotifier();
