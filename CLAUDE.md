@@ -51,4 +51,13 @@ supabase/tests/run.sh          # needs a local PostgreSQL
 supabase/tests/concurrency.sh
 ```
 
-Flutter lives at `/opt/flutter/bin` in this environment.
+`.claude/hooks/session-start.sh` provisions all of that at session start on a
+remote container: Flutter at the version `.github/workflows/ci.yml` pins, the
+packages resolved, and a local PostgreSQL listening on a socket. It exports the
+PATH and `PG*` variables too, so the commands above run exactly as written.
+
+It is idempotent and takes about a second when there is nothing to do. The
+first run on a new container image spends a few minutes fetching the Flutter
+SDK; after that the image is cached and later sessions are instant. It does
+nothing at all outside a remote container, where your own toolchain is already
+in charge.
