@@ -1,0 +1,286 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+# A newer push supersedes an in-flight run on the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.47.0'
+
+jobs:
+  analyze:
+    name: Analyze, format and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos --fatal-warnings
+
+      - name: Test
+        run: flutter test --reporter expanded
+
+  database:
+    name: Migration and security policies
+    runs-on: ubuntu-latest
+    # A stock Postgres, not a Supabase project: supabase/tests/harness.sql
+    # supplies the handful of objects the migration builds on, so the schema
+    # and every policy in it are exercised without provisioning anything.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the Postgres client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+
+      # Proves the marketplace rules are enforced by the database rather than
+      # by the client: a driver cannot see a rival's bid, a passenger cannot
+      # lower the ask after bidding or assign themselves a driver, a driver
+      # cannot move the fare after winning, and a stranger sees nothing.
+      - name: Apply the migration and run the policy suite
+        run: supabase/tests/run.sh
+
+      # Races two accepts of different bids on the same ride, repeatedly.
+      # Exactly one may ever win; this fails on the first round if the
+      # `for update` lock in accept_offer() is ever weakened.
+      - name: Race concurrent accepts
+        run: supabase/tests/concurrency.sh
+
+  build-web:
+    name: Build web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      # --no-web-resources-cdn bundles CanvasKit rather than fetching it from
+      # gstatic, which is blocked on some networks and in mainland China.
+      - name: Build
+        run: flutter build web --release --no-web-resources-cdn
+
+      # The loader always carries the gstatic URL as a fallback branch, so its
+      # mere presence proves nothing. What matters is the build config: with
+      # useLocalCanvasKit set, the loader resolves to the bundled copy.
+      - name: Assert CanvasKit is bundled, not fetched from the CDN
+        run: |
+          test -f build/web/canvaskit/canvaskit.wasm \
+            || { echo "::error::CanvasKit was not bundled locally"; exit 1; }
+
+          if ! grep -q '"useLocalCanvasKit":true' build/web/flutter_bootstrap.js; then
+            echo "::error::useLocalCanvasKit is not set — the app would fetch CanvasKit from gstatic, which fails in mainland China"
+            exit 1
+          fi
+          echo "✅ CanvasKit is served from the app's own origin."
+
+      # Nothing about a missing federated plugin is loud. The app compiles, the
+      # build passes, and the Notifications row in Settings quietly reads
+      # "Not available on this device" — which took hours to tell apart from a
+      # stale build cache once, and should take one job step from now on.
+      - name: Assert notifications are wired up on the web
+        run: |
+          SW=build/web/assets/packages/flutter_local_notifications_web/web/notifications_service_worker.js
+          test -f "$SW" \
+            || { echo "::error::the notification service worker asset is missing from the web build"; exit 1; }
+
+          # Class names are minified in a release build, so look for a string
+          # literal instead: the path the web implementation registers its
+          # service worker from. If the implementation were tree-shaken out or
+          # never registered, this string would not be in the bundle.
+          if ! grep -q 'notifications_service_worker' build/web/main.dart.js; then
+            echo "::error::the web notification implementation is not in the bundle — flutter_local_notifications_web did not reach the app, and Settings will say notifications are unavailable"
+            exit 1
+          fi
+          echo "✅ The web notification implementation is compiled in."
+
+      - name: Assert the web build uses the browser's geolocation
+        run: |
+          # lib/core/location.dart picks its implementation with a conditional
+          # import. Picking the wrong branch compiles fine and fails only at
+          # runtime, as a method channel with nothing on the other end — so
+          # check which one actually landed in the bundle.
+          if ! grep -q 'geolocation' build/web/main.dart.js; then
+            echo "::error::the web build has no geolocation call — the conditional import selected the method-channel implementation, which no browser answers"
+            exit 1
+          fi
+          if grep -q 'get\.teksi/location' build/web/main.dart.js; then
+            echo "::error::the web build carries the native location channel — the conditional import selected the wrong branch"
+            exit 1
+          fi
+          echo "✅ Web locates through the browser, not a dead channel."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/web
+          retention-days: 14
+
+  build-android:
+    name: Build Android (APK + AAB), GMS-free
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+
+      # Huawei devices ship without Google Play Services. This app is only
+      # installable there because nothing in the dependency graph touches GMS,
+      # so that property is asserted on every build rather than trusted.
+      #
+      # This runs in the same job that produced the APK, before the upload
+      # step: an artifact that fails the scan is never published at all, and
+      # there is no round trip through artifact storage to check a file the
+      # runner already has on disk.
+      - name: Scan the APK for Google Play Services
+        run: |
+          # The exact file the upload step publishes, not whichever APK a glob
+          # happens to match first. Gradle also leaves a copy under
+          # apk/release/, and a check that gates an artifact should read the
+          # artifact rather than a sibling that is merely expected to be
+          # identical.
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          test -f "$APK" || { echo "::error::$APK was not produced"; exit 1; }
+          echo "Scanning $APK"
+
+          # Classes live inside classes*.dex, not as separate zip entries, so
+          # the archive listing alone would never see them. Extract the dex and
+          # look for the class descriptors the runtime would actually load.
+          unzip -o -q "$APK" 'classes*.dex' -d /tmp/dex
+          ls -la /tmp/dex
+          cat /tmp/dex/classes*.dex > /tmp/all.dex
+          strings -a /tmp/all.dex > /tmp/dex-strings.txt
+          echo "dex strings extracted: $(wc -l < /tmp/dex-strings.txt)"
+
+          fail=0
+          for marker in \
+            'Lcom/google/android/gms' \
+            'Lcom/google/firebase' \
+            'Lcom/huawei/hms'
+          do
+            if grep -q "$marker" /tmp/dex-strings.txt; then
+              echo "::error::APK bytecode references $marker — no longer GMS-free"
+              grep -m3 "$marker" /tmp/dex-strings.txt
+              fail=1
+            fi
+          done
+
+          # Sanity-check the scan itself: our own classes must be findable, or
+          # the extraction silently failed and the whole check is meaningless.
+          if ! grep -q 'Lmy/getgroup/get_teksi' /tmp/dex-strings.txt; then
+            echo "::error::Scan self-check failed — app classes not found in dex"
+            exit 1
+          fi
+
+          # google-services.json would pull GMS in via the Gradle plugin.
+          if [ -f android/app/google-services.json ]; then
+            echo "::error::android/app/google-services.json is present"
+            fail=1
+          fi
+
+          if [ "$fail" -eq 0 ]; then
+            echo "✅ No GMS, Firebase or HMS classes in the APK bytecode."
+          fi
+          exit $fail
+
+      - name: Scan the source tree for Google SDK references
+        run: |
+          if grep -rIn -E 'com\.google\.android\.gms|com\.google\.firebase|google-services' android/ ios/; then
+            echo "::error::Google SDK reference found in the platform folders"
+            exit 1
+          fi
+          echo "✅ Platform folders are clean."
+
+      # Last, so nothing that failed a scan above is ever published.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          retention-days: 14
+
+  build-ios:
+    name: Build iOS (unsigned)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      # --no-codesign compiles the app without needing signing certificates,
+      # which is enough to prove the iOS target actually builds.
+      - name: Build
+        run: flutter build ios --release --no-codesign
+
+      # A resource that is in the repo but not in the target's Copy Bundle
+      # Resources phase builds perfectly and ships nothing — the failure is
+      # entirely silent, and the first sign of it is App Store Connect asking
+      # about undeclared data collection. So look inside the bundle that was
+      # actually produced rather than trusting the project file.
+      - name: Assert the privacy manifest is in the built app
+        run: |
+          APP=build/ios/iphoneos/Runner.app
+          MANIFEST="$APP/PrivacyInfo.xcprivacy"
+          if [ ! -f "$MANIFEST" ]; then
+            echo "::error::PrivacyInfo.xcprivacy is missing from $APP"
+            echo "It is probably not in the Runner target's resources phase."
+            ls -la "$APP" || true
+            exit 1
+          fi
+          # Self-check: a plist that parses proves the file arrived intact
+          # rather than as an empty placeholder that happens to exist.
+          plutil -lint "$MANIFEST"
+          /usr/libexec/PlistBuddy -c 'Print :NSPrivacyCollectedDataTypes:0:NSPrivacyCollectedDataType' "$MANIFEST"
