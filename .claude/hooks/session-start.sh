@@ -11,7 +11,14 @@
 # What is missing varies. Flutter has been absent from some images and present
 # in others; PostgreSQL ships as binaries but with no cluster and nothing
 # running. So every step here checks before it acts and is safe to run again.
+#
+# This runs asynchronously: the session starts straight away and provisioning
+# happens behind it. Anything that needs the toolchain goes through
+# wait-for-tools.sh first, which blocks until it is genuinely there.
 set -euo pipefail
+
+# Must be the first thing on stdout, before any other output.
+echo '{"async": true, "asyncTimeout": 900000}'
 
 # Local machines have their own toolchains and their own opinions about where
 # things live. This only provisions the disposable remote container.
@@ -30,23 +37,31 @@ PGUSER=postgres
 # PostgreSQL refuses to run as root, and this container is root.
 PGRUNAS=pgtest
 
-note() { printf '  %s\n' "$*"; }
+STATE=/tmp/teksi-tools
+mkdir -p "$STATE"
+ENVOUT="$STATE/env"
+LOG="$STATE/log"
+OUTCOME="$STATE/outcome"
 
-# Everything this hook writes lands in the session's context, so the tools get
-# to be quiet when they succeed and loud when they do not. Flutter greets every
-# invocation with a banner about running as root, and initdb with one about
-# trust authentication; neither is news, and both would be read as a problem.
-quietly() {
-  local log
-  log="$(mktemp)"
-  if ! "$@" >"$log" 2>&1; then
-    note "FAILED: $*"
-    sed 's/^/    /' "$log"
-    rm -f "$log"
-    return 1
+# Nothing below this line belongs in the session's context — it scrolls past
+# while the session is already doing something else. It goes to a log the wait
+# script can show if any of it went wrong.
+: > "$LOG"
+rm -f "$OUTCOME"
+exec >>"$LOG" 2>&1
+
+# Whatever happens, record it, so a waiter is never left guessing.
+finish() {
+  local rc=$?
+  if [ "$rc" -eq 0 ]; then
+    echo ready > "$OUTCOME"
+  else
+    echo "failed rc=$rc" > "$OUTCOME"
   fi
-  rm -f "$log"
 }
+trap finish EXIT
+
+note() { printf '  %s\n' "$*"; }
 
 # ---------------------------------------------------------------- Flutter ---
 # The version comes from the CI workflow rather than being written twice. A
@@ -57,7 +72,7 @@ wanted="$(
     .github/workflows/ci.yml | head -1
 )"
 if [ -z "$wanted" ]; then
-  echo "::error::could not read FLUTTER_VERSION from .github/workflows/ci.yml"
+  echo "could not read FLUTTER_VERSION from .github/workflows/ci.yml"
   exit 1
 fi
 
@@ -78,15 +93,11 @@ if [ -x "$FLUTTER_ROOT/bin/flutter" ]; then
 fi
 
 if [ "$have" != "$wanted" ]; then
-  if [ -n "$have" ]; then
-    note "Flutter $have is installed but CI builds with $wanted — replacing it."
-  else
-    note "Installing Flutter $wanted (a few minutes, once per container image)."
-  fi
+  note "Installing Flutter $wanted (had '${have:-nothing}')."
   url="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${wanted}-stable.tar.xz"
   tmp="$(mktemp -d)"
   if ! curl -fsSL --max-time 900 -o "$tmp/flutter.tar.xz" "$url"; then
-    echo "::error::could not download Flutter $wanted from $url"
+    echo "could not download Flutter $wanted from $url"
     rm -rf "$tmp"
     exit 1
   fi
@@ -105,8 +116,8 @@ git config --global --add safe.directory "$repo" 2>/dev/null || true
 
 # Resolves packages and, on a new SDK, unpacks the Dart artifacts the analyzer
 # and the test runner need. Doing it here rather than on first use keeps the
-# cost in the hook, where it is expected, instead of in the middle of a task.
-quietly flutter pub get
+# cost where it is expected instead of in the middle of a task.
+flutter pub get
 note "Flutter $wanted ready, packages resolved."
 
 # ------------------------------------------------------------- PostgreSQL ---
@@ -116,7 +127,7 @@ note "Flutter $wanted ready, packages resolved."
 # working database rather than a skip.
 pgbin="$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -1 || true)"
 if [ -z "$pgbin" ]; then
-  note "No PostgreSQL server in this image — the SQL suites will not run here."
+  note "No PostgreSQL server in this image — the SQL suites cannot run here."
 else
   export PATH="$PATH:$pgbin"
   id "$PGRUNAS" >/dev/null 2>&1 || useradd -m "$PGRUNAS"
@@ -125,14 +136,20 @@ else
     rm -rf "$PGDATA"
     mkdir -p "$PGDATA"
     chown "$PGRUNAS" "$PGDATA"
-    quietly su "$PGRUNAS" -c "$pgbin/initdb -D $PGDATA -U $PGUSER"
+    su "$PGRUNAS" -c "$pgbin/initdb -D $PGDATA -U $PGUSER"
   fi
 
   if ! "$pgbin/pg_isready" -h "$PGSOCKET" -p "$PGPORT" >/dev/null 2>&1; then
+    # The server runs as an unprivileged user, so its log has to be a file
+    # that user can write. The state directory belongs to root: create the
+    # file here and hand it over, rather than leaving pg_ctl to fail on a
+    # permission error that reads like a database problem.
+    : > "$STATE/pg.log"
+    chown "$PGRUNAS" "$STATE/pg.log"
     # listen_addresses empty: a unix socket only. Nothing outside this
     # container has any business reaching a throwaway test database.
-    quietly su "$PGRUNAS" -c \
-      "$pgbin/pg_ctl -D $PGDATA -o '-k $PGSOCKET -p $PGPORT -c listen_addresses=' -l /tmp/teksi-pg.log start" \
+    su "$PGRUNAS" -c \
+      "$pgbin/pg_ctl -D $PGDATA -o '-k $PGSOCKET -p $PGPORT -c listen_addresses=' -l $STATE/pg.log start" \
       || true
     for _ in $(seq 1 30); do
       "$pgbin/pg_isready" -h "$PGSOCKET" -p "$PGPORT" >/dev/null 2>&1 && break
@@ -143,32 +160,25 @@ else
   if "$pgbin/pg_isready" -h "$PGSOCKET" -p "$PGPORT" >/dev/null 2>&1; then
     note "PostgreSQL listening on $PGSOCKET:$PGPORT as $PGUSER."
   else
-    note "PostgreSQL did not come up — see /tmp/teksi-pg.log."
+    echo "PostgreSQL did not come up; see $STATE/pg.log"
+    exit 1
   fi
 fi
 
 # ----------------------------------------------------------- the session ----
-# Written to the session's environment so the commands in CLAUDE.md work as
-# written, with no PATH or PG* prefix to remember.
-if [ -n "${CLAUDE_ENV_FILE:-}" ] && ! grep -q 'teksi session-start' "$CLAUDE_ENV_FILE" 2>/dev/null; then
-  {
-    echo "# teksi session-start"
-    echo "export PATH=\"\$PATH:$FLUTTER_ROOT/bin${pgbin:+:$pgbin}\""
-    if [ -n "$pgbin" ]; then
-      echo "export PGHOST=$PGSOCKET"
-      echo "export PGPORT=$PGPORT"
-      echo "export PGUSER=$PGUSER"
-    fi
-  } >> "$CLAUDE_ENV_FILE"
+# The exports the gates need, written where wait-for-tools.sh can hand them to
+# a shell. Also appended to CLAUDE_ENV_FILE when there is one: harmless if the
+# session has already read it, and free if it has not.
+{
+  echo "# written by .claude/hooks/session-start.sh"
+  echo "export PATH=\"\$PATH:$FLUTTER_ROOT/bin${pgbin:+:$pgbin}\""
+  if [ -n "$pgbin" ]; then
+    echo "export PGHOST=$PGSOCKET"
+    echo "export PGPORT=$PGPORT"
+    echo "export PGUSER=$PGUSER"
+  fi
+} > "$ENVOUT"
+
+if [ -n "${CLAUDE_ENV_FILE:-}" ] && ! grep -q 'session-start.sh' "$CLAUDE_ENV_FILE" 2>/dev/null; then
+  cat "$ENVOUT" >> "$CLAUDE_ENV_FILE"
 fi
-
-cat <<'READY'
-
-The gates from CLAUDE.md can be run as written:
-
-  dart format --output=none --set-exit-if-changed lib test
-  flutter analyze --fatal-infos --fatal-warnings
-  flutter test
-  supabase/tests/run.sh
-  supabase/tests/concurrency.sh
-READY

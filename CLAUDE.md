@@ -51,13 +51,27 @@ supabase/tests/run.sh          # needs a local PostgreSQL
 supabase/tests/concurrency.sh
 ```
 
-`.claude/hooks/session-start.sh` provisions all of that at session start on a
-remote container: Flutter at the version `.github/workflows/ci.yml` pins, the
-packages resolved, and a local PostgreSQL listening on a socket. It exports the
-PATH and `PG*` variables too, so the commands above run exactly as written.
+`.claude/hooks/session-start.sh` provisions all of that on a remote container:
+Flutter at the version `.github/workflows/ci.yml` pins, the packages resolved,
+and a local PostgreSQL listening on a socket.
 
-It is idempotent and takes about a second when there is nothing to do. The
-first run on a new container image spends a few minutes fetching the Flutter
-SDK; after that the image is cached and later sessions are instant. It does
-nothing at all outside a remote container, where your own toolchain is already
-in charge.
+**It runs asynchronously**, so the session starts before it has finished. Put
+the waiter in front of the first command that needs any of it:
+
+```sh
+eval "$(.claude/hooks/wait-for-tools.sh)"
+```
+
+That blocks until the toolchain is genuinely there — it checks the tools
+themselves, not a marker file, so a stale one from an earlier session in a
+cached container cannot hand back a shell that connects to nothing — and then
+prints the PATH and `PG*` exports, so the commands above run exactly as
+written. It returns in milliseconds once provisioning is done, so there is no
+cost to running it before every batch of gates, and it says so on stderr when
+provisioning has failed rather than letting the failure arrive as a confusing
+error from Flutter.
+
+The hook itself is idempotent and does nothing at all outside a remote
+container, where your own toolchain is already in charge. The first run on a
+new container image spends a few minutes fetching the Flutter SDK; after that
+the image is cached and later sessions are ready in seconds.
