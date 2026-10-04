@@ -358,6 +358,34 @@ class RouteStops extends StatelessWidget {
   }
 }
 
+/// The back arrow an AppBar carries in its leading slot.
+///
+/// This exists because 24 screens hand-rolled
+/// `IconButton(icon: Icon(Icons.arrow_back_rounded))` and not one of them
+/// passed a tooltip — so the most-used control in the app announced nothing
+/// at all to VoiceOver or TalkBack. An icon is not a label: a screen reader
+/// reaching it said "button" and left the user to guess.
+///
+/// Flutter's own `BackButton` takes its tooltip from `MaterialLocalizations`,
+/// which is translated for every locale the app supports and is the right
+/// source for this word. This keeps that and the app's rounded icon.
+class AppBackButton extends StatelessWidget {
+  const AppBackButton({super.key, required this.onTap});
+
+  /// What going back means here. Usually popping the route, but three screens
+  /// have somewhere specific to go instead, which is why this is not assumed.
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back_rounded),
+      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+      onPressed: onTap,
+    );
+  }
+}
+
 class SectionLabel extends StatelessWidget {
   const SectionLabel(this.text, {super.key, this.padding});
 

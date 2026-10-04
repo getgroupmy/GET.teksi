@@ -8,6 +8,7 @@ import '../../core/backend.dart';
 import '../../core/formats.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme.dart';
+import '../../widgets/ui.dart';
 
 const _length = 6;
 
@@ -137,12 +138,7 @@ class _OtpScreenState extends State<OtpScreen> {
     final c = context.c;
     final l = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
-      ),
+      appBar: AppBar(leading: AppBackButton(onTap: () => context.pop())),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -213,22 +209,34 @@ class _OtpScreenState extends State<OtpScreen> {
                       // through the semantics node, so there is nothing to
                       // type into and the code cannot be entered at all.
                       alwaysIncludeSemantics: true,
-                      child: TextField(
-                        controller: _controller,
-                        focusNode: _focus,
-                        autofocus: true,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(_length),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _code = value;
-                            _error = '';
-                          });
-                          if (value.length == _length) _submit(value);
-                        },
+                      // MergeSemantics so the label and the field become one
+                      // node. A bare `Semantics` wrapper would annotate a
+                      // parent while TextField made its own unlabelled node
+                      // beside it, which is the mistake the rating stars had:
+                      // reachable, focusable, and silent. The heading above
+                      // is the right wording — a screen reader user gets the
+                      // same sentence a sighted one reads.
+                      child: MergeSemantics(
+                        child: Semantics(
+                          label: l.otpTitle,
+                          child: TextField(
+                            controller: _controller,
+                            focusNode: _focus,
+                            autofocus: true,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(_length),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _code = value;
+                                _error = '';
+                              });
+                              if (value.length == _length) _submit(value);
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ),

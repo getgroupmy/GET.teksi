@@ -79,12 +79,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     final display = _name.text.trim().isEmpty ? '?' : _name.text.trim();
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
-      ),
+      appBar: AppBar(leading: AppBackButton(onTap: () => context.pop())),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),

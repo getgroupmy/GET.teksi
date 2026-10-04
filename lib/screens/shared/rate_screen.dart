@@ -179,21 +179,26 @@ class _RateScreenState extends State<RateScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       for (var n = 1; n <= 5; n++)
-                        Semantics(
-                          button: true,
-                          label: '$n ${n == 1 ? 'star' : 'stars'}',
-                          child: IconButton(
-                            onPressed: () => setState(() {
-                              _stars = n;
-                              _tags.clear();
-                            }),
-                            icon: Icon(
-                              n <= _stars
-                                  ? Icons.star_rounded
-                                  : Icons.star_border_rounded,
-                              size: 38,
-                              color: n <= _stars ? c.accent : c.surface3,
-                            ),
+                        // tooltip, not a Semantics wrapper around the button.
+                        // A plain `Semantics` does not create a node of its
+                        // own, so its label landed beside the node IconButton
+                        // makes rather than on it — a screen reader focused
+                        // the button and announced nothing, five times over,
+                        // on the screen whose only purpose is choosing one of
+                        // them. The label was hardcoded English too, which no
+                        // test caught because it is spoken and never drawn.
+                        IconButton(
+                          tooltip: l.starRating(n),
+                          onPressed: () => setState(() {
+                            _stars = n;
+                            _tags.clear();
+                          }),
+                          icon: Icon(
+                            n <= _stars
+                                ? Icons.star_rounded
+                                : Icons.star_border_rounded,
+                            size: 38,
+                            color: n <= _stars ? c.accent : c.surface3,
                           ),
                         ),
                     ],

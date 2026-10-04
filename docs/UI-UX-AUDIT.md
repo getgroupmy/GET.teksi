@@ -148,6 +148,47 @@ either clips the name or walks the pin off the place it marks — and the same
 pickup and dropoff names are in the sheet below at the full system size,
 through `RouteStops`.
 
+### 7. Controls that announced nothing to a screen reader
+
+The audit had recorded only that labels "were added to the icon-only
+controls". `test/semantics_test.dart` now checks every screen on every build,
+for the two failures that are mechanical enough to gate:
+
+- a control a screen reader would stop on and have nothing to read out;
+- an input missing from the semantics tree, which is *unusable* rather than
+  merely unlabelled, because Flutter routes typing through that node when a
+  screen reader is attached.
+
+The second is the OtpScreen bug, found earlier by driving the built app in a
+browser with accessibility switched on: the one-time-code field was dropped
+from the tree by `Opacity`, so with VoiceOver or TalkBack running the code
+could not be typed at all. Sign-in is phone plus that code, so one transparent
+subtree closed the entire app. Every screen is now checked for it; none is
+currently affected.
+
+The first found two things.
+
+**The back button, on 19 screens.** Each hand-rolled
+`IconButton(icon: Icon(Icons.arrow_back_rounded))`, and not one passed a
+tooltip — so the most-used control in the app announced nothing at all. Now one
+`AppBackButton` in `lib/widgets/ui.dart`, taking its word from
+`MaterialLocalizations`, which is already translated for every supported
+locale.
+
+**The five rating stars.** These *had* a label, wrapped around the button as
+`Semantics(button: true, label: '…')` — and it did nothing, because a plain
+`Semantics` creates no node of its own. The label annotated a parent while
+`IconButton` made its own unlabelled node beside it, so a screen reader
+focused five buttons and announced nothing, on the screen whose only purpose
+is choosing one of them. The label was also hardcoded English, which
+`no_hardcoded_strings_test` could not catch because it is spoken and never
+drawn. Now `IconButton(tooltip: l.starRating(n))`, with a new pluralised
+string in both `.arb` files.
+
+That `Semantics`-wrapper mistake is the one worth remembering: it looks
+exactly like a fix, and it is the reason a gate was needed rather than a
+reading of the code.
+
 ## Verification
 
 - `test/contrast_test.dart` — 24 tests asserting every text token clears 4.5:1
@@ -164,6 +205,9 @@ through `RouteStops`.
   (`SystemChrome.setPreferredOrientations`) and constrained to a 480 px column,
   so the checklist's landscape/tablet items don't currently apply. Revisit if
   the orientation lock is lifted.
-- **Screen-reader traversal order.** Semantic labels were added to the
-  icon-only controls, but the full focus order has not been audited with a real
-  screen reader.
+- **Screen-reader traversal order, and whether labels read well aloud.**
+  Narrowed by finding 7 below, which gates labels and reachability on every
+  screen — but *order* is not what it checks, and neither is whether a label
+  makes sense when spoken. Both need a real screen reader and a person
+  listening. A widget test can prove a control says something; only a human
+  can tell you it says the right thing in the right place.
