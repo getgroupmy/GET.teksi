@@ -43,6 +43,7 @@ void main() {
     WidgetTester tester,
     Widget screen, {
     required double scale,
+    Locale locale = const Locale('en'),
   }) async {
     final complaints = <String>[];
     final previousOnError = FlutterError.onError;
@@ -64,7 +65,7 @@ void main() {
     addTearDown(() => FlutterError.onError = previousOnError);
 
     app.sizeAsPhone(tester);
-    await tester.pumpWidget(app.wrap(screen, scale: scale));
+    await tester.pumpWidget(app.wrap(screen, scale: scale, locale: locale));
     // Overflow is reported from paint, so one frame is enough to catch it —
     // but a screen that starts an animation or a timer settles into a
     // different layout, and that one has to fit as well. Not pumpAndSettle:
@@ -74,35 +75,58 @@ void main() {
     return complaints.isEmpty ? null : complaints.first;
   }
 
-  group('at the normal text size', () {
-    // The control. If a screen cannot lay out at 1.0 then the 2.0 failure
-    // below says nothing about text size, and this is where to look first.
-    // It has already earned its place: the first version of this suite failed
-    // on every screen because the session was signed out and they threw on a
-    // null check before laying out at all.
-    app.screens().forEach((name, _) {
-      testWidgets('$name lays out', (tester) async {
-        final error = await layout(tester, app.screens()[name]!(), scale: 1.0);
-        expect(error, isNull, reason: '$name at 1.0x: $error');
-      });
-    });
-  });
+  // Every screen, in every locale the app ships, at both scales.
+  //
+  // The locale axis is not decoration. `wrap` used to leave the locale to the
+  // harness default, which is English, so this suite laid out 23 screens
+  // twice and never once in the other language the app is actually for.
+  // Malay runs 17% longer across the strings the two share and is longer in
+  // 70% of them, and the worst growth is in the short ones with the least
+  // room: "RM5 off any trip" becomes "Potongan RM5 untuk mana-mana
+  // perjalanan", 144% longer, inside a promo pill.
+  for (final locale in appLocales) {
+    final lang = locale.languageCode;
 
-  group('at double the text size', () {
-    app.screens().forEach((name, _) {
-      testWidgets('$name lays out', (tester) async {
-        final error = await layout(tester, app.screens()[name]!(), scale: 2.0);
-        expect(
-          error,
-          isNull,
-          reason:
-              '$name overflows at 2.0x text scale. Someone who has turned '
-              'text size up loses whatever is past the edge, with no error '
-              'anywhere in release. $error',
-        );
+    group('in $lang at the normal text size', () {
+      // The control. If a screen cannot lay out at 1.0 then the 2.0 failure
+      // below says nothing about text size, and this is where to look first.
+      // It has already earned its place: the first version of this suite
+      // failed on every screen because the session was signed out and they
+      // threw on a null check before laying out at all.
+      app.screens().forEach((name, _) {
+        testWidgets('$name lays out', (tester) async {
+          final error = await layout(
+            tester,
+            app.screens()[name]!(),
+            scale: 1.0,
+            locale: locale,
+          );
+          expect(error, isNull, reason: '$name in $lang at 1.0x: $error');
+        });
       });
     });
-  });
+
+    group('in $lang at double the text size', () {
+      app.screens().forEach((name, _) {
+        testWidgets('$name lays out', (tester) async {
+          final error = await layout(
+            tester,
+            app.screens()[name]!(),
+            scale: 2.0,
+            locale: locale,
+          );
+          expect(
+            error,
+            isNull,
+            reason:
+                '$name overflows in $lang at 2.0x text scale. Someone who '
+                'has turned text size up loses whatever is past the edge, '
+                'with no error anywhere in release. $error',
+          );
+        });
+      });
+    });
+  }
 
   group('the gate itself', () {
     // Without this the suite above could pass because overflow is not being

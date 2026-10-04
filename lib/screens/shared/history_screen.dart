@@ -163,9 +163,11 @@ class _HistoryCard extends StatelessWidget {
               children: [
                 Icon(Icons.star_rounded, size: 13, color: c.accent),
                 const SizedBox(width: 4),
-                Text(
-                  l.youRated(ride.ratingByPassenger!.stars),
-                  style: TextStyle(fontSize: 12, color: c.textMute),
+                Flexible(
+                  child: Text(
+                    l.youRated(ride.ratingByPassenger!.stars),
+                    style: TextStyle(fontSize: 12, color: c.textMute),
+                  ),
                 ),
               ],
             ),

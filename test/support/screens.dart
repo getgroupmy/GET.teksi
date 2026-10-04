@@ -52,6 +52,13 @@ const phoneSize = Size(393, 852);
 /// pixels, so testing them wider would be testing a layout that never ships.
 const maxColumnWidth = 480.0;
 
+/// Both locales the app ships, so a gate that walks every screen walks every
+/// screen in both. Malay is not a translation of the layout's spare room: it
+/// is 17% more characters overall, longer in 70% of the shared strings, and
+/// "RM5 off any trip" becomes "Potongan RM5 untuk mana-mana perjalanan" —
+/// 144% longer, in a promo pill.
+const appLocales = [Locale('en'), Locale('ms')];
+
 const klcc = LatLng(3.1578, 101.7123);
 const midValley = LatLng(3.1177, 101.6771);
 
@@ -383,7 +390,19 @@ class ScreenFixture {
   /// The tree the app puts around a screen: its providers, its theme, its
   /// localisations, and the phone-width column from `MaterialApp.router`'s
   /// builder in main.dart. [scale] multiplies the system text size.
-  Widget wrap(Widget screen, {double scale = 1.0, bool dark = true}) {
+  ///
+  /// [locale] has to be passed, not left to the ambient default. Setting
+  /// `supportedLocales` alone does not pick one — the harness falls back to
+  /// English — so for a long time both gates laid out all 23 screens twice
+  /// and never once in Malay, which is 17% more characters across the strings
+  /// the two locales share, longer in 70% of them, and more than twice as
+  /// long in some of the short ones that sit in pills and buttons.
+  Widget wrap(
+    Widget screen, {
+    double scale = 1.0,
+    bool dark = true,
+    Locale locale = const Locale('en'),
+  }) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<SessionStore>.value(value: session),
@@ -393,6 +412,7 @@ class ScreenFixture {
       ],
       child: MaterialApp(
         theme: buildTheme(dark: dark),
+        locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: screen,
