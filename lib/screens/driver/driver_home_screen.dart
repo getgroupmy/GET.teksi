@@ -115,7 +115,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   // normal text size. One Expanded takes all of it and centres
                   // the pill inside, which is what the two Spacers were for.
                   Expanded(
-                    child: Center(
+                    // Align with a heightFactor, not Center. Center has no
+                    // height factor, so it expands to fill whatever it is
+                    // given — which stretched this Row to the full height of
+                    // the Stack and let crossAxisAlignment.center park the
+                    // whole top bar in the vertical middle of the screen. The
+                    // Spacers this replaced never did that. heightFactor: 1
+                    // sizes to the child, so the Row keeps the pill's height.
+                    child: Align(
+                      alignment: Alignment.center,
+                      heightFactor: 1,
                       child: Semantics(
                         button: true,
                         label: l.earningsSemantics(
