@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_teksi/l10n/app_localizations.dart';
+import 'package:get_teksi/screens/driver/order_detail_screen.dart';
 
 import 'support/screens.dart';
 
@@ -127,6 +129,61 @@ void main() {
       // And that the ancestry made it into the message, which is the only
       // thing that turns a failure into a place to look.
       expect(error, contains('in Row'));
+    });
+
+    /// A screen can be laid out and still not be the screen under test.
+    ///
+    /// OrderDetail has three branches. Two of them — the expired banner and
+    /// the waiting-for-reply card — are a line of text and cannot overflow at
+    /// any scale. Only the third, the bid card, holds the label-and-value row
+    /// this suite exists to protect, and it renders only while the ride is
+    /// still `searching`.
+    ///
+    /// `RidesStore.sweep()` cancels a searching ride once it is older than
+    /// `_rideSearchTtl` (10 minutes); the fixture builds one 4 minutes old.
+    /// That is a four-line gap between passing and testing anything: shorten
+    /// the TTL, or age the fixture, and OrderDetail quietly starts reporting
+    /// on a banner while every assertion above stays green.
+    ///
+    /// Not hypothetical. Driving the real web build in a browser rendered
+    /// exactly that banner, because the seeded order had aged past the TTL
+    /// between being written and being opened.
+    ///
+    /// `sweep()` is called here by hand, and that is the point. In the app it
+    /// runs on a `Timer.periodic` the store starts in its constructor — which
+    /// the fixture builds in `setUp`, outside the fake-async zone, so the
+    /// fake clock never advances it and pumping cannot make it fire. Without
+    /// this call the ride stays `searching` whatever its age, and this test
+    /// would hold only because nothing ever tried to expire it.
+    testWidgets('reaches the branch of OrderDetail that can overflow', (
+      tester,
+    ) async {
+      app.sizeAsPhone(tester);
+      app.rides.sweep();
+      await tester.pumpWidget(app.wrap(app.screens()['OrderDetailScreen']!()));
+      await tester.pump(const Duration(milliseconds: 350));
+
+      final l = AppLocalizations.of(
+        tester.element(find.byType(OrderDetailScreen)),
+      )!;
+
+      expect(
+        find.text(l.orderClosedToOffers),
+        findsNothing,
+        reason:
+            'OrderDetail rendered its expired-order banner, so the ride in '
+            'the fixture is no longer `searching`. The bid card never laid '
+            'out, and the OrderDetail entries in both groups above passed '
+            'without testing the row they are for.',
+      );
+      expect(
+        find.text(l.passengerOffers.toUpperCase()),
+        findsOneWidget,
+        reason:
+            'the bid card is the only branch of OrderDetail with a '
+            'label-and-value row in it, and it did not render',
+      );
+      expect(find.textContaining(l.marketPrice('')), findsOneWidget);
     });
   });
 }
