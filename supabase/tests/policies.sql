@@ -746,5 +746,118 @@ begin
 end $$;
 set role authenticated;
 
+-- ---------------------------------------------------------------------------
+\echo ''
+\echo '== push tokens =='
+--
+-- A push token is the address of somebody's phone. Reading someone else's is
+-- not a privacy nicety — it is the ability to send them notifications that
+-- appear to come from this app. So the interesting assertions here are the
+-- negative ones.
+-- ---------------------------------------------------------------------------
+
+select test.act_as(:aisyah);
+do $$ begin
+  perform test.allowed(
+    format('insert into public.push_tokens (user_id, platform, token) '
+           'values (%L, ''ios'', ''aisyah-device-token'')',
+           '11111111-1111-4111-8111-111111111111'),
+    'registering your own iOS device');
+
+  perform test.denied(
+    format('insert into public.push_tokens (user_id, platform, token) '
+           'values (%L, ''ios'', ''planted-token'')',
+           '22222222-2222-4222-8222-222222222222'),
+    'registering a device against someone else''s account');
+
+  -- Web Push cannot be delivered without the keys the payload is encrypted
+  -- to, so a row without them is not a token, it is a silent dead letter.
+  perform test.denied(
+    format('insert into public.push_tokens (user_id, platform, token) '
+           'values (%L, ''web'', ''https://push.example/x'')',
+           '11111111-1111-4111-8111-111111111111'),
+    'registering a web subscription with no encryption keys');
+
+  perform test.allowed(
+    format('insert into public.push_tokens '
+           '(user_id, platform, token, p256dh, auth) '
+           'values (%L, ''web'', ''https://push.example/ok'', ''k'', ''a'')',
+           '11111111-1111-4111-8111-111111111111'),
+    'registering a web subscription with its keys');
+
+  perform test.denied(
+    'update public.push_tokens set p256dh = ''k'', auth = ''a'' '
+    'where token = ''aisyah-device-token''',
+    'putting web keys on an iOS row');
+end $$;
+
+select test.act_as(:ravi);
+do $$ begin
+  perform test.eq(
+    (select count(*)::int from public.push_tokens),
+    0,
+    'another signed-in user cannot see anyone else''s devices');
+
+  perform test.affects_nothing(
+    'update public.push_tokens set token = ''hijacked''',
+    'rewriting a device token you cannot see');
+
+  perform test.affects_nothing(
+    'delete from public.push_tokens',
+    'deleting devices you cannot see');
+end $$;
+
+select test.act_as(:aisyah);
+do $$ begin
+  perform test.eq(
+    (select count(*)::int from public.push_tokens),
+    2,
+    'and the owner still has both of their devices');
+end $$;
+
+set role authenticated;
+
+-- ---------------------------------------------------------------------------
+\echo ''
+\echo '== push dispatch =='
+--
+-- Everything above this point inserted offers and moved rides through their
+-- states, so the triggers added in 20260822170000 have already fired many
+-- times without raising — which is most of what matters, because this runs
+-- inside the transaction that is changing the ride.
+--
+-- But a trigger that was never attached looks exactly the same from here.
+-- These say which is true.
+-- ---------------------------------------------------------------------------
+
+reset role;
+do $$ begin
+  perform test.eq(
+    (select count(*)::int from pg_trigger
+      where tgrelid = 'public.offers'::regclass and tgname = 'offers_push_passenger'),
+    1, 'a new bid notifies the passenger');
+
+  perform test.eq(
+    (select count(*)::int from pg_trigger
+      where tgrelid = 'public.rides'::regclass and tgname = 'rides_push_status'),
+    1, 'a ride changing state notifies the other side');
+
+  -- The guard. No pg_net and no vault here, which is the situation on any
+  -- plain PostgreSQL, and the dispatcher has to return rather than raise:
+  -- it is called from inside the transaction that is changing the ride, so
+  -- an exception would roll back the ride itself.
+  perform private.send_push(
+    '11111111-1111-4111-8111-111111111111'::uuid, 'T', 'B');
+  perform test.eq(true, true,
+    'send_push returns quietly when there is nowhere to send');
+
+  -- And that it is not reachable from a client.
+  perform test.eq(
+    has_function_privilege('authenticated',
+      'private.send_push(uuid, text, text, text, text)', 'EXECUTE'),
+    false, 'a signed-in user cannot make the server send notifications');
+end $$;
+set role authenticated;
+
 \echo ''
 \echo 'ALL POLICY TESTS PASSED'

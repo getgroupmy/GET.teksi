@@ -36,6 +36,18 @@ jobs:
       - name: Test
         run: flutter test --reporter expanded
 
+      # The push Edge Function is TypeScript on Deno in production. Node 22
+      # runs it here unchanged: the code under test is Web Crypto and fetch,
+      # which are the same in both, and --experimental-strip-types means no
+      # build step. Hand-rolled crypto with no test is the thing worth
+      # avoiding; a second toolchain to test it is the lesser cost.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Edge function tests
+        run: supabase/functions/run-tests.sh
+
   database:
     name: Migration and security policies
     runs-on: ubuntu-latest

@@ -176,6 +176,53 @@ usage data answers and I cannot.
 
 ---
 
+## What was built
+
+Route A, in five parts:
+
+| | |
+| --- | --- |
+| `public.push_tokens` | one row per device, four policies, one per command |
+| client registration | `PushBridge` on iOS, `PushManager` on web behind its own service worker |
+| `supabase/functions/push` | APNs over HTTP/2 and Web Push, 20 tests under Node |
+| `private.send_push` + two triggers | a bid arriving, a ride changing state |
+| the key scanner | an APNs `.p8` or a VAPID private key fails the build |
+
+### Still to do before it works
+
+1. **Generate the credentials.** An APNs auth key (`.p8`) from the Apple
+   Developer account, and a VAPID key pair, which is self-generated and costs
+   nothing.
+2. **Set the function's secrets**: `APNS_PRIVATE_KEY`, `APNS_KEY_ID`,
+   `APNS_TEAM_ID`, `APNS_TOPIC` (which is the bundle id, `my.get.teksi`),
+   `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
+3. **Set two vault secrets** so the database can reach the function:
+   `push_function_url` and `push_service_role_key`. Until both exist,
+   `private.send_push` returns without doing anything — which is why the
+   triggers are safe to ship ahead of the keys.
+4. **Build with `--dart-define=VAPID_PUBLIC_KEY=…`** so the browser can
+   subscribe.
+
+### The language question, which is not settled
+
+**Notifications are English only.** The server does not know the recipient's
+language, and a closed app cannot render text itself — whatever is sent is
+what appears on the lock screen. This app ships Malay as a first-class
+language, and the text-scale work found two real layout bugs that only Malay
+exposed, so English-only push is an interim rather than a conclusion.
+
+Three ways out, none free:
+
+- **A `locale` column on `profiles`**, with the text chosen in SQL. Simple,
+  and it duplicates the ARB strings into the database — two lists that
+  nothing keeps in agreement, which is the trap this repository keeps
+  finding.
+- **APNs `loc-key` and `loc-args`**, which resolve against the app bundle's
+  own `Localizable.strings`. No server-side strings at all, which is the
+  right shape — but this is a Flutter app with ARB files and no
+  `Localizable.strings`, and Web Push has no equivalent mechanism.
+- **Leave it in English** and say so in the store listing.
+
 ## What CI could keep honest
 
 Whichever route is taken, two properties are worth asserting rather than

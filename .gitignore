@@ -64,6 +64,14 @@ android/local.properties
 android/key.properties
 *.jks
 
+# Push sending keys. The APNs .p8 signs for the whole developer team and the
+# VAPID private key signs for this origin; neither protects data, which is
+# exactly why they are easy to be careless with. Ignored here so a stray copy
+# is never staged, and test/no_service_role_key_test.dart fails the build if
+# one is added past this anyway.
+*.p8
+*.pem
+
 # graphify. The graph itself is tracked, because `query`, `path`, `explain` and
 # `affected` have nothing to read without it, and a container that comes up
 # without one gives those commands an empty answer rather than an error — which

@@ -49,7 +49,16 @@ flutter analyze --fatal-infos --fatal-warnings
 flutter test
 supabase/tests/run.sh          # needs a local PostgreSQL
 supabase/tests/concurrency.sh
+supabase/functions/run-tests.sh   # needs Node 22+
 ```
+
+`run-tests.sh` covers the push Edge Function, which is TypeScript on Deno in
+production and runs here under Node's `--experimental-strip-types`. That is
+not a compromise: the code under test is Web Crypto and `fetch`, which are
+identical in both, so Node exercises the real module rather than a port. It
+matters because the Web Push payload encryption is hand-rolled — the standard
+library for it is Node-shaped and this runs on Deno — and hand-rolled crypto
+with no test is the thing actually worth avoiding.
 
 `.claude/hooks/session-start.sh` provisions all of that on a remote container:
 Flutter at the version `.github/workflows/ci.yml` pins, the packages resolved,
