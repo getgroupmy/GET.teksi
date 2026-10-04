@@ -1,0 +1,60 @@
+# Anthropic's security reviewer, reading each pull request for vulnerabilities.
+#
+# Separate from ci.yml on purpose. CI answers "does this build and do the tests
+# pass", which is a question with a right answer; this one is a reviewer with an
+# opinion, and a reviewer's opinion should not be able to block a merge by
+# turning a required check red.
+#
+# It is inert until ANTHROPIC_API_KEY exists in the repository's secrets. A
+# workflow that fails on every pull request because a key was never added
+# teaches people to ignore a red tick, which is worse than having no reviewer
+# at all — so it checks for the key first and skips quietly when there is none.
+name: Security review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+# Needed to leave the findings as a comment on the pull request.
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: Review the diff for vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The reviewer compares against the base branch, so it needs more
+          # than the single commit a default checkout fetches.
+          fetch-depth: 0
+
+      # The secrets context is not available in a job-level `if`, so the gate
+      # has to be a step that reads it into an output.
+      - name: Is there a key to review with?
+        id: gate
+        env:
+          KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$KEY" ]; then
+            echo "ready=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=no" >> "$GITHUB_OUTPUT"
+            echo "::notice::No ANTHROPIC_API_KEY secret, so the security review is skipped. Add one in Settings → Secrets and variables → Actions to switch it on."
+          fi
+
+      # Pinned to a commit rather than a branch. A third-party action on a
+      # mutable ref is someone else's `git push` running with this repository's
+      # token — and this one is handed an API key and write access to pull
+      # request comments.
+      - name: Review
+        if: steps.gate.outputs.ready == 'yes'
+        uses: anthropics/claude-code-security-review@0c6a49f1fa56a1d472575da86a94dbc1edb78eda
+        with:
+          claude-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          comment-pr: true
+          # Generated localisations and the vendored skill data under .claude
+          # are not this project's code, and findings in them are noise.
+          exclude-directories: lib/l10n,.claude/skills,graphify-out
