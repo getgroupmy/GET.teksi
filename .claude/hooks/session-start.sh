@@ -175,49 +175,59 @@ fi
 # a project whose test suite will not run because an optional tool failed to
 # download is a worse project than one without the tool. Failures here are a
 # note, never a non-zero exit.
+# uv and pipx install themselves into ~/.local/bin, which a non-login shell
+# often does not have on PATH — so look there as well as asking the shell, or a
+# container with uv falls through to pip and gets the failure mode the vendor
+# warns about.
+for extra in "$HOME/.local/bin" /usr/local/bin; do
+  case ":$PATH:" in *":$extra:"*) ;; *) [ -d "$extra" ] && PATH="$PATH:$extra" ;; esac
+done
+export PATH
+
+# The sql extra is not optional for this repository. Without tree_sitter_sql
+# the extractor silently drops every migration — which is where the row-level
+# security policies and the wallet ledger live, so a graph built without it is
+# missing the half worth asking questions about. Requesting it here rather than
+# leaving it to whoever next rebuilds is the difference between a rebuild that
+# matches the committed graph and one that quietly shrinks it.
+#
+# uv first because it isolates the package in its own environment, which is
+# what the vendor recommends and what keeps the skill's runtime Python
+# resolution from finding a different interpreter than the one it installed
+# into. pipx is the same idea; plain pip is the fallback that has that failure
+# mode, and is better than nothing.
+#
+# Run unconditionally: all three are idempotent and cost well under a second
+# once the package is cached, and they are the only way to add the extra to a
+# graphify that an earlier session installed without it.
+installed=""
+for mgr in uv pipx pip3; do
+  command -v "$mgr" >/dev/null 2>&1 || continue
+  case "$mgr" in
+    uv)   uv tool install "graphifyy[sql]" >/dev/null 2>&1 && installed="$mgr" ;;
+    pipx) pipx install "graphifyy[sql]"    >/dev/null 2>&1 && installed="$mgr" ;;
+    pip3) pip3 install --user --break-system-packages "graphifyy[sql]" >/dev/null 2>&1 && installed="$mgr" ;;
+  esac
+  [ -n "$installed" ] && break
+done
+
 graphify_bin=""
 if command -v graphify >/dev/null 2>&1; then
   graphify_bin="$(dirname "$(command -v graphify)")"
-  note "graphify $(graphify --version 2>/dev/null | awk '{print $2}') already installed."
 else
-  # uv first because it isolates the package in its own environment, which is
-  # what the vendor recommends and what keeps the skill's runtime Python
-  # resolution from finding a different interpreter than the one it installed
-  # into. pipx is the same idea; plain pip is the fallback that has that
-  # failure mode, and is better than nothing.
-  # uv and pipx install themselves into ~/.local/bin, which a non-login shell
-  # often does not have on PATH — so look there as well as asking the shell,
-  # or a container with uv falls through to pip and gets the failure mode the
-  # vendor warns about.
-  for extra in "$HOME/.local/bin" /usr/local/bin; do
-    case ":$PATH:" in *":$extra:"*) ;; *) [ -d "$extra" ] && PATH="$PATH:$extra" ;; esac
-  done
-  export PATH
-
-  installed=""
-  for mgr in uv pipx pip3; do
-    command -v "$mgr" >/dev/null 2>&1 || continue
-    case "$mgr" in
-      uv)   uv tool install graphifyy >/dev/null 2>&1 && installed="$mgr" ;;
-      pipx) pipx install graphifyy    >/dev/null 2>&1 && installed="$mgr" ;;
-      pip3) pip3 install --user --break-system-packages graphifyy >/dev/null 2>&1 && installed="$mgr" ;;
-    esac
-    [ -n "$installed" ] && break
-  done
-
   # uv and pipx both drop their shims in ~/.local/bin, which is not always on
   # a non-login shell's PATH.
   for candidate in "$HOME/.local/bin" /usr/local/bin; do
     if [ -x "$candidate/graphify" ]; then graphify_bin="$candidate"; break; fi
   done
-
-  if [ -n "$graphify_bin" ]; then
-    note "graphify installed via $installed."
-  else
-    note "graphify is unavailable here; its PreToolUse guards stay dormant."
-  fi
 fi
-[ -n "$graphify_bin" ] && export PATH="$PATH:$graphify_bin"
+
+if [ -n "$graphify_bin" ]; then
+  export PATH="$PATH:$graphify_bin"
+  note "graphify $(graphify --version 2>/dev/null | awk '{print $2}') ready${installed:+ (via $installed)}."
+else
+  note "graphify is unavailable here; its PreToolUse guards stay dormant."
+fi
 
 # ----------------------------------------------------------- the session ----
 # The exports the gates need, written where wait-for-tools.sh can hand them to
