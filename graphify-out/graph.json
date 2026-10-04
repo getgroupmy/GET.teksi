@@ -28904,7 +28904,7 @@
       "file_type": "code",
       "norm_label": "_line",
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L330"
+      "source_location": "L345"
     },
     {
       "id": "lib_widgets_driver_order_feed_sheet_ordercard",
@@ -31331,7 +31331,7 @@
       "file_type": "code",
       "norm_label": "bold",
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L341"
+      "source_location": "L356"
     },
     {
       "id": "lib_screens_shared_ride_detail_screen_build",
@@ -31353,7 +31353,7 @@
       "file_type": "code",
       "norm_label": "label",
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L338"
+      "source_location": "L353"
     },
     {
       "id": "lib_screens_shared_ride_detail_screen_muted",
@@ -31364,7 +31364,7 @@
       "file_type": "code",
       "norm_label": "muted",
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L340"
+      "source_location": "L355"
     },
     {
       "id": "lib_screens_shared_ride_detail_screen_ridedetailscreen",
@@ -31397,7 +31397,7 @@
       "file_type": "code",
       "norm_label": "value",
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L339"
+      "source_location": "L354"
     },
     {
       "id": "lib_screens_shared_settings_screen",
@@ -78437,7 +78437,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L331",
+      "source_location": "L346",
       "weight": 1.0
     },
     {
@@ -78448,7 +78448,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L338",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -78459,7 +78459,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L339",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -78470,7 +78470,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L340",
+      "source_location": "L355",
       "weight": 1.0
     },
     {
@@ -78481,7 +78481,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L341",
+      "source_location": "L356",
       "weight": 1.0
     },
     {
@@ -78492,7 +78492,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L344",
+      "source_location": "L359",
       "weight": 1.0
     },
     {
@@ -94343,7 +94343,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/screens/shared/ride_detail_screen.dart",
-      "source_location": "L330",
+      "source_location": "L345",
       "weight": 1.0
     },
     {
@@ -96875,5 +96875,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2d75c8f448300d0c5d94af2da1347f4b65625468"
+  "built_at_commit": "297fe638aaf9ff1f80dd7b3fdb6a1cf863e60a7d"
 }

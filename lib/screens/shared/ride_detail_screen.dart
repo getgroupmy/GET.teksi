@@ -84,11 +84,26 @@ class RideDetailScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
-                      child: Text(
-                        money(asDriver ? net : ride.fare),
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
+                      // A price must not wrap. Expanded stops it overflowing,
+                      // but on its own it let "RM18.50" break between the 5
+                      // and the 0 at a large text size — which reads as a
+                      // different number rather than as a clipped one, and is
+                      // the one failure worse than running off the edge.
+                      // scaleDown keeps it on one line, shrinking only when it
+                      // genuinely cannot fit.
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            money(asDriver ? net : ride.fare),
+                            maxLines: 1,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
                         ),
                       ),
                     ),

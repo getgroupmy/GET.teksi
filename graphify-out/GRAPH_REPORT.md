@@ -1,7 +1,7 @@
 # Graph Report - GET.teksi  (2026-10-04)
 
 ## Corpus Check
-- 148 files · ~267,875 words
+- 148 files · ~268,118 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 68 file(s) not represented in the graph (top: .csv 35, .xml 7, (none) 5)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2d75c8f4`
+- Built from commit: `297fe638`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
