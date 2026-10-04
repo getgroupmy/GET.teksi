@@ -817,5 +817,47 @@ end $$;
 
 set role authenticated;
 
+-- ---------------------------------------------------------------------------
+\echo ''
+\echo '== push dispatch =='
+--
+-- Everything above this point inserted offers and moved rides through their
+-- states, so the triggers added in 20260822170000 have already fired many
+-- times without raising — which is most of what matters, because this runs
+-- inside the transaction that is changing the ride.
+--
+-- But a trigger that was never attached looks exactly the same from here.
+-- These say which is true.
+-- ---------------------------------------------------------------------------
+
+reset role;
+do $$ begin
+  perform test.eq(
+    (select count(*)::int from pg_trigger
+      where tgrelid = 'public.offers'::regclass and tgname = 'offers_push_passenger'),
+    1, 'a new bid notifies the passenger');
+
+  perform test.eq(
+    (select count(*)::int from pg_trigger
+      where tgrelid = 'public.rides'::regclass and tgname = 'rides_push_status'),
+    1, 'a ride changing state notifies the other side');
+
+  -- The guard. No pg_net and no vault here, which is the situation on any
+  -- plain PostgreSQL, and the dispatcher has to return rather than raise:
+  -- it is called from inside the transaction that is changing the ride, so
+  -- an exception would roll back the ride itself.
+  perform private.send_push(
+    '11111111-1111-4111-8111-111111111111'::uuid, 'T', 'B');
+  perform test.eq(true, true,
+    'send_push returns quietly when there is nowhere to send');
+
+  -- And that it is not reachable from a client.
+  perform test.eq(
+    has_function_privilege('authenticated',
+      'private.send_push(uuid, text, text, text, text)', 'EXECUTE'),
+    false, 'a signed-in user cannot make the server send notifications');
+end $$;
+set role authenticated;
+
 \echo ''
 \echo 'ALL POLICY TESTS PASSED'
