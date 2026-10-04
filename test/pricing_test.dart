@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math' as math;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_teksi/core/formats.dart';
 import 'package:get_teksi/models/models.dart';
@@ -114,26 +117,93 @@ void main() {
       expect(driverNet(10000) / 10000, greaterThan(0.9));
     });
 
-    test('agrees with the database, fare for fare', () {
-      // The server settles rides with private.driver_net() and the app shows
-      // the driver what they will earn. If those two ever disagree, a driver
-      // is quoted one number and paid another — so the same worked examples
-      // are pinned on both sides. supabase/tests/policies.sql asserts this
-      // exact list against the SQL implementation.
-      const expected = {
-        500: 451,
-        1005: 906,
-        1234: 1112,
-        1900: 1712,
-        4700: 4235,
-        99999: 90099,
-      };
-      expected.forEach((fare, net) {
+    /// The fee has to mean the same thing in Dart and in SQL, or a driver is
+    /// shown one number and paid another.
+    ///
+    /// This used to be a list of six worked examples, hand-copied into
+    /// supabase/tests/policies.sql. Two lists is not a cross-check: each
+    /// suite only ever compared its own implementation to its own literals,
+    /// so changing `commissionRate` here and updating this list left the SQL
+    /// side untouched, still passing, and quietly paying a different number
+    /// from the one the app quotes. The guard against that was a comment
+    /// asking you to remember.
+    ///
+    /// These read the SQL instead.
+    group('agrees with the database', () {
+      final ledger = File(
+        'supabase/migrations/20260820140000_wallet_ledger.sql',
+      ).readAsStringSync();
+
+      /// The rate out of `private.driver_net`, as written.
+      final sqlRate = RegExp(r'p_fare\s*\*\s*(\d+\.\d+)::numeric')
+          .firstMatch(ledger)
+          ?.group(1);
+
+      test('the rate in the migration is the rate in pricing.dart', () {
         expect(
-          driverNet(fare),
-          net,
+          sqlRate,
+          isNotNull,
           reason:
-              'driverNet($fare) must match private.driver_net($fare) in SQL',
+              'could not find `p_fare * <rate>::numeric` in the wallet ledger '
+              'migration. If driver_net was rewritten, this check has stopped '
+              'checking and needs rewriting with it.',
+        );
+        expect(
+          double.parse(sqlRate!),
+          1 - commissionRate,
+          reason:
+              'private.driver_net() pays $sqlRate of the fare and '
+              'pricing.dart quotes ${1 - commissionRate}. Whichever is wrong, '
+              'a driver is shown one number and paid another.',
+        );
+      });
+
+      /// Equal rates are not enough on their own. Dart multiplies in binary
+      /// floating point and Postgres in exact decimal, so the two can round
+      /// apart on a half-sen tie even when the rate matches. This does the
+      /// SQL's arithmetic in integers — exact, half away from zero, the way
+      /// `round(numeric)` does it — and holds Dart to it.
+      test('rounds the same way as Postgres, fare by fare', () {
+        final digits = sqlRate!.split('.')[1];
+        final numerator = int.parse(sqlRate.replaceAll('.', ''));
+        final scale = math.pow(10, digits.length).toInt();
+
+        final disagreements = <String>[];
+        for (var fare = 0; fare <= 200000; fare++) {
+          final exact = (fare * numerator + scale ~/ 2) ~/ scale;
+          if (driverNet(fare) != exact) {
+            disagreements.add(
+              'fare $fare: Dart ${driverNet(fare)}, SQL $exact',
+            );
+            if (disagreements.length == 10) break;
+          }
+        }
+        expect(
+          disagreements,
+          isEmpty,
+          reason:
+              'driverNet() and private.driver_net() disagree on these fares. '
+              'Dart multiplies in binary floating point, Postgres in exact '
+              'decimal, so they can round apart on a half-sen tie:\n'
+              '${disagreements.join('\n')}',
+        );
+      });
+
+      /// And that the sweep above is not vacuous: the same loop, run against
+      /// a rate one sen in the pound away from the real one, has to find
+      /// disagreements. Otherwise a mistake in the arithmetic here reads as
+      /// two implementations in perfect agreement.
+      test('the sweep can tell a wrong rate from a right one', () {
+        var found = 0;
+        for (var fare = 1; fare <= 200000 && found == 0; fare++) {
+          if (driverNet(fare) != (fare * 902 + 500) ~/ 1000) found++;
+        }
+        expect(
+          found,
+          greaterThan(0),
+          reason:
+              'a deliberately wrong rate produced no disagreement, so the '
+              'sweep above is not comparing anything',
         );
       });
     });

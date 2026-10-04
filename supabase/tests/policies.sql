@@ -562,8 +562,17 @@ begin
 end $$;
 
 -- The fee has to mean the same thing in Dart and in SQL, or a driver is shown
--- one number and paid another. These are the values lib/services/pricing.dart
--- produces; test/pricing_test.dart pins the same list from the other side.
+-- one number and paid another.
+--
+-- These pin the SQL side on its own: that driver_net() still returns what it
+-- is supposed to for a handful of fares, including the half-sen tie at 1005.
+-- They are NOT the cross-check, and this list being equal to one in Dart is
+-- not what makes the two agree — two hand-copied lists never were a
+-- cross-check, because each suite only ever compared its own implementation
+-- to its own literals. test/pricing_test.dart does the real comparison: it
+-- reads the rate straight out of the wallet-ledger migration, asserts it
+-- against commissionRate, and sweeps 200k fares against this function's exact
+-- decimal arithmetic. Change the rate on either side and that test fails.
 do $$ begin
   perform test.eq(private.driver_net(500),   451,   'driver_net(500) matches Dart');
   perform test.eq(private.driver_net(1005),  906,   'driver_net(1005) matches Dart');
