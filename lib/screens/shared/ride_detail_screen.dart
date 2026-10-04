@@ -107,10 +107,19 @@ class RideDetailScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(
-                      '${dateLabel(l, ride.completedAt ?? ride.createdAt)} · '
-                      '${clockTime(ride.completedAt ?? ride.createdAt)}',
-                      style: TextStyle(fontSize: 13, color: c.textDim),
+                    const SizedBox(width: 12),
+                    // Flexible, and it took Malay to notice. "Today" is
+                    // "Hari ini" — 60% longer before the clock time is even
+                    // added — and at 2.0x this row ran 59 pixels off the
+                    // right. The fare beside it was flexed long ago; this
+                    // side was left bare, and English never made it show.
+                    Flexible(
+                      child: Text(
+                        '${dateLabel(l, ride.completedAt ?? ride.createdAt)} · '
+                        '${clockTime(ride.completedAt ?? ride.createdAt)}',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(fontSize: 13, color: c.textDim),
+                      ),
                     ),
                   ],
                 ),
