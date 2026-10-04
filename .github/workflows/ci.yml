@@ -172,6 +172,35 @@ jobs:
       - name: Build App Bundle
         run: flutter build appbundle --release
 
+      # Those two builds just signed themselves with the debug key, because no
+      # upload key is configured here and this job has no business holding one.
+      # That fallback is deliberate (android/app/build.gradle.kts says why) and
+      # it is also how a debug-signed artifact could reach a store: it installs,
+      # runs, and passes every other check in this file. `-PrequireUploadKey`
+      # is what turns the fallback into a hard error for a build meant to ship,
+      # and release-android.yml relies on it — so assert here that it works,
+      # where a regression costs thirty seconds to find rather than a store
+      # rejection.
+      #
+      # Runs after the builds above so local.properties and the Gradle caches
+      # already exist; a bare gradlew in a fresh checkout fails for unrelated
+      # reasons.
+      - name: Assert a release build can be made to demand the upload key
+        working-directory: android
+        run: |
+          if ./gradlew --quiet -PrequireUploadKey=true :app:signingReport >/tmp/require.log 2>&1; then
+            echo "::error::-PrequireUploadKey=true configured fine with no upload key present — the guard in android/app/build.gradle.kts is not working."
+            exit 1
+          fi
+          # Without this, *any* Gradle failure would satisfy the check above
+          # and it would pass while testing nothing at all.
+          if ! grep -q 'upload key was demanded but is incomplete' /tmp/require.log; then
+            echo "::error::Gradle failed, but not with the guard's message — so this check is not testing what it claims to."
+            tail -40 /tmp/require.log
+            exit 1
+          fi
+          echo "✅ -PrequireUploadKey=true refuses to fall back to the debug key."
+
       # Huawei devices ship without Google Play Services. This app is only
       # installable there because nothing in the dependency graph touches GMS,
       # so that property is asserted on every build rather than trusted.

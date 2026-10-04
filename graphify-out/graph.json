@@ -578,6 +578,18 @@
       "source_location": "L999"
     },
     {
+      "id": "android_app_build_gradle_signingvalue",
+      "label": "signingValue()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 109,
+      "community_name": "app/build.gradle.kts",
+      "file_type": "code",
+      "norm_label": "signingvalue()",
+      "source_file": "android/app/build.gradle.kts",
+      "source_location": "L40"
+    },
+    {
       "id": "ios_runner_appdelegate_appbridge_register",
       "label": ".register()",
       "_callable": true,
@@ -13639,6 +13651,17 @@
       "source_location": "L35"
     },
     {
+      "id": "dutyservice",
+      "label": "DutyService",
+      "_origin": "ast",
+      "community": 107,
+      "community_name": "duty.dart",
+      "file_type": "code",
+      "norm_label": "dutyservice",
+      "source_file": null,
+      "source_location": null
+    },
+    {
       "id": "lib_core_duty",
       "label": "duty.dart",
       "_origin": "ast",
@@ -13648,6 +13671,17 @@
       "norm_label": "duty.dart",
       "source_file": "lib/core/duty.dart",
       "source_location": null
+    },
+    {
+      "id": "lib_core_duty_androiddutyservice",
+      "label": "AndroidDutyService",
+      "_origin": "ast",
+      "community": 107,
+      "community_name": "duty.dart",
+      "file_type": "code",
+      "norm_label": "androiddutyservice",
+      "source_file": "lib/core/duty.dart",
+      "source_location": "L53"
     },
     {
       "id": "lib_core_duty_channel",
@@ -13683,6 +13717,17 @@
       "source_location": "L25"
     },
     {
+      "id": "lib_core_duty_nodutyservice",
+      "label": "NoDutyService",
+      "_origin": "ast",
+      "community": 107,
+      "community_name": "duty.dart",
+      "file_type": "code",
+      "norm_label": "nodutyservice",
+      "source_file": "lib/core/duty.dart",
+      "source_location": "L41"
+    },
+    {
       "id": "lib_core_duty_start",
       "label": "start",
       "_origin": "ast",
@@ -13716,15 +13761,15 @@
       "source_location": null
     },
     {
-      "id": "static_const",
-      "label": "static const",
+      "id": "test_duty_presence_test_recordingduty",
+      "label": "_RecordingDuty",
       "_origin": "ast",
       "community": 107,
       "community_name": "duty.dart",
       "file_type": "code",
-      "norm_label": "static const",
-      "source_file": null,
-      "source_location": null
+      "norm_label": "_recordingduty",
+      "source_file": "test/duty_presence_test.dart",
+      "source_location": "L29"
     },
     {
       "id": "supabase_tests_run",
@@ -14340,48 +14385,147 @@
       "source_location": "L54"
     },
     {
-      "id": "dutyservice",
-      "label": "DutyService",
+      "id": "lib_core_notifier",
+      "label": "notifier.dart",
       "_origin": "ast",
       "community": 114,
-      "community_name": "DutyService",
+      "community_name": "notifier.dart",
       "file_type": "code",
-      "norm_label": "dutyservice",
+      "norm_label": "notifier.dart",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": null
+    },
+    {
+      "id": "lib_core_notifier_createnotifier",
+      "label": "createNotifier",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "createnotifier",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L102"
+    },
+    {
+      "id": "lib_core_notifier_device_devicenotifier",
+      "label": "_DeviceNotifier",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "_devicenotifier",
+      "source_file": "lib/core/notifier_device.dart",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_core_notifier_notificationpermission",
+      "label": "NotificationPermission",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "notificationpermission",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_core_notifier_notifier",
+      "label": "Notifier",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "notifier",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_core_notifier_opensettings",
+      "label": "openSettings",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "opensettings",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_core_notifier_readyafterinitialize",
+      "label": "readyAfterInitialize",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "readyafterinitialize",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_core_notifier_requestpermission",
+      "label": "requestPermission",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "requestpermission",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_core_notifier_show",
+      "label": "show",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "show",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L55"
+    },
+    {
+      "id": "lib_core_notifier_silentnotifier",
+      "label": "SilentNotifier",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "silentnotifier",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L64"
+    },
+    {
+      "id": "lib_core_notifier_status",
+      "label": "status",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "status",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L44"
+    },
+    {
+      "id": "notifier_device_dart",
+      "label": "notifier_device.dart",
+      "_origin": "ast",
+      "community": 114,
+      "community_name": "notifier.dart",
+      "file_type": "code",
+      "norm_label": "notifier_device.dart",
       "source_file": null,
       "source_location": null
     },
     {
-      "id": "lib_core_duty_androiddutyservice",
-      "label": "AndroidDutyService",
+      "id": "test_notification_setting_row_test_fakenotifier",
+      "label": "_FakeNotifier",
       "_origin": "ast",
       "community": 114,
-      "community_name": "DutyService",
+      "community_name": "notifier.dart",
       "file_type": "code",
-      "norm_label": "androiddutyservice",
-      "source_file": "lib/core/duty.dart",
-      "source_location": "L53"
-    },
-    {
-      "id": "lib_core_duty_nodutyservice",
-      "label": "NoDutyService",
-      "_origin": "ast",
-      "community": 114,
-      "community_name": "DutyService",
-      "file_type": "code",
-      "norm_label": "nodutyservice",
-      "source_file": "lib/core/duty.dart",
-      "source_location": "L41"
-    },
-    {
-      "id": "test_duty_presence_test_recordingduty",
-      "label": "_RecordingDuty",
-      "_origin": "ast",
-      "community": 114,
-      "community_name": "DutyService",
-      "file_type": "code",
-      "norm_label": "_recordingduty",
-      "source_file": "test/duty_presence_test.dart",
-      "source_location": "L29"
+      "norm_label": "_fakenotifier",
+      "source_file": "test/notification_setting_row_test.dart",
+      "source_location": "L23"
     },
     {
       "id": "supabase_migrations_20260821050000_guard_profile_columns",
@@ -14494,26 +14638,112 @@
       "source_location": "L12"
     },
     {
-      "id": "lib_l10n_labels_pricetonelabel",
-      "label": "PriceToneLabel",
+      "id": "docs_releasing_android",
+      "label": "Android",
       "_origin": "ast",
       "community": 118,
-      "community_name": "PriceToneLabel",
-      "file_type": "code",
-      "norm_label": "pricetonelabel",
-      "source_file": "lib/l10n/labels.dart",
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "android",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L117"
+    },
+    {
+      "id": "docs_releasing_building_by_hand",
+      "label": "Building by hand",
+      "_origin": "ast",
+      "community": 118,
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "building by hand",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L189"
+    },
+    {
+      "id": "docs_releasing_publishing",
+      "label": "Publishing",
+      "_origin": "ast",
+      "community": 118,
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "publishing",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L228"
+    },
+    {
+      "id": "docs_releasing_releasing",
+      "label": "Releasing",
+      "_origin": "ast",
+      "community": 118,
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "releasing",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_releasing_running_the_workflow",
+      "label": "Running the workflow",
+      "_origin": "ast",
+      "community": 118,
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "running the workflow",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L210"
+    },
+    {
+      "id": "docs_releasing_status_119",
+      "label": "Status",
+      "_origin": "ast",
+      "community": 118,
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "status",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L119"
+    },
+    {
+      "id": "docs_releasing_the_four_secrets",
+      "label": "The four secrets",
+      "_origin": "ast",
+      "community": 118,
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the four secrets",
+      "source_file": "docs/RELEASING.md",
       "source_location": "L168"
     },
     {
-      "id": "lib_services_pricing_pricetone",
-      "label": "PriceTone",
+      "id": "docs_releasing_what_ci_already_guarantees",
+      "label": "What CI already guarantees",
       "_origin": "ast",
       "community": 118,
-      "community_name": "PriceToneLabel",
-      "file_type": "code",
-      "norm_label": "pricetone",
-      "source_file": "lib/services/pricing.dart",
-      "source_location": "L74"
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "what ci already guarantees",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L243"
+    },
+    {
+      "id": "docs_releasing_what_you_have_to_do_by_hand_once_144",
+      "label": "What you have to do by hand, once",
+      "_origin": "ast",
+      "community": 118,
+      "community_name": "Android",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "what you have to do by hand, once",
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L144"
     },
     {
       "id": "public_chat_messages",
@@ -15009,6 +15239,87 @@
       "norm_label": "20260820130000_schedule_offer_sweep.sql",
       "source_file": "supabase/migrations/20260820130000_schedule_offer_sweep.sql",
       "source_location": null
+    },
+    {
+      "id": "supabase_readme_the_one_rule",
+      "label": "The one rule",
+      "_origin": "ast",
+      "community": 122,
+      "community_name": "The one rule",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "the one rule",
+      "source_file": "supabase/README.md",
+      "source_location": "L27"
+    },
+    {
+      "id": "supabase_readme_why_accept_offer_is_a_function",
+      "label": "Why `accept_offer` is a function",
+      "_origin": "ast",
+      "community": 122,
+      "community_name": "The one rule",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "why `accept_offer` is a function",
+      "source_file": "supabase/README.md",
+      "source_location": "L120"
+    },
+    {
+      "id": "supabase_readme_why_the_helpers_live_in_private",
+      "label": "Why the helpers live in `private`",
+      "_origin": "ast",
+      "community": 122,
+      "community_name": "The one rule",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "why the helpers live in `private`",
+      "source_file": "supabase/README.md",
+      "source_location": "L65"
+    },
+    {
+      "id": "supabase_readme_why_the_wallet_is_append_only",
+      "label": "Why the wallet is append-only",
+      "_origin": "ast",
+      "community": 122,
+      "community_name": "The one rule",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "why the wallet is append-only",
+      "source_file": "supabase/README.md",
+      "source_location": "L91"
+    },
+    {
+      "id": "lib_core_bus_localtransport",
+      "label": "LocalTransport",
+      "_origin": "ast",
+      "community": 123,
+      "community_name": "RealtimeTransport",
+      "file_type": "code",
+      "norm_label": "localtransport",
+      "source_file": "lib/core/bus.dart",
+      "source_location": "L95"
+    },
+    {
+      "id": "lib_core_bus_realtimetransport",
+      "label": "RealtimeTransport",
+      "_origin": "ast",
+      "community": 123,
+      "community_name": "RealtimeTransport",
+      "file_type": "code",
+      "norm_label": "realtimetransport",
+      "source_file": "lib/core/bus.dart",
+      "source_location": "L85"
+    },
+    {
+      "id": "lib_core_supabase_transport_supabasetransport",
+      "label": "SupabaseTransport",
+      "_origin": "ast",
+      "community": 123,
+      "community_name": "RealtimeTransport",
+      "file_type": "code",
+      "norm_label": "supabasetransport",
+      "source_file": "lib/core/supabase_transport.dart",
+      "source_location": "L28"
     },
     {
       "id": "any",
@@ -17128,17 +17439,6 @@
       "source_location": "L61"
     },
     {
-      "id": "lib_core_bus_localtransport",
-      "label": "LocalTransport",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "bus.dart",
-      "file_type": "code",
-      "norm_label": "localtransport",
-      "source_file": "lib/core/bus.dart",
-      "source_location": "L95"
-    },
-    {
       "id": "lib_core_bus_message",
       "label": "message",
       "_origin": "ast",
@@ -17192,17 +17492,6 @@
       "norm_label": "publish",
       "source_file": "lib/core/bus.dart",
       "source_location": "L90"
-    },
-    {
-      "id": "lib_core_bus_realtimetransport",
-      "label": "RealtimeTransport",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "bus.dart",
-      "file_type": "code",
-      "norm_label": "realtimetransport",
-      "source_file": "lib/core/bus.dart",
-      "source_location": "L85"
     },
     {
       "id": "lib_core_bus_reason",
@@ -17280,17 +17569,6 @@
       "norm_label": "settransport",
       "source_file": "lib/core/bus.dart",
       "source_location": "L126"
-    },
-    {
-      "id": "lib_core_supabase_transport_supabasetransport",
-      "label": "SupabaseTransport",
-      "_origin": "ast",
-      "community": 18,
-      "community_name": "bus.dart",
-      "file_type": "code",
-      "norm_label": "supabasetransport",
-      "source_file": "lib/core/supabase_transport.dart",
-      "source_location": "L28"
     },
     {
       "id": "lib_models_models_cancelledby",
@@ -26225,39 +26503,6 @@
       "source_location": null
     },
     {
-      "id": "package_get_teksi_core_location_dart",
-      "label": "package:get_teksi/core/location.dart",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/core/location.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_core_storage_dart",
-      "label": "package:get_teksi/core/storage.dart",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/core/storage.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_data_places_dart",
-      "label": "package:get_teksi/data/places.dart",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/data/places.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "package_get_teksi_state_rides_dart",
       "label": "package:get_teksi/state/rides.dart",
       "_origin": "ast",
@@ -26276,17 +26521,6 @@
       "community_name": "notifier_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/state/session.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_shared_preferences_shared_preferences_dart",
-      "label": "package:shared_preferences/shared_preferences.dart",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "package:shared_preferences/shared_preferences.dart",
       "source_file": null,
       "source_location": null
     },
@@ -26366,61 +26600,6 @@
       "norm_label": "session",
       "source_file": "test/backlog_test.dart",
       "source_location": "L19"
-    },
-    {
-      "id": "test_location_test",
-      "label": "location_test.dart",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "location_test.dart",
-      "source_file": "test/location_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_location_test_answerwith",
-      "label": "answerWith",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "answerwith",
-      "source_file": "test/location_test.dart",
-      "source_location": "L31"
-    },
-    {
-      "id": "test_location_test_channel",
-      "label": "_channel",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "_channel",
-      "source_file": "test/location_test.dart",
-      "source_location": "L21"
-    },
-    {
-      "id": "test_location_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/location_test.dart",
-      "source_location": "L23"
-    },
-    {
-      "id": "test_location_test_messenger",
-      "label": "messenger",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "messenger",
-      "source_file": "test/location_test.dart",
-      "source_location": "L26"
     },
     {
       "id": "test_notifications_test",
@@ -28143,18 +28322,84 @@
       "label": "Exception",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "exception",
       "source_file": null,
       "source_location": null
     },
     {
+      "id": "lib_core_location_channel",
+      "label": "location_channel.dart",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "location_channel.dart",
+      "source_file": "lib/core/location_channel.dart",
+      "source_location": null
+    },
+    {
+      "id": "lib_core_location_channel_channel",
+      "label": "_channel",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "_channel",
+      "source_file": "lib/core/location_channel.dart",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_core_location_channel_fix",
+      "label": "fix",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "fix",
+      "source_file": "lib/core/location_channel.dart",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_core_location_channel_lat",
+      "label": "lat",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "lat",
+      "source_file": "lib/core/location_channel.dart",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_core_location_channel_lng",
+      "label": "lng",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "lng",
+      "source_file": "lib/core/location_channel.dart",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_core_location_channel_readdevicelocation",
+      "label": "readDeviceLocation",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "readdevicelocation",
+      "source_file": "lib/core/location_channel.dart",
+      "source_location": "L17"
+    },
+    {
       "id": "package_get_teksi_core_geocoding_dart",
       "label": "package:get_teksi/core/geocoding.dart",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/core/geocoding.dart",
       "source_file": null,
@@ -28165,20 +28410,9 @@
       "label": "package:get_teksi/core/routing.dart",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/core/routing.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_models_models_dart",
-      "label": "package:get_teksi/models/models.dart",
-      "_origin": "ast",
-      "community": 31,
-      "community_name": "routing_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/models/models.dart",
       "source_file": null,
       "source_location": null
     },
@@ -28187,7 +28421,7 @@
       "label": "package:get_teksi/state/draft.dart",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/state/draft.dart",
       "source_file": null,
@@ -28198,7 +28432,7 @@
       "label": "package:http/http.dart",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "package:http/http.dart",
       "source_file": null,
@@ -28209,9 +28443,20 @@
       "label": "package:http/testing.dart",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "package:http/testing.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_latlong2_latlong_dart",
+      "label": "package:latlong2/latlong.dart",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "package:latlong2/latlong.dart",
       "source_file": null,
       "source_location": null
     },
@@ -28220,7 +28465,7 @@
       "label": "geocoding_test.dart",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "geocoding_test.dart",
       "source_file": "test/geocoding_test.dart",
@@ -28231,7 +28476,7 @@
       "label": "_hit",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_hit",
       "source_file": "test/geocoding_test.dart",
@@ -28242,7 +28487,7 @@
       "label": "_kl",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_kl",
       "source_file": "test/geocoding_test.dart",
@@ -28253,7 +28498,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "test/geocoding_test.dart",
@@ -28264,7 +28509,7 @@
       "label": "search",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "search",
       "source_file": "test/geocoding_test.dart",
@@ -28275,7 +28520,7 @@
       "label": "_searchReturning",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_searchreturning",
       "source_file": "test/geocoding_test.dart",
@@ -28286,7 +28531,7 @@
       "label": "SocketExceptionLike",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "socketexceptionlike",
       "source_file": "test/geocoding_test.dart",
@@ -28297,7 +28542,7 @@
       "label": "status",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "status",
       "source_file": "test/geocoding_test.dart",
@@ -28308,7 +28553,7 @@
       "label": "routing_test.dart",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "routing_test.dart",
       "source_file": "test/routing_test.dart",
@@ -28319,7 +28564,7 @@
       "label": "_dropoff",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_dropoff",
       "source_file": "test/routing_test.dart",
@@ -28330,7 +28575,7 @@
       "label": "_geometry",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_geometry",
       "source_file": "test/routing_test.dart",
@@ -28341,7 +28586,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "test/routing_test.dart",
@@ -28352,7 +28597,7 @@
       "label": "_okResponse",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_okresponse",
       "source_file": "test/routing_test.dart",
@@ -28363,7 +28608,7 @@
       "label": "_osrm",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_osrm",
       "source_file": "test/routing_test.dart",
@@ -28374,7 +28619,7 @@
       "label": "_pickup",
       "_origin": "ast",
       "community": 31,
-      "community_name": "routing_test.dart",
+      "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
       "norm_label": "_pickup",
       "source_file": "test/routing_test.dart",
@@ -31006,6 +31251,39 @@
       "source_location": null
     },
     {
+      "id": "package_get_teksi_core_formats_dart",
+      "label": "package:get_teksi/core/formats.dart",
+      "_origin": "ast",
+      "community": 40,
+      "community_name": "marketplace_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/core/formats.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_models_models_dart",
+      "label": "package:get_teksi/models/models.dart",
+      "_origin": "ast",
+      "community": 40,
+      "community_name": "marketplace_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/models/models.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_services_pricing_dart",
+      "label": "package:get_teksi/services/pricing.dart",
+      "_origin": "ast",
+      "community": 40,
+      "community_name": "marketplace_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/services/pricing.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
       "id": "required_int_price_duration",
       "label": "required int price,\n  Duration",
       "_origin": "ast",
@@ -31180,6 +31458,28 @@
       "norm_label": "ttl",
       "source_file": "test/marketplace_test.dart",
       "source_location": "L66"
+    },
+    {
+      "id": "test_pricing_test",
+      "label": "pricing_test.dart",
+      "_origin": "ast",
+      "community": 40,
+      "community_name": "marketplace_test.dart",
+      "file_type": "code",
+      "norm_label": "pricing_test.dart",
+      "source_file": "test/pricing_test.dart",
+      "source_location": null
+    },
+    {
+      "id": "test_pricing_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 40,
+      "community_name": "marketplace_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/pricing_test.dart",
+      "source_location": "L6"
     },
     {
       "id": "lib_core_storage",
@@ -31545,13 +31845,35 @@
       "source_location": "L26"
     },
     {
-      "id": "list",
-      "label": "List",
+      "id": "package_get_teksi_core_location_dart",
+      "label": "package:get_teksi/core/location.dart",
       "_origin": "ast",
       "community": 43,
       "community_name": "profile_sync_test.dart",
       "file_type": "code",
-      "norm_label": "list",
+      "norm_label": "package:get_teksi/core/location.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_core_storage_dart",
+      "label": "package:get_teksi/core/storage.dart",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/core/storage.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_data_places_dart",
+      "label": "package:get_teksi/data/places.dart",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/data/places.dart",
       "source_file": null,
       "source_location": null
     },
@@ -31565,6 +31887,72 @@
       "norm_label": "package:get_teksi/services/profile_sync.dart",
       "source_file": null,
       "source_location": null
+    },
+    {
+      "id": "package_shared_preferences_shared_preferences_dart",
+      "label": "package:shared_preferences/shared_preferences.dart",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "package:shared_preferences/shared_preferences.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "test_location_test",
+      "label": "location_test.dart",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "location_test.dart",
+      "source_file": "test/location_test.dart",
+      "source_location": null
+    },
+    {
+      "id": "test_location_test_answerwith",
+      "label": "answerWith",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "answerwith",
+      "source_file": "test/location_test.dart",
+      "source_location": "L31"
+    },
+    {
+      "id": "test_location_test_channel",
+      "label": "_channel",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "_channel",
+      "source_file": "test/location_test.dart",
+      "source_location": "L21"
+    },
+    {
+      "id": "test_location_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/location_test.dart",
+      "source_location": "L23"
+    },
+    {
+      "id": "test_location_test_messenger",
+      "label": "messenger",
+      "_origin": "ast",
+      "community": 43,
+      "community_name": "profile_sync_test.dart",
+      "file_type": "code",
+      "norm_label": "messenger",
+      "source_file": "test/location_test.dart",
+      "source_location": "L26"
     },
     {
       "id": "test_profile_sync_test",
@@ -32195,39 +32583,6 @@
       "source_location": "L313"
     },
     {
-      "id": "core_notifier_dart",
-      "label": "../core/notifier.dart",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "../core/notifier.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "lib_core_notifier",
-      "label": "notifier.dart",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "notifier.dart",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": null
-    },
-    {
-      "id": "lib_core_notifier_createnotifier",
-      "label": "createNotifier",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "createnotifier",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L102"
-    },
-    {
       "id": "lib_core_notifier_device",
       "label": "notifier_device.dart",
       "_origin": "ast",
@@ -32292,17 +32647,6 @@
       "norm_label": "_channelname",
       "source_file": "lib/core/notifier_device.dart",
       "source_location": "L17"
-    },
-    {
-      "id": "lib_core_notifier_device_devicenotifier",
-      "label": "_DeviceNotifier",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "_devicenotifier",
-      "source_file": "lib/core/notifier_device.dart",
-      "source_location": "L28"
     },
     {
       "id": "lib_core_notifier_device_ensureready",
@@ -32382,226 +32726,6 @@
       "source_location": "L114"
     },
     {
-      "id": "lib_core_notifier_notificationpermission",
-      "label": "NotificationPermission",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "notificationpermission",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L5"
-    },
-    {
-      "id": "lib_core_notifier_notifier",
-      "label": "Notifier",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "notifier",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L32"
-    },
-    {
-      "id": "lib_core_notifier_opensettings",
-      "label": "openSettings",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "opensettings",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L51"
-    },
-    {
-      "id": "lib_core_notifier_readyafterinitialize",
-      "label": "readyAfterInitialize",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "readyafterinitialize",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L98"
-    },
-    {
-      "id": "lib_core_notifier_requestpermission",
-      "label": "requestPermission",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "requestpermission",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L39"
-    },
-    {
-      "id": "lib_core_notifier_show",
-      "label": "show",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "show",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L55"
-    },
-    {
-      "id": "lib_core_notifier_silentnotifier",
-      "label": "SilentNotifier",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "silentnotifier",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L64"
-    },
-    {
-      "id": "lib_core_notifier_status",
-      "label": "status",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "status",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L44"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row",
-      "label": "notification_setting_row.dart",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "notification_setting_row.dart",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": null
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_build",
-      "label": "build",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "build",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L81"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_createstate",
-      "label": "createState",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "createstate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L24"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_didchangeapplifecyclestate",
-      "label": "didChangeAppLifecycleState",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "didchangeapplifecyclestate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L47"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_dispose",
-      "label": "dispose",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "dispose",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L41"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_initstate",
-      "label": "initState",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "initstate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L34"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_notificationsettingrow",
-      "label": "NotificationSettingRow",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "notificationsettingrow",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L20"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_notificationsettingrowstate",
-      "label": "_NotificationSettingRowState",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "_notificationsettingrowstate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L27"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_notifier",
-      "label": "_notifier",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "_notifier",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L31"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_ontap",
-      "label": "_onTap",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "_ontap",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L60"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_refresh",
-      "label": "_refresh",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "_refresh",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L54"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_status",
-      "label": "_status",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "_status",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L29"
-    },
-    {
       "id": "notifier_dart",
       "label": "notifier.dart",
       "_origin": "ast",
@@ -32609,28 +32733,6 @@
       "community_name": "notifier_device.dart",
       "file_type": "code",
       "norm_label": "notifier.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "notifier_device_dart",
-      "label": "notifier_device.dart",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "notifier_device.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "notifier_get",
-      "label": "Notifier get",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "notifier get",
       "source_file": null,
       "source_location": null
     },
@@ -32664,28 +32766,6 @@
       "community_name": "notifier_device.dart",
       "file_type": "code",
       "norm_label": "static final",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "test_notification_setting_row_test_fakenotifier",
-      "label": "_FakeNotifier",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "_fakenotifier",
-      "source_file": "test/notification_setting_row_test.dart",
-      "source_location": "L23"
-    },
-    {
-      "id": "widgetsbindingobserver",
-      "label": "WidgetsBindingObserver",
-      "_origin": "ast",
-      "community": 48,
-      "community_name": "notifier_device.dart",
-      "file_type": "code",
-      "norm_label": "widgetsbindingobserver",
       "source_file": null,
       "source_location": null
     },
@@ -33636,39 +33716,6 @@
       "source_location": null
     },
     {
-      "id": "package_get_teksi_core_formats_dart",
-      "label": "package:get_teksi/core/formats.dart",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/core/formats.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_l10n_app_localizations_dart",
-      "label": "package:get_teksi/l10n/app_localizations.dart",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/l10n/app_localizations.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_services_pricing_dart",
-      "label": "package:get_teksi/services/pricing.dart",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/services/pricing.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "test_l10n_test",
       "label": "l10n_test.dart",
       "_origin": "ast",
@@ -33799,28 +33846,6 @@
       "norm_label": "_slots",
       "source_file": "test/no_hardcoded_strings_test.dart",
       "source_location": "L39"
-    },
-    {
-      "id": "test_pricing_test",
-      "label": "pricing_test.dart",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "pricing_test.dart",
-      "source_file": "test/pricing_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_pricing_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/pricing_test.dart",
-      "source_location": "L6"
     },
     {
       "id": "lib_services_profile_sync",
@@ -35242,6 +35267,17 @@
       "source_location": "L406"
     },
     {
+      "id": "list",
+      "label": "List",
+      "_origin": "ast",
+      "community": 59,
+      "community_name": "places.dart",
+      "file_type": "code",
+      "norm_label": "list",
+      "source_file": null,
+      "source_location": null
+    },
+    {
       "id": "changenotifier",
       "label": "ChangeNotifier",
       "_origin": "ast",
@@ -36131,18 +36167,6 @@
       "source_location": "L211"
     },
     {
-      "id": "supabase_readme_the_one_rule",
-      "label": "The one rule",
-      "_origin": "ast",
-      "community": 61,
-      "community_name": "Backend",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "the one rule",
-      "source_file": "supabase/README.md",
-      "source_location": "L27"
-    },
-    {
       "id": "supabase_readme_what_is_on_the_server_and_what_is_not",
       "label": "What is on the server, and what is not",
       "_origin": "ast",
@@ -36153,42 +36177,6 @@
       "norm_label": "what is on the server, and what is not",
       "source_file": "supabase/README.md",
       "source_location": "L20"
-    },
-    {
-      "id": "supabase_readme_why_accept_offer_is_a_function",
-      "label": "Why `accept_offer` is a function",
-      "_origin": "ast",
-      "community": 61,
-      "community_name": "Backend",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "why `accept_offer` is a function",
-      "source_file": "supabase/README.md",
-      "source_location": "L120"
-    },
-    {
-      "id": "supabase_readme_why_the_helpers_live_in_private",
-      "label": "Why the helpers live in `private`",
-      "_origin": "ast",
-      "community": 61,
-      "community_name": "Backend",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "why the helpers live in `private`",
-      "source_file": "supabase/README.md",
-      "source_location": "L65"
-    },
-    {
-      "id": "supabase_readme_why_the_wallet_is_append_only",
-      "label": "Why the wallet is append-only",
-      "_origin": "ast",
-      "community": 61,
-      "community_name": "Backend",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "why the wallet is append-only",
-      "source_file": "supabase/README.md",
-      "source_location": "L91"
     },
     {
       "id": "docs_platforms_android",
@@ -36647,77 +36635,11 @@
       "source_location": "L1"
     },
     {
-      "id": "lib_core_location_channel",
-      "label": "location_channel.dart",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
-      "file_type": "code",
-      "norm_label": "location_channel.dart",
-      "source_file": "lib/core/location_channel.dart",
-      "source_location": null
-    },
-    {
-      "id": "lib_core_location_channel_channel",
-      "label": "_channel",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
-      "file_type": "code",
-      "norm_label": "_channel",
-      "source_file": "lib/core/location_channel.dart",
-      "source_location": "L9"
-    },
-    {
-      "id": "lib_core_location_channel_fix",
-      "label": "fix",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
-      "file_type": "code",
-      "norm_label": "fix",
-      "source_file": "lib/core/location_channel.dart",
-      "source_location": "L18"
-    },
-    {
-      "id": "lib_core_location_channel_lat",
-      "label": "lat",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
-      "file_type": "code",
-      "norm_label": "lat",
-      "source_file": "lib/core/location_channel.dart",
-      "source_location": "L20"
-    },
-    {
-      "id": "lib_core_location_channel_lng",
-      "label": "lng",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
-      "file_type": "code",
-      "norm_label": "lng",
-      "source_file": "lib/core/location_channel.dart",
-      "source_location": "L21"
-    },
-    {
-      "id": "lib_core_location_channel_readdevicelocation",
-      "label": "readDeviceLocation",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
-      "file_type": "code",
-      "norm_label": "readdevicelocation",
-      "source_file": "lib/core/location_channel.dart",
-      "source_location": "L17"
-    },
-    {
       "id": "package_get_teksi_core_config_dart",
       "label": "package:get_teksi/core/config.dart",
       "_origin": "ast",
       "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
+      "community_name": "map_attribution_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/core/config.dart",
       "source_file": null,
@@ -36728,7 +36650,7 @@
       "label": "package:get_teksi/theme.dart",
       "_origin": "ast",
       "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
+      "community_name": "map_attribution_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/theme.dart",
       "source_file": null,
@@ -36739,20 +36661,9 @@
       "label": "package:get_teksi/widgets/map_view.dart",
       "_origin": "ast",
       "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
+      "community_name": "map_attribution_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/widgets/map_view.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_latlong2_latlong_dart",
-      "label": "package:latlong2/latlong.dart",
-      "_origin": "ast",
-      "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
-      "file_type": "code",
-      "norm_label": "package:latlong2/latlong.dart",
       "source_file": null,
       "source_location": null
     },
@@ -36761,7 +36672,7 @@
       "label": "map_attribution_test.dart",
       "_origin": "ast",
       "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
+      "community_name": "map_attribution_test.dart",
       "file_type": "code",
       "norm_label": "map_attribution_test.dart",
       "source_file": "test/map_attribution_test.dart",
@@ -36772,7 +36683,7 @@
       "label": "_kl",
       "_origin": "ast",
       "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
+      "community_name": "map_attribution_test.dart",
       "file_type": "code",
       "norm_label": "_kl",
       "source_file": "test/map_attribution_test.dart",
@@ -36783,7 +36694,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
+      "community_name": "map_attribution_test.dart",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "test/map_attribution_test.dart",
@@ -36794,7 +36705,7 @@
       "label": "pumpMap",
       "_origin": "ast",
       "community": 65,
-      "community_name": "package:latlong2/latlong.dart",
+      "community_name": "map_attribution_test.dart",
       "file_type": "code",
       "norm_label": "pumpmap",
       "source_file": "test/map_attribution_test.dart",
@@ -37934,6 +37845,17 @@
       "source_location": "L65"
     },
     {
+      "id": "static_const",
+      "label": "static const",
+      "_origin": "ast",
+      "community": 73,
+      "community_name": "_",
+      "file_type": "code",
+      "norm_label": "static const",
+      "source_file": null,
+      "source_location": null
+    },
+    {
       "id": "package_flutter_semantics_dart",
       "label": "package:flutter/semantics.dart",
       "_origin": "ast",
@@ -37941,6 +37863,17 @@
       "community_name": "otp_semantics_test.dart",
       "file_type": "code",
       "norm_label": "package:flutter/semantics.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_l10n_app_localizations_dart",
+      "label": "package:get_teksi/l10n/app_localizations.dart",
+      "_origin": "ast",
+      "community": 74,
+      "community_name": "otp_semantics_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/l10n/app_localizations.dart",
       "source_file": null,
       "source_location": null
     },
@@ -38363,18 +38296,6 @@
       "source_location": "L222"
     },
     {
-      "id": "docs_releasing_android",
-      "label": "Android",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "iOS",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "android",
-      "source_file": "docs/RELEASING.md",
-      "source_location": "L117"
-    },
-    {
       "id": "docs_releasing_background_delivery",
       "label": "Background delivery",
       "_origin": "ast",
@@ -38411,18 +38332,6 @@
       "source_location": "L12"
     },
     {
-      "id": "docs_releasing_releasing",
-      "label": "Releasing",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "iOS",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "releasing",
-      "source_file": "docs/RELEASING.md",
-      "source_location": "L1"
-    },
-    {
       "id": "docs_releasing_running_it",
       "label": "Running it",
       "_origin": "ast",
@@ -38457,18 +38366,6 @@
       "norm_label": "the seven secrets",
       "source_file": "docs/RELEASING.md",
       "source_location": "L47"
-    },
-    {
-      "id": "docs_releasing_what_ci_already_guarantees",
-      "label": "What CI already guarantees",
-      "_origin": "ast",
-      "community": 78,
-      "community_name": "iOS",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "what ci already guarantees",
-      "source_file": "docs/RELEASING.md",
-      "source_location": "L137"
     },
     {
       "id": "docs_releasing_what_you_have_to_do_by_hand_once",
@@ -39662,6 +39559,18 @@
       "source_location": "L61"
     },
     {
+      "id": "docs_ui_ux_audit",
+      "label": "UI-UX-AUDIT.md",
+      "_origin": "ast",
+      "community": 89,
+      "community_name": "Findings and fixes",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "ui-ux-audit.md",
+      "source_file": "docs/UI-UX-AUDIT.md",
+      "source_location": "L1"
+    },
+    {
       "id": "docs_ui_ux_audit_1_colour_contrast_the_light_theme_was_largely_unusable",
       "label": "1. Colour contrast \u2014 the light theme was largely unusable",
       "_origin": "ast",
@@ -39732,6 +39641,65 @@
       "norm_label": "findings and fixes",
       "source_file": "docs/UI-UX-AUDIT.md",
       "source_location": "L29"
+    },
+    {
+      "id": "docs_ui_ux_audit_not_addressed",
+      "label": "Not addressed",
+      "_origin": "ast",
+      "community": 89,
+      "community_name": "Findings and fixes",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "not addressed",
+      "source_file": "docs/UI-UX-AUDIT.md",
+      "source_location": "L118"
+    },
+    {
+      "id": "docs_ui_ux_audit_ui_ux_accessibility_audit",
+      "label": "UI/UX accessibility audit",
+      "_origin": "ast",
+      "community": 89,
+      "community_name": "Findings and fixes",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "ui/ux accessibility audit",
+      "source_file": "docs/UI-UX-AUDIT.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_ui_ux_audit_verification",
+      "label": "Verification",
+      "_origin": "ast",
+      "community": 89,
+      "community_name": "Findings and fixes",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "verification",
+      "source_file": "docs/UI-UX-AUDIT.md",
+      "source_location": "L108"
+    },
+    {
+      "id": "docs_ui_ux_audit_what_the_skill_was_and_wasn_t_used_for",
+      "label": "What the skill was and wasn't used for",
+      "_origin": "ast",
+      "community": 89,
+      "community_name": "Findings and fixes",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "what the skill was and wasn't used for",
+      "source_file": "docs/UI-UX-AUDIT.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_l10n_labels_pricetonelabel",
+      "label": "PriceToneLabel",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "pricing.dart",
+      "file_type": "code",
+      "norm_label": "pricetonelabel",
+      "source_file": "lib/l10n/labels.dart",
+      "source_location": "L168"
     },
     {
       "id": "lib_services_pricing",
@@ -39919,6 +39887,17 @@
       "norm_label": "pricebounds",
       "source_file": "lib/services/pricing.dart",
       "source_location": "L63"
+    },
+    {
+      "id": "lib_services_pricing_pricetone",
+      "label": "PriceTone",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "pricing.dart",
+      "file_type": "code",
+      "norm_label": "pricetone",
+      "source_file": "lib/services/pricing.dart",
+      "source_location": "L74"
     },
     {
       "id": "lib_services_pricing_raisesuggestions",
@@ -40194,64 +40173,169 @@
       "source_location": "L1"
     },
     {
-      "id": "docs_ui_ux_audit",
-      "label": "UI-UX-AUDIT.md",
+      "id": "core_notifier_dart",
+      "label": "../core/notifier.dart",
       "_origin": "ast",
       "community": 92,
-      "community_name": "UI/UX accessibility audit",
-      "file_type": "document",
-      "node_kind": "page",
-      "norm_label": "ui-ux-audit.md",
-      "source_file": "docs/UI-UX-AUDIT.md",
-      "source_location": "L1"
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "../core/notifier.dart",
+      "source_file": null,
+      "source_location": null
     },
     {
-      "id": "docs_ui_ux_audit_not_addressed",
-      "label": "Not addressed",
+      "id": "lib_widgets_notification_setting_row",
+      "label": "notification_setting_row.dart",
       "_origin": "ast",
       "community": 92,
-      "community_name": "UI/UX accessibility audit",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "not addressed",
-      "source_file": "docs/UI-UX-AUDIT.md",
-      "source_location": "L118"
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "notification_setting_row.dart",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": null
     },
     {
-      "id": "docs_ui_ux_audit_ui_ux_accessibility_audit",
-      "label": "UI/UX accessibility audit",
+      "id": "lib_widgets_notification_setting_row_build",
+      "label": "build",
       "_origin": "ast",
       "community": 92,
-      "community_name": "UI/UX accessibility audit",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "ui/ux accessibility audit",
-      "source_file": "docs/UI-UX-AUDIT.md",
-      "source_location": "L1"
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "build",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L81"
     },
     {
-      "id": "docs_ui_ux_audit_verification",
-      "label": "Verification",
+      "id": "lib_widgets_notification_setting_row_createstate",
+      "label": "createState",
       "_origin": "ast",
       "community": 92,
-      "community_name": "UI/UX accessibility audit",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "verification",
-      "source_file": "docs/UI-UX-AUDIT.md",
-      "source_location": "L108"
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "createstate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L24"
     },
     {
-      "id": "docs_ui_ux_audit_what_the_skill_was_and_wasn_t_used_for",
-      "label": "What the skill was and wasn't used for",
+      "id": "lib_widgets_notification_setting_row_didchangeapplifecyclestate",
+      "label": "didChangeAppLifecycleState",
       "_origin": "ast",
       "community": 92,
-      "community_name": "UI/UX accessibility audit",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "what the skill was and wasn't used for",
-      "source_file": "docs/UI-UX-AUDIT.md",
-      "source_location": "L14"
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "didchangeapplifecyclestate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L47"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_dispose",
+      "label": "dispose",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "dispose",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_initstate",
+      "label": "initState",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "initstate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_notificationsettingrow",
+      "label": "NotificationSettingRow",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "notificationsettingrow",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_notificationsettingrowstate",
+      "label": "_NotificationSettingRowState",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "_notificationsettingrowstate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_notifier",
+      "label": "_notifier",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "_notifier",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_ontap",
+      "label": "_onTap",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "_ontap",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_refresh",
+      "label": "_refresh",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "_refresh",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_status",
+      "label": "_status",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "_status",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L29"
+    },
+    {
+      "id": "notifier_get",
+      "label": "Notifier get",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "notifier get",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "widgetsbindingobserver",
+      "label": "WidgetsBindingObserver",
+      "_origin": "ast",
+      "community": 92,
+      "community_name": "notification_setting_row.dart",
+      "file_type": "code",
+      "norm_label": "widgetsbindingobserver",
+      "source_file": null,
+      "source_location": null
     },
     {
       "id": "claude_hooks_wait_for_tools",
@@ -40874,6 +40958,17 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "tempfile",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "properties",
+      "label": "properties",
+      "community": 109,
+      "community_name": "app/build.gradle.kts",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "properties",
       "source_file": "",
       "type": "external"
     }
@@ -44504,6 +44599,18 @@
       "weight": 1.0
     },
     {
+      "source": "android_app_build_gradle",
+      "target": "android_app_build_gradle_signingvalue",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "android/app/build.gradle.kts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
       "source": "claude_skills_ui_ux_pro_max_scripts_design_system_format_ascii_box",
       "target": "claude_skills_ui_ux_pro_max_scripts_design_system_format_ascii_box_wrap_text",
       "relation": "contains",
@@ -44933,6 +45040,21 @@
       },
       "source_file": "android/app/src/main/kotlin/my/getgroup/get_teksi/MainActivity.kt",
       "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "android_app_build_gradle",
+      "target": "properties",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "metadata": {
+        "target_fqn": "java.util.Properties"
+      },
+      "source_file": "android/app/build.gradle.kts",
+      "source_location": "L1",
       "weight": 1.0
     },
     {
@@ -51932,6 +52054,72 @@
       "weight": 1.0
     },
     {
+      "source": "docs_releasing_android",
+      "target": "docs_releasing_status_119",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_releasing_android",
+      "target": "docs_releasing_what_you_have_to_do_by_hand_once_144",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_releasing_android",
+      "target": "docs_releasing_the_four_secrets",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L168",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_releasing_android",
+      "target": "docs_releasing_building_by_hand",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L189",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_releasing_android",
+      "target": "docs_releasing_running_the_workflow",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_releasing_android",
+      "target": "docs_releasing_publishing",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/RELEASING.md",
+      "source_location": "L228",
+      "weight": 1.0
+    },
+    {
       "source": "docs_releasing_ios",
       "target": "docs_releasing_background_delivery",
       "relation": "contains",
@@ -52027,7 +52215,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/RELEASING.md",
-      "source_location": "L137",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -94730,5 +94918,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3b986b4a89af43514538d6a941f1d39c2eaa48b2"
+  "built_at_commit": "f7ffda90806012e5d8cc9d7381e755b42c937b45"
 }
