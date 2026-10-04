@@ -26,7 +26,7 @@ also enforces the properties this app's platform story depends on:
   unpacks the release APK's `classes*.dex`, extracts its strings, and fails the
   build if any `Lcom/google/android/gms`, `Lcom/google/firebase`, or
   `Lcom/huawei/hms` class descriptor appears. The scan self-checks by requiring
-  the app's own `Lmy/getgroup/get_teksi` classes to be present, so a silently
+  the app's own `Lmy/get/teksi` classes to be present, so a silently
   failed extraction can't pass as a clean result. It runs before the artifact
   upload, so an APK that fails the scan is never published.
 - **The marketplace rules are enforced by the database.** The `database` job
@@ -167,7 +167,7 @@ flutter build appbundle --release  # Play Store and AppGallery
 ```
 
 Configured in `android/app/build.gradle.kts`:
-- `applicationId` `my.getgroup.get_teksi`
+- `applicationId` `my.get.teksi`
 - `minSdk 23`, R8 shrinking on in release
 - Core library desugaring on, because `flutter_local_notifications` schedules
   against `java.time`, which is API 26+

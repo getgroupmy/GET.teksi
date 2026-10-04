@@ -31,7 +31,7 @@ None of this can be done from a repository.
 
 1. **Apple Developer Program membership** — $99/year. A company membership also
    needs a D-U-N-S number, which can take a week or two to obtain.
-2. **Register the bundle identifier** `my.getgroup.getTeksi` under Certificates,
+2. **Register the bundle identifier** `my.get.teksi` under Certificates,
    Identifiers & Profiles. It must match `PRODUCT_BUNDLE_IDENTIFIER` in
    `ios/Runner.xcodeproj/project.pbxproj`; the workflow asserts this and stops
    if the two ever disagree.
@@ -214,7 +214,7 @@ Actions → **Release Android** → Run workflow. `build_number` becomes the
 refuses a `versionCode` it has already seen.
 
 It asserts, in order: the four secrets exist; the application id is still
-`my.getgroup.get_teksi`; the base64 decodes to a keystore that password opens;
+`my.get.teksi`; the base64 decodes to a keystore that password opens;
 the alias is in it; the bundle's signer is not `CN=Android Debug` and matches
 the pinned fingerprint if one is set; the APK's signer likewise, read with
 `apksigner` rather than `keytool` because an APK can be v2-signed only; and the

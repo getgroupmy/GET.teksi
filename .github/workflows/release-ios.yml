@@ -27,7 +27,7 @@ env:
   FLUTTER_VERSION: '3.47.0'
   # Must match PRODUCT_BUNDLE_IDENTIFIER in the Xcode project, and the
   # provisioning profile. Asserted below rather than assumed.
-  BUNDLE_ID: my.getgroup.getTeksi
+  BUNDLE_ID: my.get.teksi
 
 jobs:
   release:

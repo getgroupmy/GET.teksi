@@ -1,4 +1,4 @@
-package my.getgroup.get_teksi
+package my.get.teksi
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -31,8 +31,8 @@ import android.os.IBinder
 class DutyService : Service() {
 
     companion object {
-        const val ACTION_START = "my.getgroup.get_teksi.DUTY_START"
-        const val ACTION_STOP = "my.getgroup.get_teksi.DUTY_STOP"
+        const val ACTION_START = "my.get.teksi.DUTY_START"
+        const val ACTION_STOP = "my.get.teksi.DUTY_STOP"
         const val EXTRA_TITLE = "title"
         const val EXTRA_BODY = "body"
 

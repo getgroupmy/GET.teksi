@@ -1,4 +1,4 @@
-package my.getgroup.get_teksi
+package my.get.teksi
 
 import android.Manifest
 import android.content.Intent
