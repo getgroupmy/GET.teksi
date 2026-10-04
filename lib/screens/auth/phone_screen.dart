@@ -75,102 +75,126 @@ class _PhoneScreenState extends State<PhoneScreen> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l.phoneTitle,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l.phoneSubtitle,
-                style: TextStyle(fontSize: 14, color: c.textDim),
-              ),
-              const SizedBox(height: 28),
-              Container(
-                decoration: BoxDecoration(
-                  color: c.surface2,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: c.line),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Row(
-                  children: [
-                    Text(
-                      '🇲🇾 +60',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: c.textDim,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(width: 1, height: 22, color: c.line),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        autofocus: true,
-                        keyboardType: TextInputType.phone,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        onChanged: (v) => setState(() => _digits = v),
-                        onSubmitted: (_) => _continue(),
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        decoration: const InputDecoration(
-                          hintText: '12 345 6789',
-                          filled: false,
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 16),
+        // The column below pushes its button to the bottom with a Spacer,
+        // which works right up to the point where the content is taller than
+        // the screen — then the Spacer is zero and the rest is simply cut
+        // off, which at a large text size is the terms text and the Continue
+        // button. Scrolling only when it has to: ConstrainedBox gives the
+        // column at least the viewport's height so IntrinsicHeight resolves
+        // the Spacer normally, and past that it scrolls.
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l.phoneTitle,
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          height: 1.2,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              if (_error.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  _error,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: c.danger,
-                    fontWeight: FontWeight.w600,
+                      const SizedBox(height: 8),
+                      Text(
+                        l.phoneSubtitle,
+                        style: TextStyle(fontSize: 14, color: c.textDim),
+                      ),
+                      const SizedBox(height: 28),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: c.surface2,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: c.line),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: Row(
+                          children: [
+                            Text(
+                              '🇲🇾 +60',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                                color: c.textDim,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Container(width: 1, height: 22, color: c.line),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: _controller,
+                                autofocus: true,
+                                keyboardType: TextInputType.phone,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
+                                onChanged: (v) => setState(() => _digits = v),
+                                onSubmitted: (_) => _continue(),
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                decoration: const InputDecoration(
+                                  hintText: '12 345 6789',
+                                  filled: false,
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_error.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        Text(
+                          _error,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: c.danger,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      Text(
+                        l.phoneTerms,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: c.textMute,
+                          height: 1.45,
+                        ),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        onPressed: _valid && !_sending ? _continue : null,
+                        child: _sending
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : Text(l.continueLabel),
+                      ),
+                      const SizedBox(height: 22),
+                    ],
                   ),
                 ),
-              ],
-              const SizedBox(height: 16),
-              Text(
-                l.phoneTerms,
-                style: TextStyle(fontSize: 12, color: c.textMute, height: 1.45),
               ),
-              const Spacer(),
-              FilledButton(
-                onPressed: _valid && !_sending ? _continue : null,
-                child: _sending
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2.5),
-                      )
-                    : Text(l.continueLabel),
-              ),
-              const SizedBox(height: 22),
-            ],
+            ),
           ),
         ),
       ),

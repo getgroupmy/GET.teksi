@@ -130,15 +130,26 @@ class _RateScreenState extends State<RateScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${distanceLabel(ride.distanceKm)} · ${durationLabel(l, ride.durationMinutes)}',
-                              style: TextStyle(fontSize: 13, color: c.textDim),
+                            // The fare is the thing nobody may lose off the
+                            // right-hand edge, so both sides flex.
+                            Flexible(
+                              child: Text(
+                                '${distanceLabel(ride.distanceKm)} · ${durationLabel(l, ride.durationMinutes)}',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: c.textDim,
+                                ),
+                              ),
                             ),
-                            Text(
-                              money(ride.fare, decimals: false),
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
+                            const SizedBox(width: 12),
+                            Flexible(
+                              child: Text(
+                                money(ride.fare, decimals: false),
+                                textAlign: TextAlign.end,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
                           ],

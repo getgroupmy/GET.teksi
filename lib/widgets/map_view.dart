@@ -200,7 +200,12 @@ class _MapViewState extends State<MapView> {
                 key: ValueKey('pin_${pin.id}'),
                 point: pin.coord,
                 width: pin.kind == PinKind.me ? 24 : 140,
-                height: pin.kind == PinKind.me ? 24 : 62,
+                // 66, not 62: the label chip inside grows with the system
+                // text size and _PinMarker caps that growth at 1.3x, which
+                // is the tallest the chip can then be. A marker box smaller
+                // than its child does not scroll or wrap — it clips, and the
+                // part it clips is the place name.
+                height: pin.kind == PinKind.me ? 24 : 66,
                 alignment: pin.kind == PinKind.me
                     ? Alignment.center
                     : const Alignment(0, -0.45),
@@ -340,22 +345,32 @@ class _PinMarker extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (label != null)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            margin: const EdgeInsets.only(bottom: 4),
-            decoration: BoxDecoration(
-              color: c.surface,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: c.line),
-            ),
-            child: Text(
-              label!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: c.text,
+          // The one place in the app that caps the text scale, and the reason
+          // is geometry rather than taste: this chip lives in a fixed-size
+          // marker box pinned to a coordinate, so growing it without bound
+          // either clips the label or walks the pin off the place it marks.
+          // Nothing is lost by capping it — the same pickup and dropoff names
+          // are in the sheet below at the full system size, through
+          // RouteStops, which is where someone reading at 2x will find them.
+          MediaQuery.withClampedTextScaling(
+            maxScaleFactor: 1.3,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              margin: const EdgeInsets.only(bottom: 4),
+              decoration: BoxDecoration(
+                color: c.surface,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: c.line),
+              ),
+              child: Text(
+                label!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: c.text,
+                ),
               ),
             ),
           ),

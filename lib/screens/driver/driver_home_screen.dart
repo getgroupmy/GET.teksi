@@ -108,79 +108,92 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     tooltip: l.menu,
                     onTap: () => context.push('/menu'),
                   ),
-                  const Spacer(),
-                  Semantics(
-                    button: true,
-                    label: l.earningsSemantics(
-                      money(user.driverProfile!.earnings),
-                      session.prefs.driverOnline ? l.onlineWord : l.offlineWord,
-                    ),
-                    child: Material(
-                      color: c.surface,
-                      borderRadius: BorderRadius.circular(999),
-                      elevation: 4,
-                      shadowColor: Colors.black54,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(999),
-                        onTap: () => context.push('/d/earnings'),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 11,
-                          ),
-                          decoration: BoxDecoration(
+                  // Expanded rather than Spacer-Flexible-Spacer. A Flexible
+                  // between two Spacers is a third flex child competing with
+                  // them for the same free space, so the pill was handed a
+                  // third of the slack and overflowed its own edge even at the
+                  // normal text size. One Expanded takes all of it and centres
+                  // the pill inside, which is what the two Spacers were for.
+                  Expanded(
+                    child: Center(
+                      child: Semantics(
+                        button: true,
+                        label: l.earningsSemantics(
+                          money(user.driverProfile!.earnings),
+                          session.prefs.driverOnline
+                              ? l.onlineWord
+                              : l.offlineWord,
+                        ),
+                        child: Material(
+                          color: c.surface,
+                          borderRadius: BorderRadius.circular(999),
+                          elevation: 4,
+                          shadowColor: Colors.black54,
+                          child: InkWell(
                             borderRadius: BorderRadius.circular(999),
-                            border: Border.all(color: c.line),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.account_balance_wallet_outlined,
-                                size: 15,
-                                color: c.accent,
+                            onTap: () => context.push('/d/earnings'),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 11,
                               ),
-                              const SizedBox(width: 6),
-                              Text(
-                                money(
-                                  user.driverProfile!.earnings,
-                                  decimals: false,
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(color: c.line),
                               ),
-                              const SizedBox(width: 8),
-                              // Colour alone must not carry the duty state.
-                              Container(
-                                width: 7,
-                                height: 7,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: session.prefs.driverOnline
-                                      ? c.ok
-                                      : c.textMute,
-                                ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.account_balance_wallet_outlined,
+                                    size: 15,
+                                    color: c.accent,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      money(
+                                        user.driverProfile!.earnings,
+                                        decimals: false,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  // Colour alone must not carry the duty state.
+                                  Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: session.prefs.driverOnline
+                                          ? c.ok
+                                          : c.textMute,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    session.prefs.driverOnline ? l.on : l.off,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: session.prefs.driverOnline
+                                          ? c.ok
+                                          : c.textMute,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 4),
-                              Text(
-                                session.prefs.driverOnline ? l.on : l.off,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: session.prefs.driverOnline
-                                      ? c.ok
-                                      : c.textMute,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const Spacer(),
                   if (activeRide == null)
                     Padding(
                       padding: const EdgeInsets.only(right: 8),

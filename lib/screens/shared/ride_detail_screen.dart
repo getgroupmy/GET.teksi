@@ -127,9 +127,15 @@ class RideDetailScreen extends StatelessWidget {
                         stop: ride.stop?.name,
                       ),
                       Divider(height: 24, color: c.line),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        spacing: 12,
+                        runSpacing: 4,
                         children: [
+                          // Three independent facts rather than a label and a
+                          // value, so they wrap onto further lines instead of
+                          // being squeezed. A Row of three fixed Texts cannot
+                          // fit at a large text size at any phone width.
                           Text(
                             distanceLabel(ride.distanceKm),
                             style: TextStyle(fontSize: 13, color: c.textDim),
@@ -349,20 +355,28 @@ class _Line extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13.5,
-              color: color,
-              fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
+          // Every fare breakdown line goes through here, so one Flexible pair
+          // fixes the whole receipt.
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13.5,
+                color: color,
+                fontWeight: bold ? FontWeight.w700 : FontWeight.w400,
+              ),
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 13.5,
-              color: color,
-              fontWeight: bold ? FontWeight.w800 : FontWeight.w600,
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 13.5,
+                color: color,
+                fontWeight: bold ? FontWeight.w800 : FontWeight.w600,
+              ),
             ),
           ),
         ],

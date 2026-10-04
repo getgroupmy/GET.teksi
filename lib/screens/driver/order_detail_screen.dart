@@ -277,15 +277,25 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SectionLabel(
-                          l.passengerOffers,
-                          padding: EdgeInsets.zero,
-                        ),
-                        Text(
-                          l.marketPrice(
-                            money(ride.recommendedPrice, decimals: false),
+                        // Flexible both sides: at a large text size the
+                        // heading and the market price together are wider
+                        // than the card, and an unflexed Row clips rather
+                        // than wraps.
+                        Flexible(
+                          child: SectionLabel(
+                            l.passengerOffers,
+                            padding: EdgeInsets.zero,
                           ),
-                          style: TextStyle(fontSize: 12, color: c.textDim),
+                        ),
+                        const SizedBox(width: 12),
+                        Flexible(
+                          child: Text(
+                            l.marketPrice(
+                              money(ride.recommendedPrice, decimals: false),
+                            ),
+                            textAlign: TextAlign.end,
+                            style: TextStyle(fontSize: 12, color: c.textDim),
+                          ),
                         ),
                       ],
                     ),
