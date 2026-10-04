@@ -75,3 +75,28 @@ The hook itself is idempotent and does nothing at all outside a remote
 container, where your own toolchain is already in charge. The first run on a
 new container image spends a few minutes fetching the Flutter SDK; after that
 the image is cached and later sessions are ready in seconds.
+
+## graphify
+
+There is a knowledge graph of this codebase. The skill lives in
+`.claude/skills/graphify`, and the hook installs the `graphify` tool it drives
+— last, and best-effort, because nothing in the gates above needs it and a
+repository whose test suite will not run because an optional download failed is
+worse than one without the tool.
+
+Two `PreToolUse` guards in `.claude/settings.json` nudge toward the graph before
+raw searching and reading. Both are written `command -v graphify && … || true`,
+so they are silent no-ops until the asynchronous hook has finished installing —
+otherwise every tool call in a cold container's first seconds would run a
+command that is not there yet.
+
+**The graph is not in the repository.** Only `graphify-out/GRAPH_REPORT.md` is
+committed; `graph.json` is not, because it is large and goes stale on every
+commit. So `graphify query`, `path` and `explain` have nothing to read until
+someone runs `/graphify .` once in a container, which costs LLM calls for the
+semantic pass. Until then the guards stay quiet — `hook-guard` prints nothing
+when there is no graph, which is the right behaviour and the reason wiring them
+up is safe.
+
+Once a graph exists, `graphify update .` keeps it current from the AST alone,
+with no API cost.

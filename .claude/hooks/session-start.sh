@@ -165,13 +165,67 @@ else
   fi
 fi
 
+# ---------------------------------------------------------------- graphify ---
+# The knowledge-graph skill in .claude/skills/graphify is a set of
+# instructions; `graphify` is the 160 MB tool they drive. Without it the
+# PreToolUse guards in settings.json would fire a missing command on every
+# Bash, Grep, Read and Glob call, which is why this exists.
+#
+# Best-effort on purpose, and last. Nothing in CLAUDE.md's gates needs it, and
+# a project whose test suite will not run because an optional tool failed to
+# download is a worse project than one without the tool. Failures here are a
+# note, never a non-zero exit.
+graphify_bin=""
+if command -v graphify >/dev/null 2>&1; then
+  graphify_bin="$(dirname "$(command -v graphify)")"
+  note "graphify $(graphify --version 2>/dev/null | awk '{print $2}') already installed."
+else
+  # uv first because it isolates the package in its own environment, which is
+  # what the vendor recommends and what keeps the skill's runtime Python
+  # resolution from finding a different interpreter than the one it installed
+  # into. pipx is the same idea; plain pip is the fallback that has that
+  # failure mode, and is better than nothing.
+  # uv and pipx install themselves into ~/.local/bin, which a non-login shell
+  # often does not have on PATH — so look there as well as asking the shell,
+  # or a container with uv falls through to pip and gets the failure mode the
+  # vendor warns about.
+  for extra in "$HOME/.local/bin" /usr/local/bin; do
+    case ":$PATH:" in *":$extra:"*) ;; *) [ -d "$extra" ] && PATH="$PATH:$extra" ;; esac
+  done
+  export PATH
+
+  installed=""
+  for mgr in uv pipx pip3; do
+    command -v "$mgr" >/dev/null 2>&1 || continue
+    case "$mgr" in
+      uv)   uv tool install graphifyy >/dev/null 2>&1 && installed="$mgr" ;;
+      pipx) pipx install graphifyy    >/dev/null 2>&1 && installed="$mgr" ;;
+      pip3) pip3 install --user --break-system-packages graphifyy >/dev/null 2>&1 && installed="$mgr" ;;
+    esac
+    [ -n "$installed" ] && break
+  done
+
+  # uv and pipx both drop their shims in ~/.local/bin, which is not always on
+  # a non-login shell's PATH.
+  for candidate in "$HOME/.local/bin" /usr/local/bin; do
+    if [ -x "$candidate/graphify" ]; then graphify_bin="$candidate"; break; fi
+  done
+
+  if [ -n "$graphify_bin" ]; then
+    note "graphify installed via $installed."
+  else
+    note "graphify is unavailable here; its PreToolUse guards stay dormant."
+  fi
+fi
+[ -n "$graphify_bin" ] && export PATH="$PATH:$graphify_bin"
+
 # ----------------------------------------------------------- the session ----
 # The exports the gates need, written where wait-for-tools.sh can hand them to
 # a shell. Also appended to CLAUDE_ENV_FILE when there is one: harmless if the
 # session has already read it, and free if it has not.
 {
   echo "# written by .claude/hooks/session-start.sh"
-  echo "export PATH=\"\$PATH:$FLUTTER_ROOT/bin${pgbin:+:$pgbin}\""
+  echo "export PATH=\"\$PATH:$FLUTTER_ROOT/bin${pgbin:+:$pgbin}${graphify_bin:+:$graphify_bin}\""
   if [ -n "$pgbin" ]; then
     echo "export PGHOST=$PGSOCKET"
     echo "export PGPORT=$PGPORT"
