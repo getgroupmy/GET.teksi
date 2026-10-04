@@ -26,7 +26,22 @@ begin
     return;
   end if;
 
-  execute 'create extension if not exists pg_cron';
+  -- `pg_available_extensions` says the package is on disk, not that the
+  -- extension can be created: pg_cron also has to be in
+  -- shared_preload_libraries, and without that this fails with
+  -- "unrecognized configuration parameter cron.database_name" — an error that
+  -- says nothing about the actual cause. A machine with the package installed
+  -- but not preloaded is a normal developer machine, so it skips like any
+  -- other environment without pg_cron rather than failing the whole suite.
+  begin
+    execute 'create extension if not exists pg_cron';
+  exception when others then
+    raise notice
+      'pg_cron is installed but cannot be created here (%), so the sweep is '
+      'left unscheduled. sweep_expired_offers() still works when called.',
+      sqlerrm;
+    return;
+  end;
 
   -- Idempotent: re-applying the migration replaces the schedule rather than
   -- stacking a second job that does the same work.
