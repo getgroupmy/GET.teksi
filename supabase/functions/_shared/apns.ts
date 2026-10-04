@@ -96,12 +96,23 @@ export async function sendApns(
   deviceToken: string,
   alert: Alert,
   key: ApnsKey,
-  options: { host?: string; topic: string; bearer?: string },
+  options: {
+    host?: string;
+    topic: string;
+    bearer?: string;
+    /// Injected so a caller that stubbed fetch actually stubs this one too.
+    /// Shadowing `fetch` in the caller's own scope does nothing here — this
+    /// module would still reach the global, which is how the handler's first
+    /// tests ended up watching real network calls fail and counting them as
+    /// "nothing was sent".
+    fetchImpl?: typeof fetch;
+  },
 ): Promise<SendResult> {
   const host = options.host ?? 'https://api.push.apple.com';
   const bearer = options.bearer ?? (await apnsToken(key));
+  const send = options.fetchImpl ?? fetch;
 
-  const response = await fetch(`${host}/3/device/${deviceToken}`, {
+  const response = await send(`${host}/3/device/${deviceToken}`, {
     method: 'POST',
     headers: {
       authorization: `bearer ${bearer}`,
