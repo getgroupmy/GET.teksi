@@ -1,0 +1,7 @@
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+# A key with no Malay entry falls back to the English template rather than
+# showing the key or crashing, which is what makes translating the app screen
+# by screen safe.
+untranslated-messages-file: l10n-untranslated.json

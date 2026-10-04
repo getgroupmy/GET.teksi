@@ -1,0 +1,1084 @@
+{
+  "@@locale": "en",
+  "onboardTitle1": "Name your own fare",
+  "onboardBody1": "No fixed meter, no surge. You say what the trip is worth, drivers reply with their price.",
+  "onboardTitle2": "Ride and drive in one app",
+  "onboardBody2": "Switch between passenger and driver whenever you like. One profile, one wallet, one history.",
+  "onboardTitle3": "Safety built in",
+  "onboardBody3": "Share your trip, call for help, and see every driver’s rating before you accept a price.",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get started",
+  "phoneTitle": "Enter your phone number",
+  "phoneSubtitle": "We’ll send a 6-digit code to verify it’s you.",
+  "phoneTerms": "By continuing you agree to the Terms of Service and Privacy Policy. Standard message rates may apply.",
+  "phoneSendFailed": "We could not send a code to that number.",
+  "continueLabel": "Continue",
+  "otpTitle": "Enter the code",
+  "otpSentTo": "Sent to {phone}",
+  "@otpSentTo": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResendIn": "Resend code in {seconds}s",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpResend": "Resend code",
+  "otpVerify": "Verify",
+  "otpMismatch": "That code doesn’t match. Check the code shown below.",
+  "otpUnverified": "That code could not be verified. Request a new one.",
+  "otpWrongOrExpired": "That code is wrong or has expired.",
+  "otpResendFailed": "Could not send a new code.",
+  "otpDemoPrefix": "Demo build — no SMS is sent. Your code is ",
+  "profileTitle": "What should we call you?",
+  "profileSubtitle": "Drivers and passengers will see this name and photo.",
+  "profileFullName": "Full name",
+  "profileEmail": "Email (optional)",
+  "profileStart": "Start riding",
+  "settings": "Settings",
+  "appearance": "Appearance",
+  "darkTheme": "Dark theme",
+  "preferences": "Preferences",
+  "languageName": "English",
+  "language": "Language",
+  "sounds": "Sounds and vibration",
+  "on": "On",
+  "off": "Off",
+  "demo": "Demo",
+  "simulatedMarketplace": "Simulated marketplace",
+  "simulatedMarketplaceSubtitle": "Bot drivers bid on your orders and bot passengers post rides",
+  "clearLocalData": "Clear local data",
+  "clearLocalDataSubtitle": "Erase rides, offers and messages on this device",
+  "clearLocalDataConfirmTitle": "Clear local data?",
+  "clearEverything": "Clear everything",
+  "cancel": "Cancel",
+  "about": "About",
+  "version": "Version",
+  "termsOfService": "Terms of service",
+  "privacyPolicy": "Privacy policy",
+  "yourPrice": "Your price",
+  "recommendedFare": "Recommended {amount}",
+  "@recommendedFare": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseCarType": "Choose a car type",
+  "carEconomy": "Everyday cars, 4 seats",
+  "carComfort": "Newer, roomier cars",
+  "carXl": "Up to 6 passengers",
+  "paymentMethod": "Payment method",
+  "cashNote": "Cash is paid directly to the driver at the end of the trip.",
+  "balanceIs": "Balance {amount}",
+  "@balanceIs": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tripOptions": "Trip options",
+  "extras": "Extras",
+  "noteForDriver": "Note for the driver",
+  "note": "Note",
+  "noteAdded": "Note added",
+  "saveNote": "Save note",
+  "done": "Done",
+  "findDriverFor": "Find a driver for {amount}",
+  "@findDriverFor": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "lookingForDrivers": "Looking for drivers…",
+  "noOffersYet": "No offers yet. Raising your price is the fastest way to get picked up.",
+  "raiseYourPrice": "Raise your price",
+  "raiseFare": "Raise fare",
+  "lowerFare": "Lower fare",
+  "moreDriversWhenHigher": "More drivers see your order when the fare goes up.",
+  "cancelSearch": "Cancel search",
+  "cancelOrderTitle": "Cancel your order?",
+  "keepSearching": "Keep searching",
+  "declineOffer": "Decline offer",
+  "declineReasonPrompt": "Tell us why so we can improve matching.",
+  "accept": "Accept",
+  "balanceInsufficient": "Balance {amount} — not enough for this fare",
+  "@balanceInsufficient": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "driverOnTheWay": "Driver is on the way",
+  "driverArriving": "Driver is arriving",
+  "driverWaiting": "Your driver is waiting",
+  "enjoyTheRide": "Enjoy the ride",
+  "meetAtPickup": "Meet your driver at the pickup point",
+  "headToPickup": "Please start heading to the pickup point",
+  "driverArrivedFreeWait": "Your driver has arrived. Free waiting time applies for 3 minutes.",
+  "onTheWayToDestination": "On the way to your destination",
+  "callLabel": "Call",
+  "chatLabel": "Chat",
+  "safetyLabel": "Safety",
+  "shareLabel": "Share",
+  "shareYourTrip": "Share your trip",
+  "shareTripBody": "Send these details to someone you trust — they’re already on your clipboard.",
+  "callingName": "Calling {name}…",
+  "@callingName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelRide": "Cancel ride",
+  "cancelRideTitle": "Cancel this ride?",
+  "cancelRideBody": "Your driver is already on the way. Frequent late cancellations can affect your rating.",
+  "keepMyRide": "Keep my ride",
+  "payInCash": "Pay in cash",
+  "driverLabel": "Driver",
+  "freeWaitNote": "They can wait a few minutes free of charge",
+  "youreOffline": "You’re offline",
+  "goOnline": "Go online",
+  "goOffline": "Go offline",
+  "goOnlinePrompt": "Go online to see ride requests near you and send your price.",
+  "waitingForOrders": "Waiting for orders",
+  "dutyNotificationTitle": "You’re online",
+  "dutyNotificationBody": "Keeping you reachable for new orders. Go offline in the app to stop.",
+  "stayOnlinePrompt": "Stay online — new requests appear here as passengers publish them.",
+  "noOrdersMatch": "No orders match right now",
+  "offerWaitingReply": "Your offer is waiting for a reply",
+  "filters": "Filters",
+  "filterOrders": "Filter orders",
+  "applyFilters": "Apply filters",
+  "minimumFare": "Minimum fare",
+  "maxPickupDistance": "Maximum distance to pickup",
+  "sortNearest": "Nearest",
+  "sortHighest": "Highest",
+  "sortNewest": "Newest",
+  "viewTodaysEarnings": "View today’s earnings",
+  "pickUpName": "Pick up {name}",
+  "@pickUpName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "toDestination": "To {place}",
+  "@toDestination": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "waitingForPassenger": "Waiting for the passenger",
+  "freeWaitDriverNote": "Free waiting time is 3 minutes. Message the passenger if they’re not out yet.",
+  "startTheTrip": "Start the trip",
+  "finishTripFor": "Finish trip · {amount}",
+  "@finishTripFor": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "feeIs": "Fee {amount}",
+  "@feeIs": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "navigate": "Navigate",
+  "navigatingTo": "Navigating to {place}…",
+  "@navigatingTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelThisOrder": "Cancel this order",
+  "cancelOrderConfirmTitle": "Cancel the order?",
+  "cancelOrderBody": "Cancelling accepted orders too often lowers your priority in the feed.",
+  "keepTheOrder": "Keep the order",
+  "cash": "Cash",
+  "card": "Card",
+  "wallet": "Wallet",
+  "anyAmount": "Any",
+  "@anyAmount": {
+    "description": "Filter option meaning no minimum fare is required."
+  },
+  "youreOnlineWith": "You’re online · {plate}",
+  "@youreOnlineWith": {
+    "description": "Driver status line, with the vehicle's plate.",
+    "placeholders": {
+      "plate": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDistance": "Trip {distance}",
+  "@tripDistance": {
+    "description": "Distance of the trip leg on an order card.",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDistanceDuration": "Trip {distance} · {duration}",
+  "@tripDistanceDuration": {
+    "description": "Distance and duration of the trip leg.",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "shareTripMessage": "I’m on a GET.teksi ride to {destination}. Driver: {driver} ({vehicle}, {plate}). Ref {ref}.",
+  "@shareTripMessage": {
+    "description": "The message a passenger shares to let someone follow their trip.",
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      },
+      "driver": {
+        "type": "String"
+      },
+      "vehicle": {
+        "type": "String"
+      },
+      "plate": {
+        "type": "String"
+      },
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "menu": "Menu",
+  "tripsGiven": "{count} trips given",
+  "@tripsGiven": {
+    "description": "Trip count on a driver's profile row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripsTaken": "{count} trips taken",
+  "@tripsTaken": {
+    "description": "Trip count on a passenger's profile row.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "switchToPassenger": "Switch to passenger",
+  "switchToDriver": "Switch to driver",
+  "becomeADriver": "Become a driver",
+  "myRides": "My rides",
+  "myRidesSubtitle": "Trip history and receipts",
+  "promoCodes": "Promo codes",
+  "promoCodesSubtitle": "Discounts and referrals",
+  "savedPlaces": "Saved places",
+  "savedPlacesSubtitle": "Home, work and favourites",
+  "earnings": "Earnings",
+  "earningsSubtitle": "Daily and weekly totals",
+  "vehicleAndDocuments": "Vehicle & documents",
+  "safetyCentre": "Safety centre",
+  "safetyCentreSubtitle": "Emergency contacts and SOS",
+  "signOut": "Sign out",
+  "signOutConfirmTitle": "Sign out?",
+  "signOutBody": "Your rides and history stay on this device unless you clear them.",
+  "signOutAndErase": "Sign out and erase all local data",
+  "appVersionLine": "GET.teksi · v1.0.0",
+  "@appVersionLine": {
+    "description": "App name and version at the foot of the menu."
+  },
+  "safetyAlertNoTrip": "SAFETY ALERT — please check on me.",
+  "safetyAlertTrip": "SAFETY ALERT — I’m on a GET.teksi trip to {destination}. Driver {driver}, {plate}. Ref {ref}.",
+  "@safetyAlertTrip": {
+    "description": "The message SOS copies when a trip is in progress.",
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      },
+      "driver": {
+        "type": "String"
+      },
+      "plate": {
+        "type": "String"
+      },
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownDriver": "unknown",
+  "noPlate": "no plate",
+  "emergencySos": "Emergency SOS",
+  "emergencySosSubtitle": "Call {number} and alert your contacts",
+  "@emergencySosSubtitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "activeTripBanner": "Active trip to {destination}{vehicle}. Your contacts can see these details when you share the trip.",
+  "@activeTripBanner": {
+    "description": "vehicle is an already-formatted fragment, empty when no vehicle is assigned.",
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      },
+      "vehicle": {
+        "type": "String"
+      }
+    }
+  },
+  "duringATrip": "During a trip",
+  "shareMyTrip": "Share my trip",
+  "shareMyTripSubtitle": "Send live trip details to someone you trust",
+  "tripDetailsCopied": "Trip details copied to clipboard",
+  "reportAProblem": "Report a problem",
+  "reportAProblemSubtitle": "Driving, behaviour, route or payment",
+  "supportTitle": "24/7 support",
+  "supportSubtitle": "Talk to a GET.teksi agent",
+  "connectingToSupport": "Connecting you to support…",
+  "emergencyContacts": "EMERGENCY CONTACTS",
+  "add": "Add",
+  "noEmergencyContacts": "No contacts yet. Add someone who should be alerted if you press SOS.",
+  "remove": "Remove",
+  "sosBodyNoContacts": "We’ll place a call to {number} and copy your trip details so you can send them to your contacts.",
+  "@sosBodyNoContacts": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "sosBodyWithContacts": "We’ll place a call to {number} and copy your trip details so you can send them to your {count} emergency contacts.",
+  "@sosBodyWithContacts": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sosTriggered": "SOS triggered",
+  "sosTriggeredBody": "Trip details copied. Support has been notified.",
+  "callingEmergency": "Calling {number}…",
+  "@callingEmergency": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "callEmergency": "Call {number}",
+  "@callEmergency": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "reportSubmitted": "Report submitted",
+  "reportSubmittedBody": "{reason} — our safety team will follow up within 24 hours.",
+  "@reportSubmittedBody": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "reportUnsafeDriving": "Unsafe driving",
+  "reportDriverBehaviour": "Driver behaviour",
+  "reportWrongRoute": "Wrong route taken",
+  "reportExtraPayment": "Asked for extra payment",
+  "reportVehicleMismatch": "Vehicle did not match",
+  "reportSomethingElse": "Something else",
+  "addEmergencyContact": "Add emergency contact",
+  "nameLabel": "Name",
+  "nameHint": "e.g. Mum",
+  "phoneNumberLabel": "Phone number",
+  "saveContact": "Save contact",
+  "balanceCaps": "BALANCE",
+  "topUp": "Top up",
+  "promos": "Promos",
+  "paymentMethods": "Payment methods",
+  "cardExpires": "Expires {date}",
+  "@cardExpires": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "defaultLabel": "Default",
+  "activity": "Activity",
+  "noTransactions": "No transactions yet",
+  "noTransactionsBody": "Rides, top-ups and payouts appear here.",
+  "cashTripsNote": "Cash trips are settled directly with the driver and don’t move your wallet balance.",
+  "topUpTitle": "Top up your wallet",
+  "topUpUnavailable": "Card payments are not connected yet, so there is no way to add to your balance. Your balance changes when a trip settles.",
+  "topUpChargedTo": "Charged to {card}.",
+  "@topUpChargedTo": {
+    "placeholders": {
+      "card": {
+        "type": "String"
+      }
+    }
+  },
+  "topUpDescription": "Top-up from card {card}",
+  "@topUpDescription": {
+    "placeholders": {
+      "card": {
+        "type": "String"
+      }
+    }
+  },
+  "profile": "Profile",
+  "edit": "Edit",
+  "passengerRating": "Passenger rating",
+  "tripsTakenLabel": "Trips taken",
+  "driverProfile": "Driver profile",
+  "verified": "Verified",
+  "driverRating": "Driver rating",
+  "tripsGivenLabel": "Trips given",
+  "earned": "Earned",
+  "memberSince": "Member since {date}",
+  "@memberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "ratingExplainer": "Your rating is the average of your last 50 trips. Passengers and drivers rate each other after every completed ride.",
+  "editProfile": "Edit profile",
+  "fullName": "Full name",
+  "email": "Email",
+  "save": "Save",
+  "shortcuts": "Shortcuts",
+  "addHome": "Add home",
+  "addHomeSubtitle": "Set your home address for one-tap booking",
+  "removeHome": "Remove home",
+  "addWork": "Add work",
+  "addWorkSubtitle": "Set your work address for one-tap booking",
+  "removeWork": "Remove work",
+  "changeHome": "Change home",
+  "changeWork": "Change work",
+  "popularInKl": "Popular in Kuala Lumpur",
+  "setYourHome": "Set your home",
+  "setYourWork": "Set your work",
+  "searchForAnAddress": "Search for an address",
+  "noMatches": "No matches",
+  "noMatchesBody": "Try another name.",
+  "order": "Order",
+  "orderGoneTitle": "This order is no longer available",
+  "orderGoneBody": "It was taken or cancelled.",
+  "rideRequest": "Ride request",
+  "postedAgo": "Posted {time}",
+  "@postedAgo": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "raisedTimes": "{count, plural, =1{raised {count} time} other{raised {count} times}}",
+  "@raisedTimes": {
+    "description": "How many times the passenger raised their asking price. Malay does not inflect for number, so its plural has a single 'other' case.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "passengerCount": "{count, plural, =1{{count} passenger} other{{count} passengers}}",
+  "@passengerCount": {
+    "description": "How many people are riding.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toPickup": "To pickup",
+  "tripLength": "Trip length",
+  "carType": "Car type",
+  "payment": "Payment",
+  "orderClosedToOffers": "This order is no longer accepting offers.",
+  "yourOffer": "Your offer",
+  "waitingForReply": "Waiting for {name} to reply",
+  "@waitingForReply": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "withdrawOffer": "Withdraw offer",
+  "passengerOffers": "Passenger offers",
+  "marketPrice": "Market {amount}",
+  "@marketPrice": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "lowerOffer": "Lower offer",
+  "raiseOffer": "Raise offer",
+  "youKeepAfterFee": "You keep {net} after {fee} fee",
+  "@youKeepAfterFee": {
+    "description": "The driver's take-home on a bid, and the commission deducted from it.",
+    "placeholders": {
+      "net": {
+        "type": "String"
+      },
+      "fee": {
+        "type": "String"
+      }
+    }
+  },
+  "resetTo": "Reset to {amount}",
+  "@resetTo": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "counterOfferWarning": "Counter-offers take longer to be accepted than taking the passenger’s price.",
+  "offerAmount": "Offer {amount}",
+  "@offerAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "acceptAmount": "Accept {amount}",
+  "@acceptAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "skipThisOrder": "Skip this order",
+  "vehicle": "Vehicle",
+  "notADriverTitle": "You’re not a driver yet",
+  "notADriverBody": "Set up your vehicle to start receiving orders.",
+  "seatCount": "{count, plural, =1{{count} seat} other{{count} seats}}",
+  "@seatCount": {
+    "description": "How many seats a vehicle has.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "category": "Category",
+  "editDetails": "Edit details",
+  "documents": "Documents",
+  "documentsNote": "Documents are verified automatically in this build. In production these would be reviewed against LPKP/APAD records before a driver can go online.",
+  "editVehicle": "Edit vehicle",
+  "plateNumber": "Plate number",
+  "colour": "Colour",
+  "saveChanges": "Save changes",
+  "docApproved": "Approved",
+  "docInReview": "In review",
+  "docRejected": "Rejected",
+  "docNotUploaded": "Not uploaded",
+  "expiresDate": "Expires {date}",
+  "@expiresDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "classHintEconomy": "Perodua, Proton, small sedans",
+  "classHintComfort": "Honda City, Toyota Vios and up",
+  "classHintXl": "MPVs and 7-seaters",
+  "driverIntroTitle": "Start earning with your car",
+  "driverIntroBody": "See ride requests near you, choose the ones worth your time, and set your own price on every trip.",
+  "perkKeepTitle": "Keep {percent}% of every fare",
+  "@perkKeepTitle": {
+    "description": "The driver's share of a fare, as a whole percentage.",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "perkKeepBody": "Our service fee is {percent}% — no surge splits, no hidden cuts.",
+  "@perkKeepBody": {
+    "description": "The platform's commission, to one decimal place.",
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "perkHoursTitle": "Drive when you want",
+  "perkHoursBody": "Go online and offline in one tap. No shifts, no quotas.",
+  "perkChoiceTitle": "You choose the order",
+  "perkChoiceBody": "See the destination and the fare before you accept anything.",
+  "driverIntroDocsNote": "This build verifies documents automatically so you can try the driver side right away.",
+  "yourVehicle": "Your vehicle",
+  "make": "Make",
+  "model": "Model",
+  "year": "Year",
+  "vehicleCategory": "Vehicle category",
+  "startDriving": "Start driving",
+  "colourHint": "White",
+  "@colourHint": {
+    "description": "Placeholder in the vehicle colour field, and the value stored when the driver leaves it blank."
+  },
+  "serviceCity": "City",
+  "serviceIntercity": "Intercity",
+  "serviceDelivery": "Delivery",
+  "serviceFreight": "Freight",
+  "serviceMoto": "Moto",
+  "cardEndingIn": "Card {tail}",
+  "@cardEndingIn": {
+    "description": "The card on file, named by its last four digits.",
+    "placeholders": {
+      "tail": {
+        "type": "String"
+      }
+    }
+  },
+  "optionChildSeat": "Child seat",
+  "optionPet": "Travelling with a pet",
+  "optionLuggage": "Large luggage",
+  "optionAirCon": "Air conditioning",
+  "optionNoSmoking": "Non-smoking car",
+  "optionSilentRide": "Silent ride",
+  "optionFemaleDriver": "Prefer a female driver",
+  "whereTo": "Where to?",
+  "home": "Home",
+  "work": "Work",
+  "saved": "Saved",
+  "offersReceived": "{count, plural, =1{{count} offer received} other{{count} offers received}}",
+  "@offersReceived": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yourPriceSearching": "Your price {amount} · searching {elapsed}",
+  "@yourPriceSearching": {
+    "description": "elapsed is an already-formatted duration such as \"1m 20s\".",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "elapsed": {
+        "type": "String"
+      }
+    }
+  },
+  "noOffersRaisePrompt": "No offers yet. Raising your price is the fastest way to get picked up.",
+  "raiseSheetBody": "More drivers see your order when the fare goes up. You’re currently offering {amount}.",
+  "@raiseSheetBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "recommendedSuffix": " · recommended",
+  "@recommendedSuffix": {
+    "description": "Appended to the middle raise suggestion. Leading separator included so a language can drop it."
+  },
+  "cancelYourOrder": "Cancel your order?",
+  "cancelReasonPrompt": "Tell us why so we can improve matching.",
+  "offerMetaLine": "{eta} min away · {distance} · {trips} trips",
+  "@offerMetaLine": {
+    "placeholders": {
+      "eta": {
+        "type": "int"
+      },
+      "distance": {
+        "type": "String"
+      },
+      "trips": {
+        "type": "String"
+      }
+    }
+  },
+  "tagSafeDriving": "Safe driving",
+  "tagCleanCar": "Clean car",
+  "tagPolite": "Polite",
+  "tagGoodConversation": "Good conversation",
+  "tagKnowsRoute": "Knows the route",
+  "tagOnTime": "On time",
+  "tagHelpedLuggage": "Helped with luggage",
+  "tagComfortableRide": "Comfortable ride",
+  "tagRudeBehaviour": "Rude behaviour",
+  "tagDirtyCar": "Dirty car",
+  "tagUnsafeDriving": "Unsafe driving",
+  "tagLateArrival": "Late arrival",
+  "tagWrongRoute": "Wrong route",
+  "tagAskedForMoney": "Asked for more money",
+  "tagBadSmell": "Bad smell",
+  "tagNoAirCon": "No air conditioning",
+  "tagPolitePassenger": "Polite passenger",
+  "tagClearPickup": "Clear pickup point",
+  "tagLeftCarClean": "Left car clean",
+  "tagKeptMeWaiting": "Kept me waiting",
+  "tagWrongPickup": "Wrong pickup point",
+  "tagTooManyPassengers": "Too many passengers",
+  "tagMessy": "Messy",
+  "phraseAtPickup": "I’m at the pickup point",
+  "phraseTwoMinutes": "Give me 2 minutes please",
+  "phraseBlueShirt": "I’m wearing a blue shirt",
+  "phraseWhichCar": "Which car are you in?",
+  "phraseCallOnArrival": "Please call me when you arrive",
+  "phraseThankYou": "Thank you!",
+  "phraseOnMyWay": "I’m on my way",
+  "phraseArrivedWaiting": "I’ve arrived, waiting outside",
+  "phraseTrafficLate": "Traffic is heavy, running 5 min late",
+  "phraseWhereToStop": "Where exactly should I stop?",
+  "phraseComeOut": "Please come out, I cannot wait here",
+  "cancelDriverTooLong": "Driver is taking too long",
+  "cancelDriverAsked": "Driver asked me to cancel",
+  "cancelNoLongerNeed": "I no longer need the ride",
+  "cancelWrongPickupAddress": "Wrong pickup address",
+  "cancelFoundAnother": "Found another ride",
+  "cancelPriceTooHigh": "Price is too high",
+  "cancelPassengerSilent": "Passenger is not responding",
+  "cancelPassengerNoShow": "Passenger did not show up",
+  "cancelPickupUnreachable": "Pickup point is unreachable",
+  "cancelTooFar": "Too far from my location",
+  "cancelVehicleProblem": "Vehicle problem",
+  "cancelPassengerAsked": "Passenger asked to cancel",
+  "promoHalfOff": "50% off your next ride, up to RM10",
+  "promoFiveOff": "RM5 off any trip",
+  "promoAirport": "RM15 off an airport transfer",
+  "chat": "Chat",
+  "chatUnavailableTitle": "Conversation unavailable",
+  "chatUnavailableBody": "This ride no longer exists.",
+  "passengerLabel": "Passenger",
+  "yourDriver": "Your driver",
+  "chatSubtitle": "{who} · trip to {destination}",
+  "@chatSubtitle": {
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "chatOnlyDuringTrip": "Messages are only available during the trip.",
+  "messageHint": "Message…",
+  "send": "Send",
+  "rate": "Rate",
+  "rideNotFound": "Ride not found",
+  "tripCompleted": "Trip completed",
+  "howWasYourTrip": "How was your trip?",
+  "howWasYourTripDriver": "How was your trip with them?",
+  "addACommentOptional": "Add a comment (optional)",
+  "addATipFor": "Add a tip for {name}",
+  "@addATipFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "none": "None",
+  "submitAndTip": "Submit and tip {amount}",
+  "@submitAndTip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "submitRating": "Submit rating",
+  "promoInvalid": "That code isn’t valid or has expired.",
+  "promoApplied": "{code} applied — {label}",
+  "@promoApplied": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "enterAPromoCode": "Enter a promo code",
+  "apply": "Apply",
+  "availableForYou": "Available for you",
+  "minimumFareIs": "Minimum fare {amount}",
+  "@minimumFareIs": {
+    "description": "The spend a promo code requires. Distinct from minimumFare, which labels the driver's filter.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "use": "Use",
+  "inviteFriends": "Invite friends",
+  "referralBody": "Give a friend {amount} off their first ride and get {amount} when they take it.",
+  "@referralBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "copyReferralCode": "Copy referral code",
+  "referralCodeCopied": "Referral code copied",
+  "inviteText": "Use my GET.teksi code {code} and get {amount} off your first ride.",
+  "@inviteText": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteCopied": "Invite copied to clipboard",
+  "shareInvite": "Share invite",
+  "setYourRoute": "Set your route",
+  "pickupLocation": "Pickup location",
+  "stopAlongTheWay": "Stop along the way",
+  "addAStop": "Add a stop",
+  "noMatchingPlaces": "No matching places",
+  "noMatchingPlacesBody": "Try a mall, a station, or a neighbourhood name.",
+  "today": "Today",
+  "thisWeek": "This week",
+  "allTime": "All time",
+  "netEarnings": "Net earnings",
+  "trips": "Trips",
+  "distance": "Distance",
+  "time": "Time",
+  "averageFare": "Average fare",
+  "rating": "Rating",
+  "perHour": "Per hour",
+  "noCompletedTrips": "No completed trips yet",
+  "noCompletedTripsBody": "Go online and accept an order — your earnings will show up here.",
+  "asPassenger": "As passenger",
+  "asDriver": "As driver",
+  "noRidesYet": "No rides yet",
+  "noRidesDriverBody": "Completed trips you drive will appear here.",
+  "noRidesPassengerBody": "Book your first ride and it will show up here.",
+  "cancelled": "Cancelled",
+  "youRated": "You rated {stars}",
+  "@youRated": {
+    "placeholders": {
+      "stars": {
+        "type": "int"
+      }
+    }
+  },
+  "verdictLowLabel": "Below market",
+  "verdictLowHint": "Drivers may skip this. Expect a longer wait.",
+  "verdictFairLabel": "Fair price",
+  "verdictFairHint": "Around what drivers usually accept on this route.",
+  "verdictGoodLabel": "Great price",
+  "verdictGoodHint": "Drivers respond quickly to offers like this.",
+  "verdictHighLabel": "Above market",
+  "verdictHighHint": "You’re offering more than this trip usually costs.",
+  "simulatedMarketplaceRowSubtitle": "Bot drivers bid on your orders and bot passengers post rides",
+  "simulationBanner": "With this on you can walk both sides of the marketplace on one device: bots bid on your orders as a passenger, and post orders into your feed as a driver.",
+  "appNameVersion": "GET.teksi 1.0.0",
+  "builtWith": "Built with Flutter · Android, iOS, Web, HarmonyOS",
+  "tripDetails": "Trip details",
+  "refIs": "Ref {reference}",
+  "@refIs": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "fareBreakdown": "Fare breakdown",
+  "agreedPrice": "Agreed price",
+  "yourOriginalOffer": "Your original offer",
+  "priceRaisedTimes": "{count, plural, =1{Price raised {count}×} other{Price raised {count}×}}",
+  "@priceRaisedTimes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "serviceFee": "Service fee",
+  "youEarned": "You earned",
+  "tip": "Tip",
+  "totalPaid": "Total paid",
+  "paidBy": "Paid by {method}",
+  "@paidBy": {
+    "description": "method is one of paidByCash / paidByCard / paidByWallet.",
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "paidByCash": "cash",
+  "paidByCard": "card {tail}",
+  "@paidByCard": {
+    "placeholders": {
+      "tail": {
+        "type": "String"
+      }
+    }
+  },
+  "paidByWallet": "wallet",
+  "yourRating": "Your rating",
+  "tripReferenceCopied": "Trip reference copied",
+  "copyTripReference": "Copy trip reference",
+  "currentLocation": "Current location",
+  "pickup": "Pickup",
+  "drive": "Drive",
+  "notifications": "Notifications",
+  "notificationsDeniedSubtitle": "Off — tap to turn them on",
+  "notificationsUnavailableSubtitle": "Not available on this device",
+  "notificationsBlockedHint": "Your browser is blocking notifications for this site. Change it there and come back.",
+  "switchToPassengerTooltip": "Switch to passenger",
+  "earningsSemantics": "Earnings, {amount}, {status}",
+  "@earningsSemantics": {
+    "description": "Screen-reader label for the driver's earnings pill.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "onlineWord": "online",
+  "offlineWord": "offline",
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "description": "A duration under an hour.",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{hours} h",
+  "@durationHours": {
+    "description": "A whole number of hours. Malay abbreviates jam as j.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "justNow": "just now",
+  "secondsAgo": "{seconds}s ago",
+  "@secondsAgo": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{minutes} min ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours} h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{days} d ago",
+  "@daysAgo": {
+    "description": "Malay abbreviates hari as h.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "yesterday": "Yesterday",
+  "ordersNearby": "{count, plural, =1{{count} order nearby} other{{count} orders nearby}}",
+  "@ordersNearby": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "distanceToPickup": "{distance} to pickup · {duration}",
+  "@distanceToPickup": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "clearLocalDataConfirmBody": "This removes all rides, offers, messages and transactions stored on this device. Your profile stays signed in.",
+  "nothingNew": "Nothing new",
+  "nothingNewBody": "Ride updates, offers and promos will show up here.",
+  "lowerFareTooltip": "Lower fare",
+  "raiseFareTooltip": "Raise fare",
+  "close": "Close"
+}

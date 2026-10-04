@@ -1,0 +1,267 @@
+# Builds a signed iOS app and hands it to App Store Connect.
+#
+# Manual only. There is no push or tag trigger on purpose: an upload is a thing
+# other people can see, and a workflow that fires on a branch push will
+# eventually fire on one nobody meant to ship. The default destination is
+# `validate`, which runs Apple's checks on the build and uploads nothing —
+# choosing `testflight` is a second, deliberate act.
+#
+# Everything it needs is a repository secret; nothing about the Apple account
+# lives in this repo. docs/RELEASING.md says where each one comes from.
+name: Release iOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      destination:
+        description: "validate = check only, upload nothing. testflight = upload."
+        type: choice
+        options: [validate, testflight]
+        default: validate
+      build_number:
+        description: "Optional. Defaults to the run number, which only ever goes up."
+        type: string
+        required: false
+
+env:
+  FLUTTER_VERSION: '3.47.0'
+  # Must match PRODUCT_BUNDLE_IDENTIFIER in the Xcode project, and the
+  # provisioning profile. Asserted below rather than assumed.
+  BUNDLE_ID: my.getgroup.getTeksi
+
+jobs:
+  release:
+    name: Build and ${{ inputs.destination }}
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fail here, in one second, rather than eight minutes into a build that
+      # was never going to be signable. A missing secret is the most likely
+      # reason this workflow fails on its first run.
+      - name: Check the secrets are present
+        env:
+          CERT: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+          CERT_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          PROFILE: ${{ secrets.APPLE_PROVISIONING_PROFILE }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          missing=""
+          for name in CERT CERT_PASSWORD PROFILE TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_PRIVATE_KEY; do
+            [ -n "${!name}" ] || missing="$missing $name"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing"
+            echo "See docs/RELEASING.md for where each one comes from."
+            exit 1
+          fi
+
+      - name: Assert the bundle identifier has not drifted
+        run: |
+          # The profile is issued for one bundle id. If the Xcode project ever
+          # says something else, signing fails with a message about
+          # provisioning that does not mention the actual cause.
+          if ! grep -q "PRODUCT_BUNDLE_IDENTIFIER = ${BUNDLE_ID};" ios/Runner.xcodeproj/project.pbxproj; then
+            echo "::error::${BUNDLE_ID} is not the app target's bundle id."
+            grep -n "PRODUCT_BUNDLE_IDENTIFIER" ios/Runner.xcodeproj/project.pbxproj || true
+            exit 1
+          fi
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      # A keychain of its own, deleted in the final step whatever happens. The
+      # runner is thrown away afterwards either way; this is so a failure
+      # halfway through does not leave a signing identity unlocked in a
+      # keychain some later step could reach.
+      - name: Import the signing certificate
+        env:
+          CERT: ${{ secrets.APPLE_CERTIFICATE_P12 }}
+          CERT_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          KEYCHAIN="$RUNNER_TEMP/signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+          echo "$CERT" | base64 --decode > "$RUNNER_TEMP/certificate.p12"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security import "$RUNNER_TEMP/certificate.p12" \
+            -k "$KEYCHAIN" -P "$CERT_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security
+          # Lets codesign use the key without a UI prompt nobody is there to
+          # answer.
+          security set-key-partition-list -S apple-tool:,apple: \
+            -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN" >/dev/null
+          # Prepend rather than replace: dropping the runner's existing
+          # keychains from the search list breaks tools that expect them.
+          security list-keychains -d user -s "$KEYCHAIN" \
+            $(security list-keychains -d user | tr -d '"')
+          rm "$RUNNER_TEMP/certificate.p12"
+
+          echo "KEYCHAIN=$KEYCHAIN" >> "$GITHUB_ENV"
+          # Proves an identity actually landed. An import that quietly brought
+          # in nothing usable would otherwise surface much later, as a signing
+          # error about a profile.
+          security find-identity -v -p codesigning "$KEYCHAIN" | tee /tmp/identities
+          grep -q "1)" /tmp/identities || {
+            echo "::error::No code signing identity in the imported certificate."
+            exit 1
+          }
+
+      - name: Install the provisioning profile
+        env:
+          PROFILE: ${{ secrets.APPLE_PROVISIONING_PROFILE }}
+        run: |
+          PROFILES=~/Library/MobileDevice/Provisioning\ Profiles
+          mkdir -p "$PROFILES"
+          echo "$PROFILE" | base64 --decode > "$RUNNER_TEMP/profile.mobileprovision"
+
+          # A .mobileprovision is a CMS-signed plist; this is how you read one.
+          security cms -D -i "$RUNNER_TEMP/profile.mobileprovision" > "$RUNNER_TEMP/profile.plist"
+          UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$RUNNER_TEMP/profile.plist")
+          NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$RUNNER_TEMP/profile.plist")
+          APP_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$RUNNER_TEMP/profile.plist")
+
+          # The profile has to be for this app. Signing with the wrong one
+          # fails late and unhelpfully.
+          case "$APP_ID" in
+            *".$BUNDLE_ID") ;;
+            *)
+              echo "::error::Profile '$NAME' is for $APP_ID, not $BUNDLE_ID."
+              exit 1
+              ;;
+          esac
+
+          cp "$RUNNER_TEMP/profile.mobileprovision" "$PROFILES/$UUID.mobileprovision"
+          echo "PROFILE_NAME=$NAME" >> "$GITHUB_ENV"
+          echo "PROFILE_PATH=$PROFILES/$UUID.mobileprovision" >> "$GITHUB_ENV"
+          echo "Installed profile: $NAME"
+
+      - name: Point the Xcode project at the team and profile
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          # Through Release.xcconfig rather than by editing project.pbxproj.
+          # The team id belongs to the Apple account, not to the source tree,
+          # and this keeps it out of every checkout and every diff.
+          cat >> ios/Flutter/Release.xcconfig <<EOF
+
+          // Added by .github/workflows/release-ios.yml, never committed.
+          DEVELOPMENT_TEAM=$TEAM_ID
+          CODE_SIGN_STYLE=Manual
+          PROVISIONING_PROFILE_SPECIFIER=$PROFILE_NAME
+          // Both forms on purpose. The Flutter template sets the
+          // sdk-conditional variant at project level, and this file is the
+          // target's, which outranks it — but only if the two are talking
+          // about the same setting name. Writing both means it resolves to
+          // Apple Distribution whichever one Xcode reaches for, instead of
+          // quietly falling back to a development identity that is not in
+          // this keychain.
+          CODE_SIGN_IDENTITY=Apple Distribution
+          CODE_SIGN_IDENTITY[sdk=iphoneos*]=Apple Distribution
+          EOF
+
+          echo "--- ios/Flutter/Release.xcconfig"
+          sed 's/^DEVELOPMENT_TEAM=.*/DEVELOPMENT_TEAM=<redacted>/' ios/Flutter/Release.xcconfig
+
+      - name: Write the export options
+        env:
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store</string>
+            <key>teamID</key><string>$TEAM_ID</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>uploadSymbols</key><true/>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>$BUNDLE_ID</key><string>$PROFILE_NAME</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+          plutil -lint "$RUNNER_TEMP/ExportOptions.plist"
+
+      - name: Build the ipa
+        run: |
+          # App Store Connect refuses a build number it has already seen, and
+          # the one in pubspec.yaml has been 1 since the first commit. The run
+          # number only goes up, which is the only property that matters here.
+          BUILD_NUMBER="${{ inputs.build_number }}"
+          [ -n "$BUILD_NUMBER" ] || BUILD_NUMBER="${{ github.run_number }}"
+          echo "Build number: $BUILD_NUMBER"
+          flutter build ipa \
+            --release \
+            --build-number="$BUILD_NUMBER" \
+            --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
+
+      - name: Assert the archive carries the privacy manifest
+        run: |
+          # Same silent failure as in CI, and it matters more here: this is the
+          # artifact that goes to Apple. Look inside the ipa itself.
+          IPA=$(ls build/ios/ipa/*.ipa | head -1)
+          echo "Checking $IPA"
+          unzip -o -q "$IPA" -d "$RUNNER_TEMP/ipa"
+          MANIFEST=$(find "$RUNNER_TEMP/ipa/Payload" -maxdepth 2 -name PrivacyInfo.xcprivacy | head -1)
+          if [ -z "$MANIFEST" ]; then
+            echo "::error::No PrivacyInfo.xcprivacy in the app bundle."
+            exit 1
+          fi
+          plutil -lint "$MANIFEST"
+
+      - name: Send it to Apple
+        env:
+          ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+        run: |
+          # altool looks for the key by name in this exact directory. It is not
+          # a path you get to choose.
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$ASC_PRIVATE_KEY" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+
+          IPA=$(ls build/ios/ipa/*.ipa | head -1)
+          # An if rather than `test && assign`: the runner's shell is `bash -e`,
+          # and a failing test in an && list ends the step.
+          if [ "${{ inputs.destination }}" = "testflight" ]; then
+            ACTION=--upload-app
+          else
+            ACTION=--validate-app
+          fi
+
+          echo "Running altool $ACTION on $IPA"
+          xcrun altool $ACTION \
+            --type ios \
+            --file "$IPA" \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
+
+          rm -f ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+
+      - name: Keep the ipa
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipa
+          path: build/ios/ipa/*.ipa
+          if-no-files-found: warn
+
+      - name: Clean up the signing material
+        if: always()
+        run: |
+          security delete-keychain "$KEYCHAIN" 2>/dev/null || true
+          rm -f "$PROFILE_PATH"
+          rm -f ~/.appstoreconnect/private_keys/*.p8
