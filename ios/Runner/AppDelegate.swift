@@ -139,12 +139,87 @@ enum AppBridge {
   }
 }
 
+/// The APNs device token, for the server to send to.
+///
+/// Registering is asynchronous and answers on an AppDelegate callback rather
+/// than as a return — the same shape as LocationBridge, and held for the same
+/// reason: the Flutter result has to survive from the request until whichever
+/// callback arrives, and must be called exactly once.
+///
+/// Permission is requested here rather than in Dart. iOS asks once and only
+/// once; after a refusal the request returns immediately and silently, so the
+/// honest answer to every failure — refused, Simulator with no push, APNs not
+/// answering — is the same nil, and the caller treats them alike.
+final class PushBridge: NSObject {
+
+  static let channelName = "get.teksi/push"
+
+  /// APNs normally answers in well under a second. It is not guaranteed to
+  /// answer at all, and a Flutter result never called leaves an await hanging
+  /// for the life of the process.
+  private static let timeout: TimeInterval = 10
+
+  private var pending: FlutterResult?
+  private var timeoutTask: DispatchWorkItem?
+
+  func register(with messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: Self.channelName, binaryMessenger: messenger)
+    channel.setMethodCallHandler { [weak self] call, result in
+      guard call.method == "token" else {
+        result(FlutterMethodNotImplemented)
+        return
+      }
+      self?.requestToken(result)
+    }
+  }
+
+  private func requestToken(_ result: @escaping FlutterResult) {
+    // One at a time, as with location: a second request while the first is
+    // outstanding gets nil rather than displacing a result being awaited.
+    guard pending == nil else {
+      result(nil)
+      return
+    }
+    pending = result
+
+    let task = DispatchWorkItem { [weak self] in self?.finish(nil) }
+    timeoutTask = task
+    DispatchQueue.main.asyncAfter(deadline: .now() + Self.timeout, execute: task)
+
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) {
+      granted, _ in
+      guard granted else {
+        DispatchQueue.main.async { self.finish(nil) }
+        return
+      }
+      // Must be on the main thread, and must happen after the grant: calling
+      // it without permission registers for silent pushes only.
+      DispatchQueue.main.async {
+        UIApplication.shared.registerForRemoteNotifications()
+      }
+    }
+  }
+
+  /// Replies once and tears down, whichever path got here.
+  func finish(_ token: String?) {
+    guard let result = pending else { return }
+    pending = nil
+    timeoutTask?.cancel()
+    timeoutTask = nil
+    result(token)
+  }
+}
+
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   /// Held for the process lifetime: it owns the CLLocationManager and the
   /// pending Flutter result, and a delegate deallocated between the permission
   /// prompt and the fix answers nothing at all.
   private let location = LocationBridge()
+
+  /// Held for the same reason as `location`: it owns the pending Flutter
+  /// result that the APNs callbacks below complete.
+  private let push = PushBridge()
 
   override func application(
     _ application: UIApplication,
@@ -167,5 +242,29 @@ enum AppBridge {
     let messenger = engineBridge.applicationRegistrar.messenger()
     location.register(with: messenger)
     AppBridge.register(with: messenger)
+    push.register(with: messenger)
+  }
+
+  // MARK: - APNs
+
+  /// Success. The token arrives as bytes and the server wants hex.
+  override func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    super.application(
+      application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+    push.finish(deviceToken.map { String(format: "%02x", $0) }.joined())
+  }
+
+  /// Failure. No network, no push entitlement, a Simulator on a host that
+  /// cannot reach APNs. Nil, like every other way this does not work.
+  override func application(
+    _ application: UIApplication,
+    didFailToRegisterForRemoteNotificationsWithError error: Error
+  ) {
+    super.application(
+      application, didFailToRegisterForRemoteNotificationsWithError: error)
+    push.finish(nil)
   }
 }

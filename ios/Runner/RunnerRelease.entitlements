@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Release only. A build shipped with "development" here gets tokens
+	     from the APNs sandbox, and the production APNs host then rejects
+	     them as BadDeviceToken — which looks like a server bug and is not
+	     one. -->
+	<key>aps-environment</key>
+	<string>production</string>
+</dict>
+</plist>

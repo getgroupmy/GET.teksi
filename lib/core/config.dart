@@ -34,6 +34,18 @@ class AppConfig {
   /// much worse place to discover a misconfiguration.
   static const hasBackend = supabaseUrl != '' && supabaseKey != '';
 
+  /// The VAPID public key for Web Push, if push is configured.
+  ///
+  /// Public by design — it is handed to the browser as
+  /// `applicationServerKey`, so it ships in the bundle either way. Its
+  /// private half signs the requests the server makes and belongs nowhere
+  /// near this file; test/no_service_role_key_test.dart fails the build if it
+  /// ever appears in the repository.
+  ///
+  /// Unset, the app registers no web subscription and the browser is simply
+  /// not reachable while the tab is closed — the same place it is today.
+  static const vapidPublicKey = String.fromEnvironment('VAPID_PUBLIC_KEY');
+
   /// An OSRM instance to route against, if there is one.
   ///
   /// Unset, the app estimates distances on-device — straight line times an
