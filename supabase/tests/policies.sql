@@ -746,5 +746,76 @@ begin
 end $$;
 set role authenticated;
 
+-- ---------------------------------------------------------------------------
+\echo ''
+\echo '== push tokens =='
+--
+-- A push token is the address of somebody's phone. Reading someone else's is
+-- not a privacy nicety — it is the ability to send them notifications that
+-- appear to come from this app. So the interesting assertions here are the
+-- negative ones.
+-- ---------------------------------------------------------------------------
+
+select test.act_as(:aisyah);
+do $$ begin
+  perform test.allowed(
+    format('insert into public.push_tokens (user_id, platform, token) '
+           'values (%L, ''ios'', ''aisyah-device-token'')',
+           '11111111-1111-4111-8111-111111111111'),
+    'registering your own iOS device');
+
+  perform test.denied(
+    format('insert into public.push_tokens (user_id, platform, token) '
+           'values (%L, ''ios'', ''planted-token'')',
+           '22222222-2222-4222-8222-222222222222'),
+    'registering a device against someone else''s account');
+
+  -- Web Push cannot be delivered without the keys the payload is encrypted
+  -- to, so a row without them is not a token, it is a silent dead letter.
+  perform test.denied(
+    format('insert into public.push_tokens (user_id, platform, token) '
+           'values (%L, ''web'', ''https://push.example/x'')',
+           '11111111-1111-4111-8111-111111111111'),
+    'registering a web subscription with no encryption keys');
+
+  perform test.allowed(
+    format('insert into public.push_tokens '
+           '(user_id, platform, token, p256dh, auth) '
+           'values (%L, ''web'', ''https://push.example/ok'', ''k'', ''a'')',
+           '11111111-1111-4111-8111-111111111111'),
+    'registering a web subscription with its keys');
+
+  perform test.denied(
+    'update public.push_tokens set p256dh = ''k'', auth = ''a'' '
+    'where token = ''aisyah-device-token''',
+    'putting web keys on an iOS row');
+end $$;
+
+select test.act_as(:ravi);
+do $$ begin
+  perform test.eq(
+    (select count(*)::int from public.push_tokens),
+    0,
+    'another signed-in user cannot see anyone else''s devices');
+
+  perform test.affects_nothing(
+    'update public.push_tokens set token = ''hijacked''',
+    'rewriting a device token you cannot see');
+
+  perform test.affects_nothing(
+    'delete from public.push_tokens',
+    'deleting devices you cannot see');
+end $$;
+
+select test.act_as(:aisyah);
+do $$ begin
+  perform test.eq(
+    (select count(*)::int from public.push_tokens),
+    2,
+    'and the owner still has both of their devices');
+end $$;
+
+set role authenticated;
+
 \echo ''
 \echo 'ALL POLICY TESTS PASSED'
