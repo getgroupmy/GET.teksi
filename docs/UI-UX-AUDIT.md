@@ -148,6 +148,41 @@ either clips the name or walks the pin off the place it marks — and the same
 pickup and dropoff names are in the sheet below at the full system size,
 through `RouteStops`.
 
+#### And then again, in Malay
+
+The walk above was real, and it was also only half the app. `wrap` set
+`supportedLocales` but never a `locale`, so the harness fell back to English
+and all 23 screens were laid out twice in one of the two languages the app
+ships. Nothing said so; the gate reported 23 screens and meant it.
+
+Malay is not a rounding error on an English layout. Across the 498 strings the
+two locales share it runs **17% longer overall** and is longer in **70% of
+them**, and the worst growth is in the short strings with the least room:
+
+| English | Malay | Growth |
+|---|---|---|
+| "RM5 off any trip" | "Potongan RM5 untuk mana-mana perjalanan" | **+144%** |
+| "Today" | "Hari ini" | +60% |
+
+Two more overflows, both of them live in the shipping app, and both invisible
+in English at the same text size:
+
+- **RideDetailScreen, 59 pixels.** The fare was given `Expanded` and a
+  `scaleDown` `FittedBox` in the pass above; the date and time beside it were
+  left bare. "Today · 14:32" fits at 2.0x. "Hari ini · 14:32" does not.
+- **HistoryScreen, 26 pixels.** The rating line — an icon, a gap and a
+  `Text` — had nothing flexed in it at all. "You rated 5" becomes "Anda
+  menilai 5".
+
+Both are the first shape in the list above, the one this finding had already
+fixed nine instances of. English simply never pushed these two over the line.
+
+The gate now runs locale × scale, so 92 screen layouts rather than 46. It was
+scoped to layout deliberately: the semantics gate asserts that labels are
+*present*, and they are present in Malay by construction — the same
+`l.something` call sites, and `app_ms.arb` complete at 498 of 498 keys — so a
+locale axis there would cost runtime and cover nothing new.
+
 ### 7. Controls that announced nothing to a screen reader
 
 The audit had recorded only that labels "were added to the icon-only
@@ -197,7 +232,42 @@ reading of the code.
 - Light mode was built and opened in a browser for the first time during this
   pass; the settings and fare screens were checked visually after the fix.
 - Chip hit box measured in the running app: **104 × 52** (was ~33 tall).
-- Full suite: 79 tests, `flutter analyze` clean.
+- Full suite: **379 tests**, `flutter analyze` clean. (79 at the time of the
+  original audit.)
+
+### What "all 23 screens" was worth when findings 6 and 7 were written
+
+Less than it reads. Both gates walk every screen, but the fixture they walk
+them with published one ride and nothing else — no notifications, no
+transactions, no chat messages, no finished rides. So five screens were
+rendering an empty state, and **NotificationsScreen rendered three `Text`
+widgets and zero `Row`s**: the text-scale gate's entire job is catching a
+`Row` whose children no longer fit, and on that screen it could not have
+failed whatever the text size. It still counted as one of the twenty-three.
+
+Measured before and after populating the fixture, `Text`/`Row` per screen:
+
+| Screen | Before | After |
+|---|---|---|
+| NotificationsScreen | 3 / **0** | 16 / 5 |
+| WalletScreen | 14 / 4 | 30 / 10 |
+| HistoryScreen | 5 / 1 | 13 / 8 |
+| EarningsScreen | 21 / 3 | 23 / 4 |
+| ChatScreen | 7 / 5 | 12 / 5 |
+
+No screen renders an `EmptyState` now. Populating it surfaced no new overflow,
+so those five layouts are clean — but that is only worth saying because the
+gate was then checked for its ability to fail: forcing a 600-pixel minimum
+into the notification row gives a 379-pixel overflow with the current fixture,
+and `All tests passed` with the old one.
+
+Two things the fixture has to get right, both of which fail silently. Completed
+rides carry a rating from *both* sides, or the home screens push to `/rate/...`
+from a post-frame callback and throw for want of a `GoRouter` before laying out
+at all. And EarningsScreen opens on a midnight cutoff, so its seeded trip is
+clamped to just after midnight rather than a flat `now - 30 minutes` — which
+would land yesterday for any run between 00:00 and 00:30, empty the screen, and
+quiet the gate once a month at an hour nobody is watching.
 
 ## Not addressed
 
