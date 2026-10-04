@@ -84,12 +84,17 @@ class IdleSheet extends StatelessWidget {
                 children: [
                   Icon(Icons.search_rounded, color: c.accent, size: 22),
                   const SizedBox(width: 12),
-                  Text(
-                    l.whereTo,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      color: c.text,
+                  // The prompt is the widest piece of text on the idle sheet
+                  // and the first thing a passenger reads. Expanded lets it
+                  // wrap inside the search bar instead of running past it.
+                  Expanded(
+                    child: Text(
+                      l.whereTo,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        color: c.text,
+                      ),
                     ),
                   ),
                 ],

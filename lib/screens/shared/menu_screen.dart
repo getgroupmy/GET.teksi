@@ -125,13 +125,18 @@ class MenuScreen extends StatelessWidget {
                       color: c.accent,
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      isDriver
-                          ? l.switchToPassenger
-                          : (user.isDriver
-                                ? l.switchToDriver
-                                : l.becomeADriver),
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    // The button's minimumSize is a minimum, so a label that
+                    // needs two lines makes it taller rather than wider.
+                    Flexible(
+                      child: Text(
+                        isDriver
+                            ? l.switchToPassenger
+                            : (user.isDriver
+                                  ? l.switchToDriver
+                                  : l.becomeADriver),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ],
                 ),

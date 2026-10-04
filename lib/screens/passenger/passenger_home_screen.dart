@@ -185,15 +185,19 @@ class _PassengerHomeScreenState extends State<PassengerHomeScreen> {
                   ),
                   const Spacer(),
                   if (user.isDriver && activeRide == null)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: _RoleSwitch(
-                        icon: Icons.directions_car_filled_rounded,
-                        label: l.drive,
-                        onTap: () {
-                          session.setRole(Role.driver);
-                          context.go('/d');
-                        },
+                    // Flexible so the pill shortens its label rather than
+                    // pushing past the notifications button beside it.
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: _RoleSwitch(
+                          icon: Icons.directions_car_filled_rounded,
+                          label: l.drive,
+                          onTap: () {
+                            session.setRole(Role.driver);
+                            context.go('/d');
+                          },
+                        ),
                       ),
                     ),
                   FabButton(
@@ -255,11 +259,17 @@ class _RoleSwitch extends StatelessWidget {
             children: [
               Icon(icon, size: 16, color: c.accent),
               const SizedBox(width: 6),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+              // Flexible inside a mainAxisSize.min Row: the pill still hugs
+              // its label at a normal text size, and the label gives way
+              // rather than spilling past the pill when the text is large.
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],

@@ -115,18 +115,29 @@ class VehicleScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
+                // Both sides flexible, so a long label or a long class name
+                // wraps instead of being clipped. Unflexed, this row
+                // overflowed by 27 pixels at the normal text size and by 378
+                // at double it — and an overflow is not a visible failure in
+                // release, it is words that silently are not there.
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      l.category,
-                      style: TextStyle(fontSize: 13, color: c.textDim),
+                    Flexible(
+                      child: Text(
+                        l.category,
+                        style: TextStyle(fontSize: 13, color: c.textDim),
+                      ),
                     ),
-                    Text(
-                      vehicle.vehicleClass.labelIn(l),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(width: 12),
+                    Flexible(
+                      child: Text(
+                        vehicle.vehicleClass.labelIn(l),
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],

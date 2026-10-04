@@ -105,6 +105,49 @@ Dynamic Type at large system text sizes. Both now size to the taller targets.
 
 ---
 
+### 6. Layout broke at large system text sizes
+
+Addressed after the original audit, which had recorded this as not done: "the
+app has not been walked end to end at maximum system text size". It is now
+walked on every build, by `test/text_scale_test.dart`, which lays out all 23
+screens at 1.0x and at 2.0x and fails on any overflow.
+
+The app does not clamp the text scale — `MaterialApp.router` passes the
+platform's value through — so 2.0x is a setting a real user can choose, and
+Android's accessibility slider reaches it. iOS's larger accessibility sizes go
+further still, so 2.0x is a floor rather than a ceiling.
+
+Nine screens overflowed at 2.0x, and **VehicleScreen overflowed by 27 pixels
+at the normal text size** — a layout bug in the shipping app, not an
+accessibility one, and not visible in release, where an overflow clips
+silently instead of painting the debug stripe.
+
+What was wrong fell into four shapes:
+
+- **Label-and-value rows with neither side flexed** — the fare breakdown in
+  RideDetail, the vehicle category, the market price on OrderDetail, the fare
+  on RateScreen. Both sides are `Flexible` now, so the text wraps instead of
+  being clipped.
+- **A row of three independent facts** (distance, duration, reference) that
+  cannot fit on one line at any phone width once the text is large. Now a
+  `Wrap`.
+- **Columns taller than the viewport**, where a `Spacer` silently collapses to
+  zero and everything below it is cut off: PhoneScreen's terms and Continue
+  button, IntroScreen's slide body. Both scroll now, but only once they have
+  to — `ConstrainedBox` plus `IntrinsicHeight` keeps the `Spacer` working
+  while there is room.
+- **Pills in a top bar**, where the fix had a trap in it. Wrapping the
+  DriverHome earnings pill in `Flexible` *introduced* a 30-pixel overflow at
+  the normal text size, because a `Flexible` between two `Spacer`s is a third
+  flex child competing for the same free space and was handed a third of it.
+  One `Expanded` holding a `Center` does what the two `Spacer`s were for.
+
+One deliberate exception: the map pin's label chip caps its scale at 1.3x. It
+sits in a fixed-size marker box anchored to a coordinate, so unbounded growth
+either clips the name or walks the pin off the place it marks — and the same
+pickup and dropoff names are in the sheet below at the full system size,
+through `RouteStops`.
+
 ## Verification
 
 - `test/contrast_test.dart` — 24 tests asserting every text token clears 4.5:1
@@ -121,9 +164,6 @@ Dynamic Type at large system text sizes. Both now size to the taller targets.
   (`SystemChrome.setPreferredOrientations`) and constrained to a 480 px column,
   so the checklist's landscape/tablet items don't currently apply. Revisit if
   the orientation lock is lifted.
-- **Dynamic Type at the largest settings.** Rows were fixed where they were
-  obviously brittle, but the app has not been walked end to end at maximum
-  system text size.
 - **Screen-reader traversal order.** Semantic labels were added to the
   icon-only controls, but the full focus order has not been audited with a real
   screen reader.

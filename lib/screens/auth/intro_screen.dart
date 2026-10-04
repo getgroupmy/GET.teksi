@@ -53,9 +53,18 @@ class _IntroScreenState extends State<IntroScreen> {
                 children: [
                   Icon(Icons.navigation_rounded, color: c.accent, size: 24),
                   const SizedBox(width: 8),
-                  const Text(
-                    'GET.teksi',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  // The Spacer absorbs the slack while there is any; once the
+                  // wordmark and Skip together are wider than the screen
+                  // there is none, and an unflexed Text clips instead.
+                  const Flexible(
+                    child: Text(
+                      'GET.teksi',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                   const Spacer(),
                   TextButton(
@@ -65,7 +74,12 @@ class _IntroScreenState extends State<IntroScreen> {
                 ],
               ),
               Expanded(
-                child: Center(
+                // Centred while it fits, scrolling once it does not. Center
+                // hands its child the full height as a maximum, and the
+                // slide's icon, heading and body together are taller than
+                // that at a large text size — so without this the bottom of
+                // the body text is simply cut off.
+                child: SingleChildScrollView(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 220),
                     child: Column(
