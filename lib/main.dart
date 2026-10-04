@@ -9,6 +9,7 @@ import 'core/backend.dart';
 import 'core/duty.dart';
 import 'core/location.dart';
 import 'core/notifier.dart';
+import 'core/push.dart';
 import 'core/storage.dart';
 import 'l10n/app_localizations.dart';
 import 'router.dart';
@@ -105,6 +106,12 @@ class _RootState extends State<_Root> {
   DutyPresence? _duty;
   bool _askedToNotify = false;
 
+  /// The user whose devices are already registered for push, so this runs
+  /// once per sign-in rather than once per notification from the store —
+  /// SessionStore notifies most often for a new position, and re-registering
+  /// on each would be a write per GPS fix.
+  String? _registeredPushFor;
+
   @override
   void initState() {
     super.initState();
@@ -131,6 +138,28 @@ class _RootState extends State<_Root> {
     } else if (!wanted && sim.isRunning) {
       sim.stop();
     }
+  }
+
+  /// Tells the backend where to send this device's notifications.
+  ///
+  /// Wired here rather than into the sign-in screens for the reason
+  /// ProfileSync gives for listening rather than being called: there is more
+  /// than one way to arrive signed in, and a call wired into each is a call
+  /// the next one will forget. It was forgotten once already — the whole
+  /// transport shipped with nothing invoking this.
+  ///
+  /// registerForPush is silent whenever it cannot work: no backend, no
+  /// permission, a platform with no transport, a push service that did not
+  /// answer. So there is nothing to handle here and nothing to show.
+  void _registerPush(SessionStore session) {
+    final user = session.user;
+    if (!Backend.isLive || user == null) {
+      _registeredPushFor = null;
+      return;
+    }
+    if (_registeredPushFor == user.id) return;
+    _registeredPushFor = user.id;
+    unawaited(registerForPush(userId: user.id));
   }
 
   /// Asks for the notification permission once, after there is a reason to.
@@ -207,6 +236,7 @@ class _RootState extends State<_Root> {
         _syncSimulation(session, rides);
         _syncBeacon(session, rides);
         _syncProfile(session);
+        _registerPush(session);
         _askToNotify(session);
       }
     });
