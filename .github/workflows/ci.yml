@@ -244,7 +244,7 @@ jobs:
 
           # Sanity-check the scan itself: our own classes must be findable, or
           # the extraction silently failed and the whole check is meaningless.
-          if ! grep -q 'Lmy/getgroup/get_teksi' /tmp/dex-strings.txt; then
+          if ! grep -q 'Lmy/get/teksi' /tmp/dex-strings.txt; then
             echo "::error::Scan self-check failed — app classes not found in dex"
             exit 1
           fi

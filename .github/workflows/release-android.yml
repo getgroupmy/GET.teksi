@@ -23,7 +23,7 @@ env:
   FLUTTER_VERSION: '3.47.0'
   # Play and AppGallery both key a listing to this. Asserted below rather than
   # assumed, the same way release-ios.yml asserts the bundle id.
-  APPLICATION_ID: my.getgroup.get_teksi
+  APPLICATION_ID: my.get.teksi
 
 jobs:
   release:
@@ -223,7 +223,7 @@ jobs:
 
           # Same self-check as in ci.yml: if our own classes are not in there,
           # the extraction failed and a clean scan means nothing.
-          if ! grep -q 'Lmy/getgroup/get_teksi' /tmp/dex-strings.txt; then
+          if ! grep -q 'Lmy/get/teksi' /tmp/dex-strings.txt; then
             echo "::error::Scan self-check failed — app classes not found in dex"
             exit 1
           fi

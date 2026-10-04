@@ -81,7 +81,7 @@ if (requireUploadKey) {
 }
 
 android {
-    namespace = "my.getgroup.get_teksi"
+    namespace = "my.get.teksi"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -95,7 +95,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "my.getgroup.get_teksi"
+        applicationId = "my.get.teksi"
         // API 23 covers Huawei devices still on EMUI 4/5 as well as the
         // HarmonyOS 2-4 releases, which run Android APKs.
         minSdk = 23

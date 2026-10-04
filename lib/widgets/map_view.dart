@@ -151,7 +151,7 @@ class _MapViewState extends State<MapView> {
           // own server, whose usage policy excludes exactly this kind of app.
           // See AppConfig.tileUrl.
           urlTemplate: AppConfig.tileUrl,
-          userAgentPackageName: 'my.getgroup.get_teksi',
+          userAgentPackageName: 'my.get.teksi',
           maxZoom: 19,
           // Tiles are unavailable offline; the pins and routes above still
           // render over the background colour rather than a broken grid.
