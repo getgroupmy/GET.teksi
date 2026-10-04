@@ -11,8 +11,10 @@ import '../state/session.dart';
 /// `is_driver` is not decoration on the server — it is the condition on two
 /// policies:
 ///
-///   drivers read the open order feed   using (status = 'searching' and is_driver())
-///   drivers bid as themselves          with check (driver_id = auth.uid() and is_driver())
+///   rides are readable by participants and by drivers on the feed
+///       using (... or (status = 'searching' and is_driver()))
+///   drivers bid as themselves
+///       with check (driver_id = auth.uid() and is_driver())
 ///
 /// So a driver who finished onboarding in the app and went on duty against a
 /// live backend saw an empty order feed and had every bid rejected. Silently,
