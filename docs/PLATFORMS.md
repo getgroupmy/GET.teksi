@@ -274,6 +274,10 @@ real: **it can only fire while the process is alive.** Closing that gap
 entirely needs a push transport, and the GMS-free routes to one are HMS Push
 for AppGallery builds, APNs directly for iOS, and Web Push for the browser —
 three transports, three sets of credentials, and a server that holds them.
+**[docs/PUSH.md](PUSH.md) lays those out as a decision**: what each costs to
+operate rather than to write, which of them touch the GMS-free property this
+file is about, and why the server that holds the credentials turns out to be
+one the project already pays for.
 
 Keeping the process alive is the cheaper half of that problem, and on Android
 it is solved — see [Staying awake on duty](#staying-awake-on-duty).
