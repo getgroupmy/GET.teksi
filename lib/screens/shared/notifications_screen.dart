@@ -34,10 +34,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
+        leading: AppBackButton(onTap: () => context.pop()),
         title: Text(l.notifications),
       ),
       body: notifications.isEmpty

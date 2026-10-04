@@ -98,9 +98,8 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
     final c = context.c;
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.canPop() ? context.pop() : context.go('/p'),
+        leading: AppBackButton(
+          onTap: () => context.canPop() ? context.pop() : context.go('/p'),
         ),
       ),
       body: Column(
@@ -171,9 +170,8 @@ class _DriverOnboardingScreenState extends State<DriverOnboardingScreen> {
     final c = context.c;
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => setState(() => _onVehicleStep = false),
+        leading: AppBackButton(
+          onTap: () => setState(() => _onVehicleStep = false),
         ),
         title: Text(l.yourVehicle),
       ),

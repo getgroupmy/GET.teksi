@@ -400,6 +400,7 @@
   "addATipFor": "Tambah tip untuk {name}",
   "none": "Tiada",
   "submitAndTip": "Hantar dan beri tip {amount}",
+  "starRating": "{count, plural, other{{count} bintang}}",
   "submitRating": "Hantar penilaian",
   "promoInvalid": "Kod itu tidak sah atau telah luput.",
   "promoApplied": "{code} digunakan — {label}",

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/backend.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme.dart';
+import '../../widgets/ui.dart';
 
 /// Phone entry.
 ///
@@ -68,12 +69,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
     final c = context.c;
     final l = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.go('/intro'),
-        ),
-      ),
+      appBar: AppBar(leading: AppBackButton(onTap: () => context.go('/intro'))),
       body: SafeArea(
         // The column below pushes its button to the bottom with a Spacer,
         // which works right up to the point where the content is taller than

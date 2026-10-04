@@ -1382,6 +1382,17 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String starRating(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count stars',
+      one: '$count star',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get submitRating => 'Submit rating';
 
   @override

@@ -58,10 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (ride == null) {
       return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.pop(),
-          ),
+          leading: AppBackButton(onTap: () => context.pop()),
           title: Text(l.chat),
         ),
         body: EmptyState(
@@ -95,10 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
+        leading: AppBackButton(onTap: () => context.pop()),
         titleSpacing: 0,
         title: Row(
           children: [

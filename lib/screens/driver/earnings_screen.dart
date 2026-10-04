@@ -62,10 +62,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
+        leading: AppBackButton(onTap: () => context.pop()),
         title: Text(l.earnings),
       ),
       body: ListView(

@@ -40,10 +40,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     if (ride == null) {
       return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.pop(),
-          ),
+          leading: AppBackButton(onTap: () => context.pop()),
           title: Text(l.order),
         ),
         body: EmptyState(title: l.orderGoneTitle, body: l.orderGoneBody),
@@ -91,10 +88,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
+        leading: AppBackButton(onTap: () => context.pop()),
         title: Text(l.rideRequest),
       ),
       body: SingleChildScrollView(

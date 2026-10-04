@@ -2509,6 +2509,12 @@ abstract class AppLocalizations {
   /// **'Submit and tip {amount}'**
   String submitAndTip(String amount);
 
+  /// Spoken label for each star in the rating control, so a screen reader says which one it is rather than 'button' five times. Malay does not inflect for number, so its plural has a single 'other' case.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{{count} star} other{{count} stars}}'**
+  String starRating(int count);
+
   /// No description provided for @submitRating.
   ///
   /// In en, this message translates to:

@@ -30,10 +30,7 @@ class RideDetailScreen extends StatelessWidget {
     if (ride == null) {
       return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () => context.pop(),
-          ),
+          leading: AppBackButton(onTap: () => context.pop()),
           title: Text(l.tripDetails),
         ),
         body: EmptyState(title: l.rideNotFound),
@@ -61,10 +58,7 @@ class RideDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
-        ),
+        leading: AppBackButton(onTap: () => context.pop()),
         title: Text(l.tripDetails),
       ),
       body: ListView(
