@@ -1,7 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_teksi/widgets/ui.dart';
 
 import 'support/screens.dart';
+
+/// Where things sit on the screen.
+///
+/// Both failures below are the same shape, and I made both of them: while
+/// fixing an overflow, a widget that positions its child was swapped for one
+/// that does not. Neither is an overflow, neither is an unlabelled control, so
+/// neither the text-scale gate nor the semantics gate can see it — every
+/// assertion stays true while the screen is plainly wrong.
 
 /// The two home screens float their controls over a map, and that bar belongs
 /// at the top.
@@ -60,4 +69,41 @@ void main() {
       });
     }
   }
+
+  // -------------------------------------------------------------------------
+
+  /// The intro slide is centred in the space between the wordmark and the
+  /// page dots.
+  ///
+  /// It stopped being: a bare `SingleChildScrollView`, added so the slide
+  /// could scroll at a large text size, sizes its child to the child's own
+  /// height and pins it to the top — so the icon, heading and body sat jammed
+  /// under the header with the rest of the screen empty. The fix gives the
+  /// scroll view a minimum height of the viewport so the `Center` inside it
+  /// still has room to work.
+  testWidgets('IntroScreen keeps its slide centred', (tester) async {
+    app.sizeAsPhone(tester);
+    await tester.pumpWidget(app.wrap(app.screens()['IntroScreen']!()));
+    await tester.pump(const Duration(milliseconds: 350));
+
+    final slide = find.byType(AnimatedSwitcher);
+    final rect = tester.getRect(slide);
+    final height =
+        tester.view.physicalSize.height / tester.view.devicePixelRatio;
+
+    // Equal-ish space above and below. Generous, because the header and the
+    // dots are not symmetric — but nowhere near satisfied by a slide pinned
+    // to the top, which is what this is for.
+    final above = rect.top;
+    final below = height - rect.bottom;
+    expect(
+      (above - below).abs(),
+      lessThan(height * 0.25),
+      reason:
+          'The intro slide sits ${above.toStringAsFixed(0)} from the top and '
+          '${below.toStringAsFixed(0)} from the bottom, on a screen $height '
+          'tall. It should be roughly centred; this far out means something '
+          'stopped centring it.',
+    );
+  });
 }

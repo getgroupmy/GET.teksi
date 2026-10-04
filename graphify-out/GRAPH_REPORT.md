@@ -1,17 +1,17 @@
 # Graph Report - GET.teksi  (2026-10-04)
 
 ## Corpus Check
-- 149 files · ~268,572 words
+- 149 files · ~268,936 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 68 file(s) not represented in the graph (top: .csv 35, .xml 7, (none) 5)
 
 ## Summary
-- 3754 nodes · 4937 edges · 122 communities (97 shown, 25 thin omitted)
+- 3754 nodes · 4938 edges · 124 communities (98 shown, 26 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fd3f6c2b`
+- Built from commit: `3fcd222c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -45,7 +45,7 @@
 - supabase_transport.dart
 - onboarding_screen.dart
 - main.dart
-- notifier_test.dart
+- notifications_test.dart
 - _
 - routing_test.dart
 - StatelessWidget
@@ -66,7 +66,7 @@
 - MainActivity
 - notifier_device.dart
 - package:go_router/go_router.dart
-- l10n_test.dart
+- package:flutter_test/flutter_test.dart
 - profile_sync.dart
 - 20260815120000_marketplace.sql
 - wallet_screen.dart
@@ -75,7 +75,7 @@
 - MainActivity.kt
 - notifier.dart
 - intro_screen.dart
-- places.dart
+- package:latlong2/latlong.dart
 - rows_test.dart
 - Backend
 - Platforms
@@ -88,9 +88,9 @@
 - BM25
 - reasoning_contract.py
 - location.dart
-- otp_semantics_test.dart
+- dart:math
 - ../../models/models.dart
-- package:flutter_test/flutter_test.dart
+- semantics_test.dart
 - GET.teksi
 - manifest.json
 - _select_palette_for_mode
@@ -108,7 +108,7 @@
 - Findings and fixes
 - AppLocalizations
 - session-start.sh
-- package:latlong2/latlong.dart
+- otp_semantics_test.dart
 - wait-for-tools.sh
 - graphify reference: add a URL and watch a folder
 - graphify reference: commit hook and native CLAUDE.md integration
@@ -122,11 +122,13 @@
 - LaunchImage.imageset/README.md
 - labels.dart
 - 20260820140000_wallet_ledger.sql
+- screen_layout_test.dart
 - run.sh
 - chat_messages_sender_idx
 - 20260821050000_guard_profile_columns.sql
 - harness.sql
 - Android
+- PriceToneLabel
 
 ## God Nodes (most connected - your core abstractions)
 1. `SessionStore` - 89 edges
@@ -155,7 +157,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (122 total, 25 thin omitted)
+## Communities (124 total, 26 thin omitted)
 
 ### Community 0 - "app_localizations.dart"
 Cohesion: 0.00
@@ -273,9 +275,9 @@ Nodes (27): autofocus, body, build, _buildVehicleStep, _class, _classHint, _clas
 Cohesion: 0.07
 Nodes (23): _askedToNotify, _askToNotify, _beacon, build, createState, dispose, _duty, _dutyService (+15 more)
 
-### Community 29 - "notifier_test.dart"
-Cohesion: 0.09
-Nodes (21): deliver, main, _messageOn, _offerOn, rides, session, _bid, _car (+13 more)
+### Community 29 - "notifications_test.dart"
+Cohesion: 0.12
+Nodes (13): deliver, main, _messageOn, _offerOn, rides, session, _bid, _car (+5 more)
 
 ### Community 30 - "_"
 Cohesion: 0.08
@@ -318,16 +320,16 @@ Cohesion: 0.10
 Nodes (12): _, Backend, _client, _e164, errors, init, isLive, saveProfile (+4 more)
 
 ### Community 40 - "marketplace_test.dart"
-Cohesion: 0.12
-Nodes (13): askingPrice, buildOffer, buildRide, _car, _dropoff, main, matchedAsking, now (+5 more)
+Cohesion: 0.10
+Nodes (14): askingPrice, buildOffer, buildRide, _car, _dropoff, main, matchedAsking, now (+6 more)
 
 ### Community 41 - "storage.dart"
 Cohesion: 0.10
 Nodes (16): _alphabet, body, bytes, clearAll, hex, init, _instance, _prefix (+8 more)
 
 ### Community 42 - "notification_setting_row_test.dart"
-Cohesion: 0.17
-Nodes (9): calls, canOpenSettings, grantsOnRequest, main, openSettings, pump, requestPermission, show (+1 more)
+Cohesion: 0.10
+Nodes (17): calls, canOpenSettings, grantsOnRequest, main, openSettings, pump, requestPermission, show (+9 more)
 
 ### Community 43 - "notification_setting_row.dart"
 Cohesion: 0.13
@@ -349,7 +351,7 @@ Nodes (12): _appChannel, buildNotifier, _channelDescription, _channelId, _channe
 Cohesion: 0.06
 Nodes (29): build, _continue, _controller, createState, _digits, dispose, _error, _sending (+21 more)
 
-### Community 50 - "l10n_test.dart"
+### Community 50 - "package:flutter_test/flutter_test.dart"
 Cohesion: 0.12
 Nodes (10): en, json, _keysOf, main, ms, _allowed, _inSlot, _inText (+2 more)
 
@@ -381,9 +383,9 @@ Nodes (11): createNotifier, _DeviceNotifier, NotificationPermission, Notifier, o
 Cohesion: 0.15
 Nodes (11): body, build, createState, _finish, icon, _index, IntroScreen, _IntroScreenState (+3 more)
 
-### Community 59 - "places.dart"
-Cohesion: 0.13
-Nodes (13): allPlaces, cityCenter, cityName, fuzzySearch, intercityPlaces, _p, places, q (+5 more)
+### Community 59 - "package:latlong2/latlong.dart"
+Cohesion: 0.10
+Nodes (16): allPlaces, cityCenter, cityName, fuzzySearch, intercityPlaces, _p, places, q (+8 more)
 
 ### Community 60 - "rows_test.dart"
 Cohesion: 0.14
@@ -429,17 +431,17 @@ Nodes (5): apply_decision_rules(), _object_without_duplicates(), parse_decision_
 Cohesion: 0.22
 Nodes (6): current, DeviceLocationService, LocationService, SeededLocationService, timeout, _ScriptedLocation
 
-### Community 72 - "otp_semantics_test.dart"
-Cohesion: 0.20
-Nodes (8): found, _hasTextField, _labels, main, out, pumpOtp, root, walk
+### Community 72 - "dart:math"
+Cohesion: 0.29
+Nodes (4): _klcc, main, _midValley, _penang
 
 ### Community 73 - "../../models/models.dart"
 Cohesion: 0.11
 Nodes (16): avatarColors, demoCardName, demoCardTail, driverNames, hash, passengerNames, pickAvatarColor, pickupNotes (+8 more)
 
-### Community 74 - "package:flutter_test/flutter_test.dart"
-Cohesion: 0.10
-Nodes (13): main, _announcesSomething, app, _controls, _describe, _flatten, kinds, main (+5 more)
+### Community 74 - "semantics_test.dart"
+Cohesion: 0.18
+Nodes (9): _announcesSomething, app, _controls, _describe, _flatten, kinds, main, out (+1 more)
 
 ### Community 75 - "GET.teksi"
 Cohesion: 0.18
@@ -509,9 +511,9 @@ Nodes (5): AppLocalizations, _AppLocalizationsDelegate, AppLocalizationsEn, AppL
 Cohesion: 0.50
 Nodes (3): note(), PATH, session-start.sh script
 
-### Community 92 - "package:latlong2/latlong.dart"
-Cohesion: 0.08
-Nodes (16): _channel, contrast, hi, la, lb, lo, _luminance, main (+8 more)
+### Community 92 - "otp_semantics_test.dart"
+Cohesion: 0.10
+Nodes (17): _channel, contrast, hi, la, lb, lo, _luminance, main (+9 more)
 
 ### Community 93 - "wait-for-tools.sh"
 Cohesion: 0.83
@@ -534,12 +536,16 @@ Cohesion: 0.25
 Nodes (4): done, finish, geolocation, readDeviceLocation
 
 ### Community 105 - "labels.dart"
-Cohesion: 0.08
-Nodes (21): cancelReasonsDriver, cancelReasonsPassenger, driverRatingTagsBad, driverRatingTagsGood, hintIn, labelIn, PaymentMethodLabel, PriceToneLabel (+13 more)
+Cohesion: 0.09
+Nodes (19): cancelReasonsDriver, cancelReasonsPassenger, driverRatingTagsBad, driverRatingTagsGood, hintIn, labelIn, PaymentMethodLabel, promoCodes (+11 more)
 
 ### Community 106 - "20260820140000_wallet_ledger.sql"
 Cohesion: 0.22
 Nodes (6): public.wallet_transactions, rides_settle_on_completion, wallet_transactions_append_only, wallet_transactions_apply_delta, wallet_transactions_one_per_ride_role_idx, wallet_transactions_user_idx
+
+### Community 107 - "screen_layout_test.dart"
+Cohesion: 0.33
+Nodes (3): app, main, tolerance
 
 ### Community 118 - "Android"
 Cohesion: 0.29
@@ -548,12 +554,12 @@ Nodes (7): Android, Building by hand, Publishing, Running the workflow, Status, 
 ## Knowledge Gaps
 - **2781 isolated node(s):** `PATH`, `CoreLocation`, `UserNotifications`, `XCTest`, `Backend` (+2776 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3079 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **26 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SessionStore` connect `SessionStore` to `RidesStore`, `rides.dart`, `session.dart`, `simulation.dart`, `router.dart`, `offers_sheet.dart`, `destination_search_screen.dart`, `onboarding_screen.dart`, `main.dart`, `notifier_test.dart`, `screens.dart`, `driver_beacon.dart`, `marketplace_test.dart`, `driver_beacon_test.dart`, `package:go_router/go_router.dart`, `profile_sync.dart`, `wallet_screen.dart`, `package:flutter/material.dart`, `duty_presence_test.dart`, `intro_screen.dart`, `rate_screen.dart`, `order_detail_screen.dart`, `price_sheet.dart`, `../../models/models.dart`, `passenger_home_screen.dart`, `profile_sync_test.dart`?**
+- **Why does `SessionStore` connect `SessionStore` to `RidesStore`, `rides.dart`, `session.dart`, `simulation.dart`, `router.dart`, `offers_sheet.dart`, `destination_search_screen.dart`, `onboarding_screen.dart`, `main.dart`, `notifications_test.dart`, `screens.dart`, `driver_beacon.dart`, `marketplace_test.dart`, `notification_setting_row_test.dart`, `driver_beacon_test.dart`, `package:go_router/go_router.dart`, `profile_sync.dart`, `wallet_screen.dart`, `package:flutter/material.dart`, `duty_presence_test.dart`, `intro_screen.dart`, `rate_screen.dart`, `order_detail_screen.dart`, `price_sheet.dart`, `../../models/models.dart`, `passenger_home_screen.dart`, `profile_sync_test.dart`?**
   _High betweenness centrality (0.053) - this node is a cross-community bridge._
 - **Why does `validate()` connect `validate_data.py` to `iOS`, `reasoning_contract.py`?**
   _High betweenness centrality (0.046) - this node is a cross-community bridge._

@@ -74,48 +74,66 @@ class _IntroScreenState extends State<IntroScreen> {
                 ],
               ),
               Expanded(
-                // Centred while it fits, scrolling once it does not. Center
-                // hands its child the full height as a maximum, and the
-                // slide's icon, heading and body together are taller than
-                // that at a large text size — so without this the bottom of
-                // the body text is simply cut off.
-                child: SingleChildScrollView(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 220),
-                    child: Column(
-                      key: ValueKey(_index),
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 92,
-                          height: 92,
-                          decoration: BoxDecoration(
-                            color: c.brand.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(28),
+                // Centred while it fits, scrolling once it does not.
+                //
+                // A bare SingleChildScrollView is not that: it sizes its child
+                // to the child's own height and pins it to the top, which left
+                // the slide jammed against the header with the rest of the
+                // screen empty below it. Giving the scroll view a minimum
+                // height of the viewport lets the Center inside do its job
+                // while there is room, and lets the whole thing scroll when
+                // the icon, heading and body no longer fit at a large text
+                // size — which is what this is here for.
+                child: LayoutBuilder(
+                  builder: (context, constraints) => SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Center(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 220),
+                          child: Column(
+                            key: ValueKey(_index),
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 92,
+                                height: 92,
+                                decoration: BoxDecoration(
+                                  color: c.brand.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                child: Icon(
+                                  slide.icon,
+                                  size: 42,
+                                  color: c.accent,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Text(
+                                slide.title,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 27,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.2,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                slide.body,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: c.textDim,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
                           ),
-                          child: Icon(slide.icon, size: 42, color: c.accent),
                         ),
-                        const SizedBox(height: 24),
-                        Text(
-                          slide.title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 27,
-                            fontWeight: FontWeight.w800,
-                            height: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          slide.body,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: c.textDim,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
