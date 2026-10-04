@@ -1,0 +1,247 @@
+# Builds a signed Android App Bundle and APK with the upload key.
+#
+# Manual only, for the same reason as release-ios.yml: a build that fires on a
+# branch push will eventually fire on one nobody meant to ship. Unlike the iOS
+# workflow this one uploads to no store — see "Publishing" in
+# docs/RELEASING.md for why that half is still done by hand.
+#
+# What it does guarantee is that the artifact is signed with the upload key and
+# not the debug key. That matters more than it sounds: a debug-signed release
+# build installs, runs, and passes every check in ci.yml, so without an
+# explicit assertion the first thing to notice would be Play's rejection.
+name: Release Android
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: "versionCode. Defaults to the run number, which only ever goes up."
+        type: string
+        required: false
+
+env:
+  FLUTTER_VERSION: '3.47.0'
+  # Play and AppGallery both key a listing to this. Asserted below rather than
+  # assumed, the same way release-ios.yml asserts the bundle id.
+  APPLICATION_ID: my.getgroup.get_teksi
+
+jobs:
+  release:
+    name: Build a signed bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fail in one second rather than ten minutes into a build that was never
+      # going to be signable.
+      - name: Check the secrets are present
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          missing=""
+          for name in KEYSTORE KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            [ -n "${!name}" ] || missing="$missing ANDROID_${name}"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secrets:$missing"
+            echo "See docs/RELEASING.md for how to generate the keystore."
+            exit 1
+          fi
+
+      - name: Assert the application id has not drifted
+        run: |
+          if ! grep -q "applicationId = \"${APPLICATION_ID}\"" android/app/build.gradle.kts; then
+            echo "::error::${APPLICATION_ID} is not the application id."
+            grep -n "applicationId" android/app/build.gradle.kts || true
+            exit 1
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      # Outside the workspace, so a `git status` or an artifact glob in a later
+      # step cannot pick it up. Removed in the final step whatever happens.
+      - name: Decode the keystore
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          # Through the environment rather than interpolated into the command,
+          # so the password is never a word in a command line that `set -x` or
+          # a process listing could show.
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          KEYSTORE_PATH="$RUNNER_TEMP/upload.jks"
+          echo "$KEYSTORE" | base64 --decode > "$KEYSTORE_PATH"
+          # A truncated or mis-pasted secret decodes to something that is not a
+          # keystore, and Gradle's error for that does not say so.
+          if ! keytool -list -keystore "$KEYSTORE_PATH" \
+                 -storepass "$STORE_PASSWORD" >/dev/null 2>&1; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 did not decode to a keystore this password opens."
+            exit 1
+          fi
+          echo "ANDROID_KEYSTORE_PATH=$KEYSTORE_PATH" >> "$GITHUB_ENV"
+
+      - name: Assert the alias is in the keystore
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          # Gradle reports a missing alias as a generic signing failure late in
+          # the build, so check it here where the message can be specific.
+          if ! keytool -list -keystore "$ANDROID_KEYSTORE_PATH" \
+                 -storepass "$ANDROID_KEYSTORE_PASSWORD" \
+                 -alias "$ANDROID_KEY_ALIAS" >/dev/null 2>&1; then
+            echo "::error::Alias '$ANDROID_KEY_ALIAS' is not in the keystore."
+            echo "Aliases present:"
+            keytool -list -keystore "$ANDROID_KEYSTORE_PATH" \
+              -storepass "$ANDROID_KEYSTORE_PASSWORD" 2>/dev/null \
+              | grep -i 'PrivateKeyEntry\|trustedCertEntry' || true
+            exit 1
+          fi
+
+      - name: Build the bundle and the APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          # Makes the build fail rather than fall back to the debug key.
+          # Without it, one mistyped secret name would produce a debug-signed
+          # artifact and a green run. Set through the environment rather than
+          # as `-PrequireUploadKey`, because `flutter build` does not promise
+          # to forward an arbitrary Gradle property to the Gradle it spawns.
+          REQUIRE_UPLOAD_KEY: '1'
+        run: |
+          BUILD_NUMBER="${{ inputs.build_number }}"
+          [ -n "$BUILD_NUMBER" ] || BUILD_NUMBER="${{ github.run_number }}"
+          echo "versionCode: $BUILD_NUMBER"
+
+          flutter build appbundle --release --build-number="$BUILD_NUMBER"
+          flutter build apk --release --build-number="$BUILD_NUMBER"
+
+      - name: Assert the bundle is signed with the upload key
+        env:
+          EXPECTED_SHA256: ${{ secrets.ANDROID_KEY_SHA256 }}
+        run: |
+          AAB=build/app/outputs/bundle/release/app-release.aab
+          test -f "$AAB" || { echo "::error::$AAB was not produced"; exit 1; }
+
+          # An App Bundle is jar-signed, so the signer's certificate reads out
+          # of the archive itself — no need to trust what the build said it did.
+          keytool -printcert -jarfile "$AAB" > /tmp/aab-cert.txt
+          sed -n '1,25p' /tmp/aab-cert.txt
+
+          # The whole point of this workflow. The debug keystore's certificate
+          # is issued to CN=Android Debug, and an artifact carrying it is one
+          # Play and AppGallery will both reject.
+          if grep -q 'CN=Android Debug' /tmp/aab-cert.txt; then
+            echo "::error::The bundle is signed with the debug key, not the upload key."
+            exit 1
+          fi
+
+          # Self-check: a certificate that produced no fingerprint means the
+          # grep above was reading an empty file and proved nothing.
+          FINGERPRINT=$(grep -oE 'SHA256: [0-9A-F:]+' /tmp/aab-cert.txt | head -1 | cut -d' ' -f2)
+          if [ -z "$FINGERPRINT" ]; then
+            echo "::error::No SHA-256 fingerprint in the certificate — this check read nothing."
+            exit 1
+          fi
+          echo "Signer SHA-256: $FINGERPRINT"
+
+          # Optional, and the strongest form of this check: pin the key. Not
+          # being debug-signed only rules out one wrong key; this rules out
+          # all of them. Set ANDROID_KEY_SHA256 to switch it on.
+          if [ -n "$EXPECTED_SHA256" ]; then
+            want=$(echo "$EXPECTED_SHA256" | tr -d ' ' | tr 'a-f' 'A-F')
+            got=$(echo "$FINGERPRINT" | tr -d ' ' | tr 'a-f' 'A-F')
+            if [ "$want" != "$got" ]; then
+              echo "::error::Signed with an unexpected key. Expected $want, got $got."
+              exit 1
+            fi
+            echo "✅ Signer matches the pinned ANDROID_KEY_SHA256."
+          else
+            echo "::notice::ANDROID_KEY_SHA256 is not set, so the signer is not pinned. Add it (the value printed above) to assert the exact key."
+          fi
+
+      - name: Assert the APK is signed with the upload key
+        run: |
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          test -f "$APK" || { echo "::error::$APK was not produced"; exit 1; }
+
+          # apksigner, not keytool: an APK may be v2/v3-signed only, where the
+          # signature lives in a block outside the zip entries and jar tooling
+          # reports an unsigned archive.
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner 2>/dev/null | sort -V | tail -1)
+          if [ -z "$APKSIGNER" ]; then
+            echo "::error::No apksigner in $ANDROID_HOME/build-tools."
+            exit 1
+          fi
+          "$APKSIGNER" verify --print-certs "$APK" > /tmp/apk-cert.txt
+          cat /tmp/apk-cert.txt
+
+          if grep -q 'CN=Android Debug' /tmp/apk-cert.txt; then
+            echo "::error::The APK is signed with the debug key."
+            exit 1
+          fi
+          grep -qE 'SHA-256 digest|certificate SHA-256' /tmp/apk-cert.txt || {
+            echo "::error::apksigner printed no certificate — this check read nothing."
+            exit 1
+          }
+
+      # The signed APK is a different file from the one ci.yml scans, and this
+      # is the one that reaches a device. Re-run the scan on the artifact that
+      # ships rather than inferring it from a sibling build.
+      - name: Scan the signed APK for Google Play Services
+        run: |
+          APK=build/app/outputs/flutter-apk/app-release.apk
+          unzip -o -q "$APK" 'classes*.dex' -d /tmp/dex
+          cat /tmp/dex/classes*.dex > /tmp/all.dex
+          strings -a /tmp/all.dex > /tmp/dex-strings.txt
+
+          fail=0
+          for marker in \
+            'Lcom/google/android/gms' \
+            'Lcom/google/firebase' \
+            'Lcom/huawei/hms'
+          do
+            if grep -q "$marker" /tmp/dex-strings.txt; then
+              echo "::error::APK bytecode references $marker — no longer GMS-free"
+              grep -m3 "$marker" /tmp/dex-strings.txt
+              fail=1
+            fi
+          done
+
+          # Same self-check as in ci.yml: if our own classes are not in there,
+          # the extraction failed and a clean scan means nothing.
+          if ! grep -q 'Lmy/getgroup/get_teksi' /tmp/dex-strings.txt; then
+            echo "::error::Scan self-check failed — app classes not found in dex"
+            exit 1
+          fi
+          [ "$fail" -eq 0 ] && echo "✅ No GMS, Firebase or HMS classes in the signed APK."
+          exit $fail
+
+      # Last, so nothing that failed an assertion above is ever published.
+      - name: Keep the artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: |
+            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/mapping/release/mapping.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Clean up the keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.jks"
