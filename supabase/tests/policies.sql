@@ -12,15 +12,45 @@
 
 create schema test;
 
--- Asserts that a statement is rejected. A statement that succeeds when it
--- should not is the failure mode that matters here, so that is what raises.
+-- Asserts that a statement is rejected, *and* that it was rejected for a
+-- security reason.
+--
+-- A statement that succeeds when it should not is the failure mode that
+-- matters here, so that is what raises. But `when others` on its own counts
+-- any exception as a refusal, and these statements are SQL inside string
+-- literals that nothing compiles: a mistyped column, a malformed uuid or a
+-- stray comma raises too, and the assertion goes green having tested nothing
+-- about the policy it names. On the RLS layer that is worse than no test,
+-- because it manufactures confidence.
+--
+-- So the sqlstate has to be one the security model actually produces:
+--
+--   42501  insufficient_privilege — RLS refused the row
+--   P0001  raise_exception        — a guard trigger or function said no
+--   23514  check_violation        — a constraint said no
+--
+-- Anything else is a bug in the test, not a refusal by the database, and is
+-- reported as such rather than swallowed. The allowlist is drawn from what
+-- the suite actually raises, not from what it ought to: 23514 is in it
+-- because `driver_needs_vehicle` is enforced as a check constraint, which a
+-- list written from first principles would have missed.
 create function test.denied(stmt text, what text) returns void
 language plpgsql as $$
+declare
+  state text;
+  msg   text;
 begin
   begin
     execute stmt;
   exception when others then
-    raise notice '  denied as expected: % (%)', what, sqlerrm;
+    get stacked diagnostics state = returned_sqlstate, msg = message_text;
+    if state not in ('42501', 'P0001', '23514') then
+      raise exception
+        'TEST BUG: % did not run. SQLSTATE % — %. That is a broken '
+        'statement, not a refusal, so this case asserts nothing.',
+        what, state, msg;
+    end if;
+    raise notice '  denied as expected: % (%)', what, msg;
     return;
   end;
   raise exception 'SECURITY FAILURE: % was allowed', what;
