@@ -123,6 +123,67 @@ void main() {
     });
   });
 
+  /// The defect this exists for: the whole push transport was written,
+  /// tested and merged with nothing calling registerForPush. Every test
+  /// passed, because each piece worked on its own — the table, the
+  /// registration, the encryption, the triggers. No device would ever have
+  /// registered.
+  ///
+  /// The first version of this check was itself vacuous, which is worth
+  /// keeping in the file rather than quietly fixing. It looked for the text
+  /// `registerForPush(` anywhere in lib/, and the helper that wraps the call
+  /// contains that text in its own body — so deleting the invocation left
+  /// the check green. It passed while testing exactly the thing it was
+  /// written to catch.
+  ///
+  /// So it now finds the helper that wraps the call and requires that
+  /// helper's own name to appear more than once in its file: once to define
+  /// it, at least once to call it. A wiring check, and it says so — driving
+  /// the real call would mean standing up main.dart's widget tree against a
+  /// live backend, which is a great deal of machinery to prove one line
+  /// exists.
+  test('something actually calls registerForPush', () {
+    final wrappers = <String, String>{};
+    for (final entity in Directory('lib').listSync(recursive: true)) {
+      if (entity is! File || !entity.path.endsWith('.dart')) continue;
+      // The definition and its two platform halves name it in doc comments.
+      if (entity.path.contains('core/push')) continue;
+      final source = entity.readAsStringSync();
+      if (!source.contains('registerForPush(')) continue;
+      // The enclosing method: the last `void name(` or `Future<…> name(`
+      // declared before the call.
+      final before = source.substring(source.indexOf('registerForPush('));
+      final enclosing = RegExp(r'(?:void|Future<[^>]*>)\s+(_?\w+)\s*\(')
+          .allMatches(source.substring(0, source.length - before.length))
+          .lastOrNull
+          ?.group(1);
+      if (enclosing != null) wrappers[entity.path] = enclosing;
+    }
+
+    expect(
+      wrappers,
+      isNotEmpty,
+      reason:
+          'nothing in lib/ calls registerForPush, so no device ever '
+          'registers and the entire push transport is inert — every other '
+          'test here still passes',
+    );
+
+    wrappers.forEach((path, wrapper) {
+      final uses = RegExp(RegExp.escape(wrapper))
+          .allMatches(File(path).readAsStringSync())
+          .length;
+      expect(
+        uses,
+        greaterThan(1),
+        reason:
+            '$path defines $wrapper, which calls registerForPush, but '
+            'nothing in that file calls $wrapper. The registration is '
+            'written and never runs.',
+      );
+    });
+  });
+
   test('the row is keyed the way the upsert expects', () {
     final row = iosAddress.toRow('user-1');
     expect(row['user_id'], 'user-1');
