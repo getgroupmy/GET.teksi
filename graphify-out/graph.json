@@ -15228,6 +15228,17 @@
       "source_location": "L25"
     },
     {
+      "id": "supabase_migrations_20260822140000_purge_cron_run_history",
+      "label": "20260822140000_purge_cron_run_history.sql",
+      "_origin": "ast",
+      "community": 124,
+      "community_name": "20260822140000_purge_cron_run_history.sql",
+      "file_type": "code",
+      "norm_label": "20260822140000_purge_cron_run_history.sql",
+      "source_file": "supabase/migrations/20260822140000_purge_cron_run_history.sql",
+      "source_location": null
+    },
+    {
       "id": "any",
       "label": "Any",
       "_origin": "ast",
@@ -96864,5 +96875,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3588c6763cea107a28cef70517deeec8bdcd691a"
+  "built_at_commit": "2d75c8f448300d0c5d94af2da1347f4b65625468"
 }
