@@ -64,10 +64,18 @@ android/local.properties
 android/key.properties
 *.jks
 
-# graphify — regenerate with `graphify update .` (deterministic, no API cost).
-# Only the human-readable report is tracked.
+# graphify. The graph itself is tracked, because `query`, `path`, `explain` and
+# `affected` have nothing to read without it, and a container that comes up
+# without one gives those commands an empty answer rather than an error — which
+# is the worse failure of the two.
+#
+# What stays out is everything derived from it: the 2.5 MB interactive viz, the
+# extractor's cache, the input-hash manifest, the community-label sidecar and
+# the dated backups `update` leaves behind. All of those come back from
+# `graphify update .`, which needs no API key.
 graphify-out/*
 !graphify-out/GRAPH_REPORT.md
+!graphify-out/graph.json
 
 # Local build configuration overriding config/get-teksi.json
 config/local.json
