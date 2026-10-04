@@ -90,6 +90,96 @@ Ride buildRide() {
   );
 }
 
+/// A finished ride, for the screens that show a list of them.
+///
+/// [asDriver] decides which side of the ride the signed-in user is on, which
+/// is what `historyFor` filters by — so both are seeded and the history and
+/// earnings screens are populated whichever role the session is in.
+Ride buildFinishedRide({
+  required String userId,
+  required bool asDriver,
+  required RideStatus status,
+  DateTime? finishedAt,
+}) {
+  final now = DateTime.now();
+  final ended = finishedAt ?? now.subtract(const Duration(days: 2));
+  final started = ended.subtract(const Duration(minutes: 65));
+  return Ride(
+    id: uuid4(),
+    passengerId: asDriver ? uuid4() : userId,
+    passengerName: 'Siti Nurhaliza binti Tarudin',
+    passengerAvatarColor: 0xFF7E57C2,
+    passengerRating: 4.9,
+    service: ServiceType.city,
+    vehicleClass: VehicleClass.comfort,
+    // Long on purpose. Malaysian place names of this length are ordinary, and
+    // a history row that fits "KLCC" proves nothing about the one that has to
+    // show this.
+    pickup: place('Kuala Lumpur International Airport Terminal 2', klcc),
+    dropoff: place('Bangsar South City Park Residences Block C', midValley),
+    askingPrice: 5500,
+    finalPrice: status == RideStatus.completed ? 5800 : null,
+    recommendedPrice: 6000,
+    distanceKm: 48.6,
+    durationMinutes: 54,
+    paymentMethod: PaymentMethod.wallet,
+    passengerCount: 3,
+    options: const [RideOption.luggage, RideOption.airCon],
+    status: status,
+    createdAt: started,
+    updatedAt: now,
+    priceRaises: 0,
+    driverId: asDriver ? userId : uuid4(),
+    driverName: 'Muhammad Firdaus bin Abdul Rahman',
+    driverAvatarColor: 0xFF26A69A,
+    driverRating: 4.95,
+    driverVehicle: const Vehicle(
+      make: 'Perodua',
+      model: 'Bezza 1.3 Premium',
+      year: 2021,
+      color: 'Granite Grey',
+      plate: 'WXY 1234',
+      vehicleClass: VehicleClass.comfort,
+      seats: 4,
+    ),
+    acceptedAt: started.add(const Duration(minutes: 2)),
+    arrivedAt: started.add(const Duration(minutes: 9)),
+    startedAt: started.add(const Duration(minutes: 11)),
+    completedAt: status == RideStatus.completed ? ended : null,
+    cancelledAt: status == RideStatus.cancelled ? ended : null,
+    cancelledBy: status == RideStatus.cancelled ? CancelledBy.passenger : null,
+    cancelReason: status == RideStatus.cancelled
+        ? 'Driver could not reach the pickup point'
+        : null,
+    routeGeometry: const [klcc, midValley],
+    // Both sides rated, and that is load-bearing. Both home screens call
+    // `rideAwaitingRating` and push to `/rate/...` from a post-frame callback
+    // when a completed ride has no rating from the signed-in side. There is
+    // no GoRouter in this harness, so one unrated completed ride does not
+    // make DriverHome lay out differently — it makes it throw "No GoRouter
+    // found in context" before laying out at all, taking the top-bar and
+    // semantics gates down with it.
+    ratingByPassenger: status == RideStatus.completed
+        ? RideRating(
+            stars: 5,
+            tags: const ['Clean car', 'Safe driving'],
+            comment:
+                'Helped with the suitcases and took the coastal road to '
+                'avoid the jam.',
+            createdAt: started.add(const Duration(minutes: 70)),
+          )
+        : null,
+    ratingByDriver: status == RideStatus.completed
+        ? RideRating(
+            stars: 5,
+            tags: const ['On time', 'Polite'],
+            createdAt: started.add(const Duration(minutes: 72)),
+          )
+        : null,
+    tip: status == RideStatus.completed ? 500 : null,
+  );
+}
+
 /// One app's worth of state, rebuilt for each test.
 class ScreenFixture {
   late SessionStore session;
@@ -137,6 +227,130 @@ class ScreenFixture {
     rides = RidesStore(session);
     draft = DraftStore();
     rideId = rides.publishRide(buildRide()).id;
+    _populate(user.id);
+  }
+
+  /// The lists.
+  ///
+  /// Without this, five screens render an `EmptyState` or close to it, and
+  /// the rows that actually pair a label with a value — a notification, a
+  /// wallet transaction, a chat bubble, a history entry, an earnings line —
+  /// are never laid out at all. Measured before this existed:
+  /// NotificationsScreen rendered three `Text`s and **zero** `Row`s, so the
+  /// text-scale gate could not have failed on it whatever the text size, and
+  /// it still counted as one of the twenty-three screens both gates report.
+  ///
+  /// This is the same point the comment on `buildRide` already makes — "a
+  /// screen that lays out cleanly with empty fields proves very little" —
+  /// applied to the screens that are a list rather than a form.
+  void _populate(String userId) {
+    // EarningsScreen opens on `_Period.today`, whose cutoff is midnight this
+    // morning, so a trip finished two days ago leaves it on its empty state —
+    // which is where it sat while counting as a covered screen.
+    //
+    // Clamped to just after midnight rather than a flat `now - 30 minutes`.
+    // For a run between 00:00 and 00:30 that subtraction lands yesterday, the
+    // screen empties again, and the gate goes quiet — once a month, in CI, at
+    // an hour nobody is watching.
+    final now = DateTime.now();
+    final midnight = DateTime(now.year, now.month, now.day);
+    final earlier = now.subtract(const Duration(minutes: 30));
+    final finishedToday = earlier.isAfter(midnight)
+        ? earlier
+        : midnight.add(const Duration(minutes: 1));
+
+    rides.publishRide(
+      buildFinishedRide(
+        userId: userId,
+        asDriver: true,
+        status: RideStatus.completed,
+        finishedAt: finishedToday,
+      ),
+    );
+    // One each side of an older trip, because `historyFor` filters by role
+    // and the session's role defaults to passenger.
+    for (final asDriver in [true, false]) {
+      rides.publishRide(
+        buildFinishedRide(
+          userId: userId,
+          asDriver: asDriver,
+          status: RideStatus.completed,
+        ),
+      );
+    }
+    // A cancelled ride too: it carries a reason the completed ones do not,
+    // and that reason is a second line of text in the same row.
+    rides.publishRide(
+      buildFinishedRide(
+        userId: userId,
+        asDriver: false,
+        status: RideStatus.cancelled,
+      ),
+    );
+
+    // Every kind, because each one picks its own icon, colour and sign, and
+    // a list that only ever holds one kind tests one branch of that.
+    const money = <TransactionKind, (int, String)>{
+      TransactionKind.rideEarning: (5800, 'Trip from KLIA Terminal 2'),
+      TransactionKind.ridePayment: (-1850, 'Trip to Mid Valley Megamall'),
+      TransactionKind.topup: (10000, 'Top-up via FPX — Maybank2u'),
+      TransactionKind.payout: (-25000, 'Weekly payout to Maybank ****4321'),
+      TransactionKind.tip: (500, 'Tip from Siti Nurhaliza binti Tarudin'),
+      TransactionKind.promo: (300, 'RAYA2026 promotion credit applied'),
+    };
+    money.forEach((kind, v) {
+      rides.addTransaction(kind: kind, amount: v.$1, description: v.$2);
+    });
+
+    // Bodies long enough to wrap, because that is what a notification is.
+    const alerts = <(NotificationKind, String, String)>[
+      (
+        NotificationKind.ride,
+        'Your driver is arriving',
+        'Muhammad Firdaus bin Abdul Rahman is two minutes away in a Granite '
+            'Grey Perodua Bezza, WXY 1234.',
+      ),
+      (
+        NotificationKind.promo,
+        'RM3 off your next five trips',
+        'Use code RAYA2026 before the end of the month on any city trip paid '
+            'from your wallet.',
+      ),
+      (
+        NotificationKind.safety,
+        'Share your trip with someone',
+        'Your trusted contacts can follow this trip live until you arrive at '
+            'Bangsar South City Park Residences.',
+      ),
+      (
+        NotificationKind.system,
+        'Weekly payout sent',
+        'RM250.00 is on its way to Maybank ****4321 and should arrive within '
+            'one working day.',
+      ),
+    ];
+    for (final (kind, title, body) in alerts) {
+      rides.notify(kind: kind, title: title, body: body, alert: false);
+    }
+    // One left unread, so the badge and the read/unread row both render.
+    rides.markNotificationsRead();
+    rides.notify(
+      kind: NotificationKind.ride,
+      title: 'A driver bid on your ride',
+      body: 'RM18.50 — three minutes away. Tap to see the offer.',
+      rideId: rideId,
+      alert: false,
+    );
+
+    // Both sides of a conversation, and one message long enough to wrap.
+    rides.sendMessage(rideId, Role.passenger, 'Hi, I am at the north entrance');
+    rides.sendMessage(rideId, Role.driver, 'On my way, five minutes');
+    rides.sendMessage(
+      rideId,
+      Role.passenger,
+      'I am standing by the taxi rank next to the blue pillar, wearing a blue '
+      'jacket. There are three of us and two large suitcases.',
+    );
   }
 
   /// Every screen in the app, by the name the failure should mention.
