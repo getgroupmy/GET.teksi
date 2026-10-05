@@ -987,6 +987,15 @@
   "notificationsUnavailableSubtitle": "Not available on this device",
   "notificationsBlockedHint": "Your browser is blocking notifications for this site. Change it there and come back.",
   "switchToPassengerTooltip": "Switch to passenger",
+  "usePromoSemantics": "Use {code}",
+  "@usePromoSemantics": {
+    "description": "Screen-reader label for a promo card's Use button. Three of them sit in a list and all read \"Use\" otherwise.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
   "earningsSemantics": "Earnings, {amount}, {status}",
   "@earningsSemantics": {
     "description": "Screen-reader label for the driver's earnings pill.",

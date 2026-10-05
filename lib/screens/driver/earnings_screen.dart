@@ -226,6 +226,13 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                                   Icons.star_rounded,
                                                   size: 13,
                                                   color: c.accent,
+                                                  // Without this the row read
+                                                  // "48.6 km, 5" — the number
+                                                  // with nothing saying what
+                                                  // it counts. An icon is
+                                                  // silent unless it is given
+                                                  // something to say.
+                                                  semanticLabel: l.rating,
                                                 ),
                                               ),
                                               TextSpan(

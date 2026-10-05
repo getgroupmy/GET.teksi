@@ -137,6 +137,10 @@ class FabButton extends StatelessWidget {
     final c = context.c;
     return Semantics(
       button: true,
+      // The label is written to be the whole announcement — it already says
+      // the count. Without this the badge's own digit is merged onto the end
+      // and a screen reader reads "Notifications, 1 unread 1".
+      excludeSemantics: true,
       label: badge > 0 ? '$tooltip, $badge unread' : tooltip,
       child: Material(
         color: c.surface,
@@ -210,6 +214,9 @@ class ActionTile extends StatelessWidget {
     return Expanded(
       child: Semantics(
         button: true,
+        // As above: the label is the whole announcement, and the caption and
+        // the badge under it would otherwise be read out again after it.
+        excludeSemantics: true,
         label: badge > 0 ? '$label, $badge unread' : label,
         child: Material(
           color: c.surface2,

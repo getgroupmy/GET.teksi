@@ -131,28 +131,40 @@ class _PhoneScreenState extends State<PhoneScreen> {
                             Container(width: 1, height: 22, color: c.line),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: TextField(
-                                controller: _controller,
-                                autofocus: true,
-                                keyboardType: TextInputType.phone,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(10),
-                                ],
-                                onChanged: (v) => setState(() => _digits = v),
-                                onSubmitted: (_) => _continue(),
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                decoration: const InputDecoration(
-                                  hintText: '12 345 6789',
-                                  filled: false,
-                                  border: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 16,
+                              // The hint is an example number, and with no
+                              // label of its own that is what a screen reader
+                              // announced the field as: "12 345 6789". It
+                              // never said what to type. Deliberately not
+                              // excludeSemantics — the field has to stay in
+                              // the tree or there is nothing to type into,
+                              // which is the OtpScreen bug in
+                              // test/otp_semantics_test.dart.
+                              child: Semantics(
+                                textField: true,
+                                label: l.phoneNumberLabel,
+                                child: TextField(
+                                  controller: _controller,
+                                  autofocus: true,
+                                  keyboardType: TextInputType.phone,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(10),
+                                  ],
+                                  onChanged: (v) => setState(() => _digits = v),
+                                  onSubmitted: (_) => _continue(),
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    hintText: '12 345 6789',
+                                    filled: false,
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
                                   ),
                                 ),
                               ),

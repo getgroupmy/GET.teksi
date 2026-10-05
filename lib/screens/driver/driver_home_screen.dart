@@ -127,6 +127,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       heightFactor: 1,
                       child: Semantics(
                         button: true,
+                        // The label says the amount and the online state in
+                        // full. The tile draws both again, shorter, and
+                        // without this they were merged onto the end:
+                        // "Earnings, RM18,945.00, offline RM18,945 Off".
+                        excludeSemantics: true,
                         label: l.earningsSemantics(
                           money(user.driverProfile!.earnings),
                           session.prefs.driverOnline

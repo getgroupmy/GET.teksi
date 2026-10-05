@@ -1665,6 +1665,11 @@ class AppLocalizationsMs extends AppLocalizations {
   String get switchToPassengerTooltip => 'Tukar kepada penumpang';
 
   @override
+  String usePromoSemantics(String code) {
+    return 'Guna $code';
+  }
+
+  @override
   String earningsSemantics(String amount, String status) {
     return 'Pendapatan, $amount, $status';
   }
