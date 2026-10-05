@@ -140,180 +140,209 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       appBar: AppBar(leading: AppBackButton(onTap: () => context.pop())),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l.otpTitle,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l.otpSentTo(phoneDisplay(widget.phone)),
-                style: TextStyle(fontSize: 14, color: c.textDim),
-              ),
-              const SizedBox(height: 32),
-              Stack(
-                children: [
-                  // Decoration, not content. Each box is a Text holding one
-                  // digit, and a screen reader reading six of them out
-                  // separately is not how anyone wants to hear a code. The
-                  // field below is the thing to interact with.
-                  ExcludeSemantics(
-                    child: Row(
-                      children: [
-                        for (var i = 0; i < _length; i++)
-                          Expanded(
-                            child: Container(
-                              height: 58,
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.only(
-                                right: i == _length - 1 ? 0 : 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: c.surface2,
-                                borderRadius: BorderRadius.circular(14),
-                                border: Border.all(
-                                  color: i == _code.length
-                                      ? c.accent
-                                      : (_error.isNotEmpty ? c.danger : c.line),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Text(
-                                i < _code.length ? _code[i] : '',
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w700,
+        // The same treatment PhoneScreen already has, and for the reason its
+        // comment gives: this column pushes its button to the bottom with a
+        // Spacer, which works until the content is taller than the screen —
+        // then the Spacer is zero and the rest is simply cut off.
+        //
+        // Here the rest is the resend link and Verify. At double the text
+        // size with an error showing it overflowed by 132 pixels, and the
+        // error line is the only thing saying the code was wrong. Nothing
+        // caught it, because the gates that walk this screen walk it working:
+        // without the error the column still fits.
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l.otpTitle,
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          height: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l.otpSentTo(phoneDisplay(widget.phone)),
+                        style: TextStyle(fontSize: 14, color: c.textDim),
+                      ),
+                      const SizedBox(height: 32),
+                      Stack(
+                        children: [
+                          // Decoration, not content. Each box is a Text holding one
+                          // digit, and a screen reader reading six of them out
+                          // separately is not how anyone wants to hear a code. The
+                          // field below is the thing to interact with.
+                          ExcludeSemantics(
+                            child: Row(
+                              children: [
+                                for (var i = 0; i < _length; i++)
+                                  Expanded(
+                                    child: Container(
+                                      height: 58,
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.only(
+                                        right: i == _length - 1 ? 0 : 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: c.surface2,
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: i == _code.length
+                                              ? c.accent
+                                              : (_error.isNotEmpty
+                                                    ? c.danger
+                                                    : c.line),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        i < _code.length ? _code[i] : '',
+                                        style: const TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Opacity(
+                              opacity: 0,
+                              // Without this the field is not merely invisible, it is
+                              // absent: Opacity drops a fully transparent subtree from
+                              // the semantics tree, and this is the only input on the
+                              // screen. Worse than an unlabelled control — with a
+                              // screen reader running, Flutter routes text input
+                              // through the semantics node, so there is nothing to
+                              // type into and the code cannot be entered at all.
+                              alwaysIncludeSemantics: true,
+                              // MergeSemantics so the label and the field become one
+                              // node. A bare `Semantics` wrapper would annotate a
+                              // parent while TextField made its own unlabelled node
+                              // beside it, which is the mistake the rating stars had:
+                              // reachable, focusable, and silent. The heading above
+                              // is the right wording — a screen reader user gets the
+                              // same sentence a sighted one reads.
+                              child: MergeSemantics(
+                                child: Semantics(
+                                  label: l.otpTitle,
+                                  child: TextField(
+                                    controller: _controller,
+                                    focusNode: _focus,
+                                    autofocus: true,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(_length),
+                                    ],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _code = value;
+                                        _error = '';
+                                      });
+                                      if (value.length == _length) {
+                                        _submit(value);
+                                      }
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                      ],
-                    ),
-                  ),
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: 0,
-                      // Without this the field is not merely invisible, it is
-                      // absent: Opacity drops a fully transparent subtree from
-                      // the semantics tree, and this is the only input on the
-                      // screen. Worse than an unlabelled control — with a
-                      // screen reader running, Flutter routes text input
-                      // through the semantics node, so there is nothing to
-                      // type into and the code cannot be entered at all.
-                      alwaysIncludeSemantics: true,
-                      // MergeSemantics so the label and the field become one
-                      // node. A bare `Semantics` wrapper would annotate a
-                      // parent while TextField made its own unlabelled node
-                      // beside it, which is the mistake the rating stars had:
-                      // reachable, focusable, and silent. The heading above
-                      // is the right wording — a screen reader user gets the
-                      // same sentence a sighted one reads.
-                      child: MergeSemantics(
-                        child: Semantics(
-                          label: l.otpTitle,
-                          child: TextField(
-                            controller: _controller,
-                            focusNode: _focus,
-                            autofocus: true,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(_length),
+                        ],
+                      ),
+                      if (_error.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Text(
+                            _error,
+                            style: TextStyle(fontSize: 13, color: c.danger),
+                          ),
+                        ),
+                      // Only meaningful without a backend. With one, a real code was
+                      // sent by SMS and showing a guessable stand-in beside it would
+                      // be worse than useless.
+                      if (!Backend.isLive) ...[
+                        const SizedBox(height: 24),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: c.info.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: c.info.withValues(alpha: 0.25),
+                            ),
+                          ),
+                          child: Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              Text(
+                                l.otpDemoPrefix,
+                                style: TextStyle(fontSize: 13, color: c.info),
+                              ),
+                              GestureDetector(
+                                onTap: _autofill,
+                                child: Text(
+                                  _expected,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w800,
+                                    color: c.info,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: c.info,
+                                  ),
+                                ),
+                              ),
                             ],
-                            onChanged: (value) {
-                              setState(() {
-                                _code = value;
-                                _error = '';
-                              });
-                              if (value.length == _length) _submit(value);
-                            },
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              if (_error.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Text(
-                    _error,
-                    style: TextStyle(fontSize: 13, color: c.danger),
-                  ),
-                ),
-              // Only meaningful without a backend. With one, a real code was
-              // sent by SMS and showing a guessable stand-in beside it would
-              // be worse than useless.
-              if (!Backend.isLive) ...[
-                const SizedBox(height: 24),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: c.info.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: c.info.withValues(alpha: 0.25)),
-                  ),
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Text(
-                        l.otpDemoPrefix,
-                        style: TextStyle(fontSize: 13, color: c.info),
-                      ),
-                      GestureDetector(
-                        onTap: _autofill,
+                      ],
+                      const SizedBox(height: 18),
+                      TextButton(
+                        onPressed: _seconds > 0 ? null : _resend,
+                        style: TextButton.styleFrom(padding: EdgeInsets.zero),
                         child: Text(
-                          _expected,
+                          _seconds > 0 ? l.otpResendIn(_seconds) : l.otpResend,
                           style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800,
-                            color: c.info,
-                            decoration: TextDecoration.underline,
-                            decorationColor: c.info,
+                            color: _seconds > 0 ? c.textMute : c.accent,
                           ),
                         ),
                       ),
+                      const Spacer(),
+                      FilledButton(
+                        onPressed: _code.length == _length && !_verifying
+                            ? () => _submit(_code)
+                            : null,
+                        child: _verifying
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : Text(l.otpVerify),
+                      ),
+                      const SizedBox(height: 22),
                     ],
                   ),
                 ),
-              ],
-              const SizedBox(height: 18),
-              TextButton(
-                onPressed: _seconds > 0 ? null : _resend,
-                style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                child: Text(
-                  _seconds > 0 ? l.otpResendIn(_seconds) : l.otpResend,
-                  style: TextStyle(color: _seconds > 0 ? c.textMute : c.accent),
-                ),
               ),
-              const Spacer(),
-              FilledButton(
-                onPressed: _code.length == _length && !_verifying
-                    ? () => _submit(_code)
-                    : null,
-                child: _verifying
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2.5),
-                      )
-                    : Text(l.otpVerify),
-              ),
-              const SizedBox(height: 22),
-            ],
+            ),
           ),
         ),
       ),
