@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/models.dart';
@@ -22,8 +23,22 @@ class Backend {
   static SupabaseClient? _client;
   static SupabaseTransport? _transport;
 
+  /// Test-only: answer [isLive] with nothing behind it.
+  ///
+  /// Every error branch in the app is on the far side of a
+  /// `if (!Backend.isLive) { …demo path…; return; }`, so in a test — and in
+  /// the demo web build the browser sweep uses — none of them can be reached
+  /// and none of them had ever been drawn. Setting this makes [isLive] true
+  /// while `_client` stays null, so [client] throws `StateError` and the
+  /// calls below fail exactly where an unreachable backend makes them fail.
+  ///
+  /// "Configured but unreachable" rather than "not configured", which is the
+  /// state a passenger on a bad connection is actually in.
+  @visibleForTesting
+  static bool debugUnreachable = false;
+
   /// True once a backend is configured *and* reachable.
-  static bool get isLive => _client != null;
+  static bool get isLive => _client != null || debugUnreachable;
 
   static SupabaseClient get client {
     final c = _client;
