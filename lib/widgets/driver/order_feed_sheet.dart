@@ -334,25 +334,31 @@ class _OrderCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      money(ride.askingPrice, decimals: false),
-                      style: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w800,
-                        height: 1,
+                const SizedBox(width: 8),
+                // Flexible, and nothing inside truncates — a fare and the
+                // driver's share of it are numbers, so a shortened one is a
+                // wrong one. Given less room they wrap and the card grows.
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        money(ride.askingPrice, decimals: false),
+                        style: const TextStyle(
+                          fontSize: 19,
+                          fontWeight: FontWeight.w800,
+                          height: 1,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      l.netIs(
-                        money(driverNet(ride.askingPrice), decimals: false),
+                      const SizedBox(height: 4),
+                      Text(
+                        l.netIs(
+                          money(driverNet(ride.askingPrice), decimals: false),
+                        ),
+                        style: TextStyle(fontSize: 11, color: c.textDim),
                       ),
-                      style: TextStyle(fontSize: 11, color: c.textDim),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -367,16 +373,26 @@ class _OrderCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  l.distanceToPickup(
-                    distanceLabel(pickupKm),
-                    durationLabel(l, pickupEta),
+                Flexible(
+                  child: Text(
+                    l.distanceToPickup(
+                      distanceLabel(pickupKm),
+                      durationLabel(l, pickupEta),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, color: c.textDim),
                   ),
-                  style: TextStyle(fontSize: 12, color: c.textDim),
                 ),
-                Text(
-                  l.tripDistance(distanceLabel(ride.distanceKm)),
-                  style: TextStyle(fontSize: 12, color: c.textDim),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    l.tripDistance(distanceLabel(ride.distanceKm)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontSize: 12, color: c.textDim),
+                  ),
                 ),
               ],
             ),
