@@ -4,30 +4,30 @@
   "graph": {},
   "nodes": [
     {
-      "id": "ios_runner_appdelegate_locationbridge",
-      "label": "LocationBridge",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 123,
-      "community_name": "LocationBridge",
-      "file_type": "code",
-      "norm_label": "locationbridge",
-      "source_file": "ios/Runner/AppDelegate.swift",
-      "source_location": "L20"
-    },
-    {
       "id": "ios_runner_appdelegate_pushbridge",
       "label": "PushBridge",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "norm_label": "pushbridge",
       "source_file": "ios/Runner/AppDelegate.swift",
       "source_location": "L153"
+    },
+    {
+      "id": "ios_runner_appdelegate_appbridge",
+      "label": "AppBridge",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "AppDelegate.swift",
+      "file_type": "code",
+      "norm_label": "appbridge",
+      "source_file": "ios/Runner/AppDelegate.swift",
+      "source_location": "L120"
     },
     {
       "id": "ios_runner_scenedelegate_scenedelegate",
@@ -69,17 +69,17 @@
       "source_location": "L213"
     },
     {
-      "id": "ios_runner_appdelegate_appbridge",
-      "label": "AppBridge",
+      "id": "ios_runner_appdelegate_locationbridge",
+      "label": "LocationBridge",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 142,
-      "community_name": "FlutterBinaryMessenger",
+      "community": 140,
+      "community_name": "LocationBridge",
       "file_type": "code",
-      "norm_label": "appbridge",
+      "norm_label": "locationbridge",
       "source_file": "ios/Runner/AppDelegate.swift",
-      "source_location": "L120"
+      "source_location": "L20"
     },
     {
       "id": "claude_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator",
@@ -694,52 +694,12 @@
       "source_location": "L40"
     },
     {
-      "id": "ios_runner_appdelegate_locationbridge_init",
-      "label": ".init()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 123,
-      "community_name": "LocationBridge",
-      "file_type": "code",
-      "norm_label": ".init()",
-      "source_file": "ios/Runner/AppDelegate.swift",
-      "source_location": "L32"
-    },
-    {
-      "id": "ios_runner_appdelegate_locationbridge_requestfix",
-      "label": ".requestFix()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 123,
-      "community_name": "LocationBridge",
-      "file_type": "code",
-      "metadata": {
-        "unresolved_calls": [
-          {
-            "callee": "requestWhenInUseAuthorization",
-            "receiver_type": "CLLocationManager",
-            "lang": "swift",
-            "line": "L66"
-          },
-          {
-            "callee": "requestLocation",
-            "receiver_type": "CLLocationManager",
-            "lang": "swift",
-            "line": "L68"
-          }
-        ]
-      },
-      "norm_label": ".requestfix()",
-      "source_file": "ios/Runner/AppDelegate.swift",
-      "source_location": "L49"
-    },
-    {
       "id": "ios_runner_appdelegate_pushbridge_finish",
       "label": ".finish()",
       "_callable": true,
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "metadata": {
         "unresolved_calls": [
@@ -756,12 +716,34 @@
       "source_location": "L204"
     },
     {
+      "id": "ios_runner_appdelegate_pushbridge_register",
+      "label": ".register()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 123,
+      "community_name": "PushBridge",
+      "file_type": "code",
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "setMethodCallHandler",
+            "receiver_type": "FlutterMethodChannel",
+            "lang": "swift",
+            "line": "L167"
+          }
+        ]
+      },
+      "norm_label": ".register()",
+      "source_file": "ios/Runner/AppDelegate.swift",
+      "source_location": "L165"
+    },
+    {
       "id": "ios_runner_appdelegate_pushbridge_requesttoken",
       "label": ".requestToken()",
       "_callable": true,
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "metadata": {
         "unresolved_calls": [
@@ -806,6 +788,40 @@
       "source_location": "L224"
     },
     {
+      "id": "ios_runner_appdelegate_appbridge_register",
+      "label": ".register()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "AppDelegate.swift",
+      "file_type": "code",
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "setMethodCallHandler",
+            "receiver_type": "FlutterMethodChannel",
+            "lang": "swift",
+            "line": "L126"
+          },
+          {
+            "callee": "canOpenURL",
+            "receiver_type": "UIApplication",
+            "lang": "swift",
+            "line": "L132"
+          },
+          {
+            "callee": "open",
+            "receiver_type": "UIApplication",
+            "lang": "swift",
+            "line": "L137"
+          }
+        ]
+      },
+      "norm_label": ".register()",
+      "source_file": "ios/Runner/AppDelegate.swift",
+      "source_location": "L124"
+    },
+    {
       "id": "ios_runnertests_runnertests_runnertests_testexample",
       "label": ".testExample()",
       "_callable": true,
@@ -840,34 +856,12 @@
       "source_location": "L238"
     },
     {
-      "id": "ios_runner_appdelegate_pushbridge_register",
-      "label": ".register()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 130,
-      "community_name": "AppDelegate",
-      "file_type": "code",
-      "metadata": {
-        "unresolved_calls": [
-          {
-            "callee": "setMethodCallHandler",
-            "receiver_type": "FlutterMethodChannel",
-            "lang": "swift",
-            "line": "L167"
-          }
-        ]
-      },
-      "norm_label": ".register()",
-      "source_file": "ios/Runner/AppDelegate.swift",
-      "source_location": "L165"
-    },
-    {
       "id": "ios_runner_appdelegate_locationbridge_finish",
       "label": ".finish()",
       "_callable": true,
       "_origin": "ast",
       "community": 140,
-      "community_name": ".finish",
+      "community_name": "LocationBridge",
       "file_type": "code",
       "metadata": {
         "unresolved_calls": [
@@ -884,12 +878,24 @@
       "source_location": "L75"
     },
     {
+      "id": "ios_runner_appdelegate_locationbridge_init",
+      "label": ".init()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 140,
+      "community_name": "LocationBridge",
+      "file_type": "code",
+      "norm_label": ".init()",
+      "source_file": "ios/Runner/AppDelegate.swift",
+      "source_location": "L32"
+    },
+    {
       "id": "ios_runner_appdelegate_locationbridge_locationmanager",
       "label": ".locationManager()",
       "_callable": true,
       "_origin": "ast",
       "community": 140,
-      "community_name": ".finish",
+      "community_name": "LocationBridge",
       "file_type": "code",
       "norm_label": ".locationmanager()",
       "source_file": "ios/Runner/AppDelegate.swift",
@@ -901,7 +907,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 140,
-      "community_name": ".finish",
+      "community_name": "LocationBridge",
       "file_type": "code",
       "metadata": {
         "unresolved_calls": [
@@ -918,46 +924,12 @@
       "source_location": "L90"
     },
     {
-      "id": "ios_runner_appdelegate_appbridge_register",
-      "label": ".register()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 142,
-      "community_name": "FlutterBinaryMessenger",
-      "file_type": "code",
-      "metadata": {
-        "unresolved_calls": [
-          {
-            "callee": "setMethodCallHandler",
-            "receiver_type": "FlutterMethodChannel",
-            "lang": "swift",
-            "line": "L126"
-          },
-          {
-            "callee": "canOpenURL",
-            "receiver_type": "UIApplication",
-            "lang": "swift",
-            "line": "L132"
-          },
-          {
-            "callee": "open",
-            "receiver_type": "UIApplication",
-            "lang": "swift",
-            "line": "L137"
-          }
-        ]
-      },
-      "norm_label": ".register()",
-      "source_file": "ios/Runner/AppDelegate.swift",
-      "source_location": "L124"
-    },
-    {
       "id": "ios_runner_appdelegate_locationbridge_register",
       "label": ".register()",
       "_callable": true,
       "_origin": "ast",
-      "community": 142,
-      "community_name": "FlutterBinaryMessenger",
+      "community": 140,
+      "community_name": "LocationBridge",
       "file_type": "code",
       "metadata": {
         "unresolved_calls": [
@@ -972,6 +944,34 @@
       "norm_label": ".register()",
       "source_file": "ios/Runner/AppDelegate.swift",
       "source_location": "L38"
+    },
+    {
+      "id": "ios_runner_appdelegate_locationbridge_requestfix",
+      "label": ".requestFix()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 140,
+      "community_name": "LocationBridge",
+      "file_type": "code",
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "requestWhenInUseAuthorization",
+            "receiver_type": "CLLocationManager",
+            "lang": "swift",
+            "line": "L66"
+          },
+          {
+            "callee": "requestLocation",
+            "receiver_type": "CLLocationManager",
+            "lang": "swift",
+            "line": "L68"
+          }
+        ]
+      },
+      "norm_label": ".requestfix()",
+      "source_file": "ios/Runner/AppDelegate.swift",
+      "source_location": "L49"
     },
     {
       "id": "claude_skills_ui_ux_pro_max_scripts_design_system_designsystemgenerator_apply_reasoning",
@@ -14509,17 +14509,6 @@
       "source_location": null
     },
     {
-      "id": "bool_get",
-      "label": "bool get",
-      "_origin": "ast",
-      "community": 107,
-      "community_name": "push.dart",
-      "file_type": "code",
-      "norm_label": "bool get",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "lib_core_push",
       "label": "push.dart",
       "_origin": "ast",
@@ -16075,24 +16064,24 @@
       "source_location": ""
     },
     {
-      "id": "cllocationmanagerdelegate",
-      "label": "CLLocationManagerDelegate",
-      "_origin": "ast",
-      "community": 123,
-      "community_name": "LocationBridge",
-      "file_type": "code",
-      "norm_label": "cllocationmanagerdelegate",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "dispatchworkitem",
       "label": "DispatchWorkItem",
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "norm_label": "dispatchworkitem",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "flutterbinarymessenger",
+      "label": "FlutterBinaryMessenger",
+      "_origin": "ast",
+      "community": 123,
+      "community_name": "PushBridge",
+      "file_type": "code",
+      "norm_label": "flutterbinarymessenger",
       "source_file": "",
       "source_location": ""
     },
@@ -16101,7 +16090,7 @@
       "label": "FlutterResult",
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "norm_label": "flutterresult",
       "source_file": "",
@@ -16112,7 +16101,7 @@
       "label": "String",
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "norm_label": "string",
       "source_file": "",
@@ -16123,7 +16112,7 @@
       "label": "NSObject",
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "norm_label": "nsobject",
       "source_file": "",
@@ -16134,7 +16123,7 @@
       "label": "TimeInterval",
       "_origin": "ast",
       "community": 123,
-      "community_name": "LocationBridge",
+      "community_name": "PushBridge",
       "file_type": "code",
       "norm_label": "timeinterval",
       "source_file": "",
@@ -16422,88 +16411,11 @@
       "source_location": ""
     },
     {
-      "id": "package_flutter_localizations_flutter_localizations_dart",
-      "label": "package:flutter_localizations/flutter_localizations.dart",
-      "_origin": "ast",
-      "community": 129,
-      "community_name": "return",
-      "file_type": "code",
-      "norm_label": "package:flutter_localizations/flutter_localizations.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "return",
-      "label": "return",
-      "_origin": "ast",
-      "community": 129,
-      "community_name": "return",
-      "file_type": "code",
-      "norm_label": "return",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "test_date_format_test",
-      "label": "date_format_test.dart",
-      "_origin": "ast",
-      "community": 129,
-      "community_name": "return",
-      "file_type": "code",
-      "norm_label": "date_format_test.dart",
-      "source_file": "test/date_format_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_date_format_test_formatted",
-      "label": "formatted",
-      "_origin": "ast",
-      "community": 129,
-      "community_name": "return",
-      "file_type": "code",
-      "norm_label": "formatted",
-      "source_file": "test/date_format_test.dart",
-      "source_location": "L16"
-    },
-    {
-      "id": "test_date_format_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 129,
-      "community_name": "return",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/date_format_test.dart",
-      "source_location": "L40"
-    },
-    {
-      "id": "test_date_format_test_monthyearin",
-      "label": "_monthYearIn",
-      "_origin": "ast",
-      "community": 129,
-      "community_name": "return",
-      "file_type": "code",
-      "norm_label": "_monthyearin",
-      "source_file": "test/date_format_test.dart",
-      "source_location": "L15"
-    },
-    {
-      "id": "test_date_format_test_pumpwidget",
-      "label": "pumpWidget",
-      "_origin": "ast",
-      "community": 129,
-      "community_name": "return",
-      "file_type": "code",
-      "norm_label": "pumpwidget",
-      "source_file": "test/date_format_test.dart",
-      "source_location": "L17"
-    },
-    {
       "id": "test_support_semantics",
       "label": "semantics.dart",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "semantics.dart",
       "source_file": "test/support/semantics.dart",
@@ -16514,7 +16426,7 @@
       "label": "announcesSomething",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "announcessomething",
       "source_file": "test/support/semantics.dart",
@@ -16525,7 +16437,7 @@
       "label": "controls",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "controls",
       "source_file": "test/support/semantics.dart",
@@ -16536,7 +16448,7 @@
       "label": "describeNode",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "describenode",
       "source_file": "test/support/semantics.dart",
@@ -16547,7 +16459,7 @@
       "label": "flattenSemantics",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "flattensemantics",
       "source_file": "test/support/semantics.dart",
@@ -16558,7 +16470,7 @@
       "label": "kinds",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "kinds",
       "source_file": "test/support/semantics.dart",
@@ -16569,7 +16481,7 @@
       "label": "out",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "out",
       "source_file": "test/support/semantics.dart",
@@ -16580,7 +16492,7 @@
       "label": "walk",
       "_origin": "ast",
       "community": 129,
-      "community_name": "return",
+      "community_name": "semantics.dart",
       "file_type": "code",
       "norm_label": "walk",
       "source_file": "test/support/semantics.dart",
@@ -16798,182 +16710,6 @@
       "source_location": "L1"
     },
     {
-      "id": "lib_core_notifier",
-      "label": "notifier.dart",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "notifier.dart",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": null
-    },
-    {
-      "id": "lib_core_notifier_createnotifier",
-      "label": "createNotifier",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "createnotifier",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L102"
-    },
-    {
-      "id": "lib_core_notifier_notificationpermission",
-      "label": "NotificationPermission",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "notificationpermission",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L5"
-    },
-    {
-      "id": "lib_core_notifier_opensettings",
-      "label": "openSettings",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "opensettings",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L51"
-    },
-    {
-      "id": "lib_core_notifier_readyafterinitialize",
-      "label": "readyAfterInitialize",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "readyafterinitialize",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L98"
-    },
-    {
-      "id": "lib_core_notifier_requestpermission",
-      "label": "requestPermission",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "requestpermission",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L39"
-    },
-    {
-      "id": "lib_core_notifier_show",
-      "label": "show",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "show",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L55"
-    },
-    {
-      "id": "lib_core_notifier_status",
-      "label": "status",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "status",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L44"
-    },
-    {
-      "id": "notifier_device_dart",
-      "label": "notifier_device.dart",
-      "_origin": "ast",
-      "community": 135,
-      "community_name": "notifier.dart",
-      "file_type": "code",
-      "norm_label": "notifier_device.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "file",
-      "label": "File",
-      "_origin": "ast",
-      "community": 136,
-      "community_name": "no_service_role_key_test.dart",
-      "file_type": "code",
-      "norm_label": "file",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "test_no_service_role_key_test",
-      "label": "no_service_role_key_test.dart",
-      "_origin": "ast",
-      "community": 136,
-      "community_name": "no_service_role_key_test.dart",
-      "file_type": "code",
-      "norm_label": "no_service_role_key_test.dart",
-      "source_file": "test/no_service_role_key_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_no_service_role_key_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 136,
-      "community_name": "no_service_role_key_test.dart",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/no_service_role_key_test.dart",
-      "source_location": "L25"
-    },
-    {
-      "id": "test_no_service_role_key_test_publishableprefix",
-      "label": "publishablePrefix",
-      "_origin": "ast",
-      "community": 136,
-      "community_name": "no_service_role_key_test.dart",
-      "file_type": "code",
-      "norm_label": "publishableprefix",
-      "source_file": "test/no_service_role_key_test.dart",
-      "source_location": "L30"
-    },
-    {
-      "id": "test_no_service_role_key_test_secretprefix",
-      "label": "secretPrefix",
-      "_origin": "ast",
-      "community": 136,
-      "community_name": "no_service_role_key_test.dart",
-      "file_type": "code",
-      "norm_label": "secretprefix",
-      "source_file": "test/no_service_role_key_test.dart",
-      "source_location": "L29"
-    },
-    {
-      "id": "test_no_service_role_key_test_servicerole",
-      "label": "serviceRole",
-      "_origin": "ast",
-      "community": 136,
-      "community_name": "no_service_role_key_test.dart",
-      "file_type": "code",
-      "norm_label": "servicerole",
-      "source_file": "test/no_service_role_key_test.dart",
-      "source_location": "L31"
-    },
-    {
-      "id": "test_no_service_role_key_test_servicerolejwtsin",
-      "label": "serviceRoleJwtsIn",
-      "_origin": "ast",
-      "community": 136,
-      "community_name": "no_service_role_key_test.dart",
-      "file_type": "code",
-      "norm_label": "servicerolejwtsin",
-      "source_file": "test/no_service_role_key_test.dart",
-      "source_location": "L65"
-    },
-    {
       "id": "dart_math",
       "label": "dart:math",
       "_origin": "ast",
@@ -17049,6 +16785,171 @@
       "norm_label": "_penang",
       "source_file": "test/geo_test.dart",
       "source_location": "L9"
+    },
+    {
+      "id": "dart_io",
+      "label": "dart:io",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "dart:io",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "file",
+      "label": "File",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "file",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_flutter_widgets_dart",
+      "label": "package:flutter/widgets.dart",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "package:flutter/widgets.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_core_push_dart",
+      "label": "package:get_teksi/core/push.dart",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/core/push.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "test_l10n_test",
+      "label": "l10n_test.dart",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "l10n_test.dart",
+      "source_file": "test/l10n_test.dart",
+      "source_location": null
+    },
+    {
+      "id": "test_l10n_test_en",
+      "label": "en",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "en",
+      "source_file": "test/l10n_test.dart",
+      "source_location": "L14"
+    },
+    {
+      "id": "test_l10n_test_json",
+      "label": "json",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "json",
+      "source_file": "test/l10n_test.dart",
+      "source_location": "L128"
+    },
+    {
+      "id": "test_l10n_test_keysof",
+      "label": "_keysOf",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "_keysof",
+      "source_file": "test/l10n_test.dart",
+      "source_location": "L127"
+    },
+    {
+      "id": "test_l10n_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/l10n_test.dart",
+      "source_location": "L13"
+    },
+    {
+      "id": "test_l10n_test_ms",
+      "label": "ms",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "ms",
+      "source_file": "test/l10n_test.dart",
+      "source_location": "L15"
+    },
+    {
+      "id": "test_no_glyph_icons_test",
+      "label": "no_glyph_icons_test.dart",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "no_glyph_icons_test.dart",
+      "source_file": "test/no_glyph_icons_test.dart",
+      "source_location": null
+    },
+    {
+      "id": "test_no_glyph_icons_test_blockof",
+      "label": "blockOf",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "blockof",
+      "source_file": "test/no_glyph_icons_test.dart",
+      "source_location": "L36"
+    },
+    {
+      "id": "test_no_glyph_icons_test_code",
+      "label": "code",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "code",
+      "source_file": "test/no_glyph_icons_test.dart",
+      "source_location": "L45"
+    },
+    {
+      "id": "test_no_glyph_icons_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/no_glyph_icons_test.dart",
+      "source_location": "L20"
+    },
+    {
+      "id": "test_no_glyph_icons_test_ranges",
+      "label": "ranges",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "ranges",
+      "source_file": "test/no_glyph_icons_test.dart",
+      "source_location": "L22"
     },
     {
       "id": "test_no_hardcoded_strings_test",
@@ -17172,92 +17073,114 @@
       "source_location": "L39"
     },
     {
-      "id": "dart_convert",
-      "label": "dart:convert",
+      "id": "test_no_service_role_key_test",
+      "label": "no_service_role_key_test.dart",
       "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
       "file_type": "code",
-      "norm_label": "dart:convert",
-      "source_file": null,
+      "norm_label": "no_service_role_key_test.dart",
+      "source_file": "test/no_service_role_key_test.dart",
       "source_location": null
     },
     {
-      "id": "package_flutter_widgets_dart",
-      "label": "package:flutter/widgets.dart",
-      "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
-      "file_type": "code",
-      "norm_label": "package:flutter/widgets.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "test_l10n_test",
-      "label": "l10n_test.dart",
-      "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
-      "file_type": "code",
-      "norm_label": "l10n_test.dart",
-      "source_file": "test/l10n_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_l10n_test_en",
-      "label": "en",
-      "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
-      "file_type": "code",
-      "norm_label": "en",
-      "source_file": "test/l10n_test.dart",
-      "source_location": "L14"
-    },
-    {
-      "id": "test_l10n_test_json",
-      "label": "json",
-      "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
-      "file_type": "code",
-      "norm_label": "json",
-      "source_file": "test/l10n_test.dart",
-      "source_location": "L128"
-    },
-    {
-      "id": "test_l10n_test_keysof",
-      "label": "_keysOf",
-      "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
-      "file_type": "code",
-      "norm_label": "_keysof",
-      "source_file": "test/l10n_test.dart",
-      "source_location": "L127"
-    },
-    {
-      "id": "test_l10n_test_main",
+      "id": "test_no_service_role_key_test_main",
       "label": "main",
       "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
       "file_type": "code",
       "norm_label": "main",
-      "source_file": "test/l10n_test.dart",
-      "source_location": "L13"
+      "source_file": "test/no_service_role_key_test.dart",
+      "source_location": "L25"
     },
     {
-      "id": "test_l10n_test_ms",
-      "label": "ms",
+      "id": "test_no_service_role_key_test_publishableprefix",
+      "label": "publishablePrefix",
       "_origin": "ast",
-      "community": 139,
-      "community_name": "l10n_test.dart",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
       "file_type": "code",
-      "norm_label": "ms",
-      "source_file": "test/l10n_test.dart",
-      "source_location": "L15"
+      "norm_label": "publishableprefix",
+      "source_file": "test/no_service_role_key_test.dart",
+      "source_location": "L30"
+    },
+    {
+      "id": "test_no_service_role_key_test_secretprefix",
+      "label": "secretPrefix",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "secretprefix",
+      "source_file": "test/no_service_role_key_test.dart",
+      "source_location": "L29"
+    },
+    {
+      "id": "test_no_service_role_key_test_servicerole",
+      "label": "serviceRole",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "servicerole",
+      "source_file": "test/no_service_role_key_test.dart",
+      "source_location": "L31"
+    },
+    {
+      "id": "test_no_service_role_key_test_servicerolejwtsin",
+      "label": "serviceRoleJwtsIn",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "servicerolejwtsin",
+      "source_file": "test/no_service_role_key_test.dart",
+      "source_location": "L65"
+    },
+    {
+      "id": "test_push_test",
+      "label": "push_test.dart",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "push_test.dart",
+      "source_file": "test/push_test.dart",
+      "source_location": null
+    },
+    {
+      "id": "test_push_test_iosaddress",
+      "label": "iosAddress",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "iosaddress",
+      "source_file": "test/push_test.dart",
+      "source_location": "L7"
+    },
+    {
+      "id": "test_push_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/push_test.dart",
+      "source_location": "L6"
+    },
+    {
+      "id": "test_push_test_webaddress",
+      "label": "webAddress",
+      "_origin": "ast",
+      "community": 138,
+      "community_name": "no_hardcoded_strings_test.dart",
+      "file_type": "code",
+      "norm_label": "webaddress",
+      "source_file": "test/push_test.dart",
+      "source_location": "L8"
     },
     {
       "id": "appuser_get",
@@ -17704,7 +17627,7 @@
       "label": "CLLocation",
       "_origin": "ast",
       "community": 140,
-      "community_name": ".finish",
+      "community_name": "LocationBridge",
       "file_type": "code",
       "norm_label": "cllocation",
       "source_file": "",
@@ -17715,9 +17638,20 @@
       "label": "CLLocationManager",
       "_origin": "ast",
       "community": 140,
-      "community_name": ".finish",
+      "community_name": "LocationBridge",
       "file_type": "code",
       "norm_label": "cllocationmanager",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "cllocationmanagerdelegate",
+      "label": "CLLocationManagerDelegate",
+      "_origin": "ast",
+      "community": 140,
+      "community_name": "LocationBridge",
+      "file_type": "code",
+      "norm_label": "cllocationmanagerdelegate",
       "source_file": "",
       "source_location": ""
     },
@@ -17753,17 +17687,6 @@
       "norm_label": "singletickerproviderstatemixin",
       "source_file": null,
       "source_location": null
-    },
-    {
-      "id": "flutterbinarymessenger",
-      "label": "FlutterBinaryMessenger",
-      "_origin": "ast",
-      "community": 142,
-      "community_name": "FlutterBinaryMessenger",
-      "file_type": "code",
-      "norm_label": "flutterbinarymessenger",
-      "source_file": "",
-      "source_location": ""
     },
     {
       "id": "lib_core_bus_localtransport",
@@ -25301,6 +25224,61 @@
       "source_location": null
     },
     {
+      "id": "lib_l10n_app_localizations_applocalizations",
+      "label": "AppLocalizations",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "router.dart",
+      "file_type": "code",
+      "norm_label": "applocalizations",
+      "source_file": "lib/l10n/app_localizations.dart",
+      "source_location": "L64"
+    },
+    {
+      "id": "lib_l10n_app_localizations_applocalizationsdelegate",
+      "label": "_AppLocalizationsDelegate",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "router.dart",
+      "file_type": "code",
+      "norm_label": "_applocalizationsdelegate",
+      "source_file": "lib/l10n/app_localizations.dart",
+      "source_location": "L3131"
+    },
+    {
+      "id": "lib_l10n_app_localizations_en_applocalizationsen",
+      "label": "AppLocalizationsEn",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "router.dart",
+      "file_type": "code",
+      "norm_label": "applocalizationsen",
+      "source_file": "lib/l10n/app_localizations_en.dart",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_l10n_app_localizations_ms_applocalizationsms",
+      "label": "AppLocalizationsMs",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "router.dart",
+      "file_type": "code",
+      "norm_label": "applocalizationsms",
+      "source_file": "lib/l10n/app_localizations_ms.dart",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_l10n_app_localizations_of",
+      "label": "of",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "router.dart",
+      "file_type": "code",
+      "norm_label": "of",
+      "source_file": "lib/l10n/app_localizations.dart",
+      "source_location": "L70"
+    },
+    {
       "id": "lib_router",
       "label": "router.dart",
       "_origin": "ast",
@@ -25409,6 +25387,17 @@
       "norm_label": "trim",
       "source_file": "lib/router.dart",
       "source_location": "L187"
+    },
+    {
+      "id": "localizationsdelegate",
+      "label": "LocalizationsDelegate",
+      "_origin": "ast",
+      "community": 20,
+      "community_name": "router.dart",
+      "file_type": "code",
+      "norm_label": "localizationsdelegate",
+      "source_file": null,
+      "source_location": null
     },
     {
       "id": "screens_auth_intro_screen_dart",
@@ -26100,18 +26089,6 @@
       "norm_label": "web push \u2014 the browser, also easy",
       "source_file": "docs/PUSH.md",
       "source_location": "L66"
-    },
-    {
-      "id": "docs_push_what_arrives_today_and_what_does_not",
-      "label": "What arrives today, and what does not",
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "Push notifications: the decision, not the design",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "what arrives today, and what does not",
-      "source_file": "docs/PUSH.md",
-      "source_location": "L12"
     },
     {
       "id": "docs_push_what_ci_could_keep_honest",
@@ -28572,33 +28549,11 @@
       "source_location": null
     },
     {
-      "id": "lib_services_profile_sync_profilesync",
-      "label": "ProfileSync",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "profilesync",
-      "source_file": "lib/services/profile_sync.dart",
-      "source_location": "L28"
-    },
-    {
-      "id": "list",
-      "label": "List",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "list",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "marketplace_test_dart",
       "label": "marketplace_test.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "marketplace_test.dart",
       "source_file": null,
@@ -28609,7 +28564,7 @@
       "label": "package:get_teksi/core/bus.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/core/bus.dart",
       "source_file": null,
@@ -28620,9 +28575,20 @@
       "label": "package:get_teksi/core/location.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/core/location.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_core_storage_dart",
+      "label": "package:get_teksi/core/storage.dart",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/core/storage.dart",
       "source_file": null,
       "source_location": null
     },
@@ -28631,20 +28597,20 @@
       "label": "package:get_teksi/data/places.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/data/places.dart",
       "source_file": null,
       "source_location": null
     },
     {
-      "id": "package_get_teksi_services_profile_sync_dart",
-      "label": "package:get_teksi/services/profile_sync.dart",
+      "id": "package_get_teksi_services_driver_beacon_dart",
+      "label": "package:get_teksi/services/driver_beacon.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
-      "norm_label": "package:get_teksi/services/profile_sync.dart",
+      "norm_label": "package:get_teksi/services/driver_beacon.dart",
       "source_file": null,
       "source_location": null
     },
@@ -28653,7 +28619,7 @@
       "label": "package:get_teksi/state/rides.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/state/rides.dart",
       "source_file": null,
@@ -28664,7 +28630,7 @@
       "label": "package:get_teksi/state/session.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/state/session.dart",
       "source_file": null,
@@ -28675,9 +28641,20 @@
       "label": "package:shared_preferences/shared_preferences.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "package:shared_preferences/shared_preferences.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "streamsubscription",
+      "label": "StreamSubscription",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "streamsubscription",
       "source_file": null,
       "source_location": null
     },
@@ -28686,7 +28663,7 @@
       "label": "backlog_test.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "backlog_test.dart",
       "source_file": "test/backlog_test.dart",
@@ -28697,7 +28674,7 @@
       "label": "deliver",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "deliver",
       "source_file": "test/backlog_test.dart",
@@ -28708,7 +28685,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "test/backlog_test.dart",
@@ -28719,7 +28696,7 @@
       "label": "_messageOn",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "_messageon",
       "source_file": "test/backlog_test.dart",
@@ -28730,7 +28707,7 @@
       "label": "_offerOn",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "_offeron",
       "source_file": "test/backlog_test.dart",
@@ -28741,7 +28718,7 @@
       "label": "rides",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "rides",
       "source_file": "test/backlog_test.dart",
@@ -28752,18 +28729,194 @@
       "label": "session",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "session",
       "source_file": "test/backlog_test.dart",
       "source_location": "L19"
     },
     {
+      "id": "test_driver_beacon_test",
+      "label": "driver_beacon_test.dart",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "driver_beacon_test.dart",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": null
+    },
+    {
+      "id": "test_driver_beacon_test_beaconwith",
+      "label": "beaconWith",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "beaconwith",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L80"
+    },
+    {
+      "id": "test_driver_beacon_test_calls",
+      "label": "calls",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "calls",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L26"
+    },
+    {
+      "id": "test_driver_beacon_test_current",
+      "label": "current",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "current",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L32"
+    },
+    {
+      "id": "test_driver_beacon_test_delay",
+      "label": "delay",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "delay",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L29"
+    },
+    {
+      "id": "test_driver_beacon_test_fixes",
+      "label": "fixes",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "fixes",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L25"
+    },
+    {
+      "id": "test_driver_beacon_test_jitter",
+      "label": "_jitter",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "_jitter",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L46"
+    },
+    {
+      "id": "test_driver_beacon_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L54"
+    },
+    {
+      "id": "test_driver_beacon_test_north",
+      "label": "_north",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "_north",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L43"
+    },
+    {
+      "id": "test_driver_beacon_test_northjitter",
+      "label": "_northJitter",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "_northjitter",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L52"
+    },
+    {
+      "id": "test_driver_beacon_test_origin",
+      "label": "_origin",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "_origin",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L40"
+    },
+    {
+      "id": "test_driver_beacon_test_published",
+      "label": "published",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "published",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L61"
+    },
+    {
+      "id": "test_driver_beacon_test_receivinghalf",
+      "label": "_receivingHalf",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "_receivinghalf",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L259"
+    },
+    {
+      "id": "test_driver_beacon_test_rides",
+      "label": "rides",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "rides",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L60"
+    },
+    {
+      "id": "test_driver_beacon_test_session",
+      "label": "session",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "session",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L57"
+    },
+    {
+      "id": "test_driver_beacon_test_sub",
+      "label": "sub",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "driver_beacon_test.dart",
+      "file_type": "code",
+      "norm_label": "sub",
+      "source_file": "test/driver_beacon_test.dart",
+      "source_location": "L62"
+    },
+    {
       "id": "test_location_test",
       "label": "location_test.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "location_test.dart",
       "source_file": "test/location_test.dart",
@@ -28774,7 +28927,7 @@
       "label": "answerWith",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "answerwith",
       "source_file": "test/location_test.dart",
@@ -28785,7 +28938,7 @@
       "label": "_channel",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "_channel",
       "source_file": "test/location_test.dart",
@@ -28796,7 +28949,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "test/location_test.dart",
@@ -28807,7 +28960,7 @@
       "label": "messenger",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "messenger",
       "source_file": "test/location_test.dart",
@@ -28818,7 +28971,7 @@
       "label": "notifications_test.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "notifications_test.dart",
       "source_file": "test/notifications_test.dart",
@@ -28829,7 +28982,7 @@
       "label": "_bid",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "_bid",
       "source_file": "test/notifications_test.dart",
@@ -28840,7 +28993,7 @@
       "label": "_car",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "_car",
       "source_file": "test/notifications_test.dart",
@@ -28851,7 +29004,7 @@
       "label": "deliver",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "deliver",
       "source_file": "test/notifications_test.dart",
@@ -28862,7 +29015,7 @@
       "label": "knownRide",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "knownride",
       "source_file": "test/notifications_test.dart",
@@ -28873,7 +29026,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "test/notifications_test.dart",
@@ -28884,7 +29037,7 @@
       "label": "rides",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "rides",
       "source_file": "test/notifications_test.dart",
@@ -28895,7 +29048,7 @@
       "label": "session",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "session",
       "source_file": "test/notifications_test.dart",
@@ -28906,7 +29059,7 @@
       "label": "notifier_test.dart",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "notifier_test.dart",
       "source_file": "test/notifier_test.dart",
@@ -28917,7 +29070,7 @@
       "label": "alerted",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "alerted",
       "source_file": "test/notifier_test.dart",
@@ -28928,7 +29081,7 @@
       "label": "_bid",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "_bid",
       "source_file": "test/notifier_test.dart",
@@ -28939,7 +29092,7 @@
       "label": "_car",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "_car",
       "source_file": "test/notifier_test.dart",
@@ -28950,7 +29103,7 @@
       "label": "deliver",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "deliver",
       "source_file": "test/notifier_test.dart",
@@ -28961,7 +29114,7 @@
       "label": "knownRide",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "knownride",
       "source_file": "test/notifier_test.dart",
@@ -28972,7 +29125,7 @@
       "label": "main",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "main",
       "source_file": "test/notifier_test.dart",
@@ -28983,7 +29136,7 @@
       "label": "rides",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "rides",
       "source_file": "test/notifier_test.dart",
@@ -28994,99 +29147,11 @@
       "label": "session",
       "_origin": "ast",
       "community": 29,
-      "community_name": "notifier_test.dart",
+      "community_name": "driver_beacon_test.dart",
       "file_type": "code",
       "norm_label": "session",
       "source_file": "test/notifier_test.dart",
       "source_location": "L50"
-    },
-    {
-      "id": "test_profile_sync_test",
-      "label": "profile_sync_test.dart",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "profile_sync_test.dart",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_profile_sync_test_aftersettle",
-      "label": "afterSettle",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "aftersettle",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": "L32"
-    },
-    {
-      "id": "test_profile_sync_test_car",
-      "label": "_car",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "_car",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": "L15"
-    },
-    {
-      "id": "test_profile_sync_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": "L25"
-    },
-    {
-      "id": "test_profile_sync_test_pushes",
-      "label": "pushes",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "pushes",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": "L27"
-    },
-    {
-      "id": "test_profile_sync_test_session",
-      "label": "session",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "session",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": "L26"
-    },
-    {
-      "id": "test_profile_sync_test_settle",
-      "label": "settle",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "settle",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": "L31"
-    },
-    {
-      "id": "test_profile_sync_test_sync",
-      "label": "sync",
-      "_origin": "ast",
-      "community": 29,
-      "community_name": "notifier_test.dart",
-      "file_type": "code",
-      "norm_label": "sync",
-      "source_file": "test/profile_sync_test.dart",
-      "source_location": "L28"
     },
     {
       "id": "int",
@@ -30618,6 +30683,17 @@
       "source_location": null
     },
     {
+      "id": "dart_convert",
+      "label": "dart:convert",
+      "_origin": "ast",
+      "community": 31,
+      "community_name": "package:latlong2/latlong.dart",
+      "file_type": "code",
+      "norm_label": "dart:convert",
+      "source_file": null,
+      "source_location": null
+    },
+    {
       "id": "exception",
       "label": "Exception",
       "_origin": "ast",
@@ -30717,13 +30793,13 @@
       "source_location": null
     },
     {
-      "id": "package_get_teksi_core_storage_dart",
-      "label": "package:get_teksi/core/storage.dart",
+      "id": "package_get_teksi_models_models_dart",
+      "label": "package:get_teksi/models/models.dart",
       "_origin": "ast",
       "community": 31,
       "community_name": "package:latlong2/latlong.dart",
       "file_type": "code",
-      "norm_label": "package:get_teksi/core/storage.dart",
+      "norm_label": "package:get_teksi/models/models.dart",
       "source_file": null,
       "source_location": null
     },
@@ -31670,17 +31746,6 @@
       "source_location": null
     },
     {
-      "id": "package_get_teksi_screens_driver_driver_home_screen_dart",
-      "label": "package:get_teksi/screens/driver/driver_home_screen.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/screens/driver/driver_home_screen.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "package_get_teksi_screens_driver_earnings_screen_dart",
       "label": "package:get_teksi/screens/driver/earnings_screen.dart",
       "_origin": "ast",
@@ -31710,17 +31775,6 @@
       "community_name": "screens.dart",
       "file_type": "code",
       "norm_label": "package:get_teksi/screens/driver/vehicle_screen.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_screens_passenger_passenger_home_screen_dart",
-      "label": "package:get_teksi/screens/passenger/passenger_home_screen.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/screens/passenger/passenger_home_screen.dart",
       "source_file": null,
       "source_location": null
     },
@@ -31789,116 +31843,6 @@
       "norm_label": "package:get_teksi/screens/shared/settings_screen.dart",
       "source_file": null,
       "source_location": null
-    },
-    {
-      "id": "package_get_teksi_state_draft_dart",
-      "label": "package:get_teksi/state/draft.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/state/draft.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_widgets_driver_active_ride_sheet_dart",
-      "label": "package:get_teksi/widgets/driver/active_ride_sheet.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/widgets/driver/active_ride_sheet.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_widgets_passenger_offers_sheet_dart",
-      "label": "package:get_teksi/widgets/passenger/offers_sheet.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/widgets/passenger/offers_sheet.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_widgets_passenger_price_sheet_dart",
-      "label": "package:get_teksi/widgets/passenger/price_sheet.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/widgets/passenger/price_sheet.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "package_get_teksi_widgets_passenger_tracking_sheet_dart",
-      "label": "package:get_teksi/widgets/passenger/tracking_sheet.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/widgets/passenger/tracking_sheet.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "test_ride_sheets_test",
-      "label": "ride_sheets_test.dart",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "ride_sheets_test.dart",
-      "source_file": "test/ride_sheets_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_ride_sheets_test_app",
-      "label": "app",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "app",
-      "source_file": "test/ride_sheets_test.dart",
-      "source_location": "L39"
-    },
-    {
-      "id": "test_ride_sheets_test_layout",
-      "label": "layout",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "layout",
-      "source_file": "test/ride_sheets_test.dart",
-      "source_location": "L44"
-    },
-    {
-      "id": "test_ride_sheets_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/ride_sheets_test.dart",
-      "source_location": "L38"
-    },
-    {
-      "id": "test_ride_sheets_test_states",
-      "label": "states",
-      "_origin": "ast",
-      "community": 35,
-      "community_name": "screens.dart",
-      "file_type": "code",
-      "norm_label": "states",
-      "source_file": "test/ride_sheets_test.dart",
-      "source_location": "L81"
     },
     {
       "id": "test_support_screens",
@@ -33903,17 +33847,6 @@
       "source_location": null
     },
     {
-      "id": "package_get_teksi_models_models_dart",
-      "label": "package:get_teksi/models/models.dart",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "marketplace_test.dart",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/models/models.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "package_get_teksi_services_pricing_dart",
       "label": "package:get_teksi/services/pricing.dart",
       "_origin": "ast",
@@ -34099,28 +34032,6 @@
       "norm_label": "ttl",
       "source_file": "test/marketplace_test.dart",
       "source_location": "L66"
-    },
-    {
-      "id": "test_pricing_test",
-      "label": "pricing_test.dart",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "marketplace_test.dart",
-      "file_type": "code",
-      "norm_label": "pricing_test.dart",
-      "source_file": "test/pricing_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_pricing_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 40,
-      "community_name": "marketplace_test.dart",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/pricing_test.dart",
-      "source_location": "L9"
     },
     {
       "id": "lib_core_storage",
@@ -34343,6 +34254,39 @@
       "source_location": null
     },
     {
+      "id": "lib_services_profile_sync_profilesync",
+      "label": "ProfileSync",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "profilesync",
+      "source_file": "lib/services/profile_sync.dart",
+      "source_location": "L28"
+    },
+    {
+      "id": "list",
+      "label": "List",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "list",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "package_get_teksi_services_profile_sync_dart",
+      "label": "package:get_teksi/services/profile_sync.dart",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "package:get_teksi/services/profile_sync.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
       "id": "package_get_teksi_widgets_notification_setting_row_dart",
       "label": "package:get_teksi/widgets/notification_setting_row.dart",
       "_origin": "ast",
@@ -34462,6 +34406,94 @@
       "norm_label": "_status",
       "source_file": "test/notification_setting_row_test.dart",
       "source_location": "L26"
+    },
+    {
+      "id": "test_profile_sync_test",
+      "label": "profile_sync_test.dart",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "profile_sync_test.dart",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": null
+    },
+    {
+      "id": "test_profile_sync_test_aftersettle",
+      "label": "afterSettle",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "aftersettle",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": "L32"
+    },
+    {
+      "id": "test_profile_sync_test_car",
+      "label": "_car",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "_car",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": "L15"
+    },
+    {
+      "id": "test_profile_sync_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": "L25"
+    },
+    {
+      "id": "test_profile_sync_test_pushes",
+      "label": "pushes",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "pushes",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": "L27"
+    },
+    {
+      "id": "test_profile_sync_test_session",
+      "label": "session",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "session",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": "L26"
+    },
+    {
+      "id": "test_profile_sync_test_settle",
+      "label": "settle",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "settle",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": "L31"
+    },
+    {
+      "id": "test_profile_sync_test_sync",
+      "label": "sync",
+      "_origin": "ast",
+      "community": 42,
+      "community_name": "notification_setting_row_test.dart",
+      "file_type": "code",
+      "norm_label": "sync",
+      "source_file": "test/profile_sync_test.dart",
+      "source_location": "L28"
     },
     {
       "id": "package_get_teksi_core_backend_dart",
@@ -34761,6 +34793,30 @@
       "source_location": ""
     },
     {
+      "id": "docs_platforms_staying_awake_on_duty",
+      "label": "Staying awake on duty",
+      "_origin": "ast",
+      "community": 44,
+      "community_name": "DutyService.kt",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "staying awake on duty",
+      "source_file": "docs/PLATFORMS.md",
+      "source_location": "L317"
+    },
+    {
+      "id": "docs_push_what_arrives_today_and_what_does_not",
+      "label": "What arrives today, and what does not",
+      "_origin": "ast",
+      "community": 44,
+      "community_name": "DutyService.kt",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "what arrives today, and what does not",
+      "source_file": "docs/PUSH.md",
+      "source_location": "L12"
+    },
+    {
       "id": "claude_skills_ui_ux_pro_max_skill",
       "label": "ui-ux-pro-max/SKILL.md",
       "_origin": "ast",
@@ -34981,202 +35037,235 @@
       "source_location": "L47"
     },
     {
-      "id": "package_get_teksi_services_driver_beacon_dart",
-      "label": "package:get_teksi/services/driver_beacon.dart",
+      "id": "package_get_teksi_screens_driver_driver_home_screen_dart",
+      "label": "package:get_teksi/screens/driver/driver_home_screen.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "package:get_teksi/services/driver_beacon.dart",
+      "norm_label": "package:get_teksi/screens/driver/driver_home_screen.dart",
       "source_file": null,
       "source_location": null
     },
     {
-      "id": "streamsubscription",
-      "label": "StreamSubscription",
+      "id": "package_get_teksi_screens_passenger_passenger_home_screen_dart",
+      "label": "package:get_teksi/screens/passenger/passenger_home_screen.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "streamsubscription",
+      "norm_label": "package:get_teksi/screens/passenger/passenger_home_screen.dart",
       "source_file": null,
       "source_location": null
     },
     {
-      "id": "test_driver_beacon_test",
-      "label": "driver_beacon_test.dart",
+      "id": "package_get_teksi_state_draft_dart",
+      "label": "package:get_teksi/state/draft.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "driver_beacon_test.dart",
-      "source_file": "test/driver_beacon_test.dart",
+      "norm_label": "package:get_teksi/state/draft.dart",
+      "source_file": null,
       "source_location": null
     },
     {
-      "id": "test_driver_beacon_test_beaconwith",
-      "label": "beaconWith",
+      "id": "package_get_teksi_widgets_driver_active_ride_sheet_dart",
+      "label": "package:get_teksi/widgets/driver/active_ride_sheet.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "beaconwith",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L80"
+      "norm_label": "package:get_teksi/widgets/driver/active_ride_sheet.dart",
+      "source_file": null,
+      "source_location": null
     },
     {
-      "id": "test_driver_beacon_test_calls",
-      "label": "calls",
+      "id": "package_get_teksi_widgets_passenger_offers_sheet_dart",
+      "label": "package:get_teksi/widgets/passenger/offers_sheet.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "calls",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L26"
+      "norm_label": "package:get_teksi/widgets/passenger/offers_sheet.dart",
+      "source_file": null,
+      "source_location": null
     },
     {
-      "id": "test_driver_beacon_test_current",
-      "label": "current",
+      "id": "package_get_teksi_widgets_passenger_price_sheet_dart",
+      "label": "package:get_teksi/widgets/passenger/price_sheet.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "current",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L32"
+      "norm_label": "package:get_teksi/widgets/passenger/price_sheet.dart",
+      "source_file": null,
+      "source_location": null
     },
     {
-      "id": "test_driver_beacon_test_delay",
-      "label": "delay",
+      "id": "package_get_teksi_widgets_passenger_tracking_sheet_dart",
+      "label": "package:get_teksi/widgets/passenger/tracking_sheet.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "delay",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L29"
+      "norm_label": "package:get_teksi/widgets/passenger/tracking_sheet.dart",
+      "source_file": null,
+      "source_location": null
     },
     {
-      "id": "test_driver_beacon_test_fixes",
-      "label": "fixes",
+      "id": "test_modal_sheets_test",
+      "label": "modal_sheets_test.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "fixes",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L25"
+      "norm_label": "modal_sheets_test.dart",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": null
     },
     {
-      "id": "test_driver_beacon_test_jitter",
-      "label": "_jitter",
+      "id": "test_modal_sheets_test_app",
+      "label": "app",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "_jitter",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L46"
+      "norm_label": "app",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L27"
     },
     {
-      "id": "test_driver_beacon_test_main",
+      "id": "test_modal_sheets_test_main",
       "label": "main",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
       "norm_label": "main",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L54"
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L26"
     },
     {
-      "id": "test_driver_beacon_test_north",
-      "label": "_north",
+      "id": "test_modal_sheets_test_offerssheet",
+      "label": "offersSheet",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "_north",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L43"
+      "norm_label": "offerssheet",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L229"
     },
     {
-      "id": "test_driver_beacon_test_northjitter",
-      "label": "_northJitter",
+      "id": "test_modal_sheets_test_openandlayout",
+      "label": "openAndLayout",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "_northjitter",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L52"
+      "norm_label": "openandlayout",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L31"
     },
     {
-      "id": "test_driver_beacon_test_origin",
-      "label": "_origin",
+      "id": "test_modal_sheets_test_pricesheet",
+      "label": "priceSheet",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "_origin",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L40"
+      "norm_label": "pricesheet",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L192"
     },
     {
-      "id": "test_driver_beacon_test_published",
-      "label": "published",
+      "id": "test_modal_sheets_test_sheet",
+      "label": "sheet",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "published",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L61"
+      "norm_label": "sheet",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L116"
     },
     {
-      "id": "test_driver_beacon_test_receivinghalf",
-      "label": "_receivingHalf",
+      "id": "test_modal_sheets_test_sheets",
+      "label": "sheets",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "_receivinghalf",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L259"
+      "norm_label": "sheets",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L105"
     },
     {
-      "id": "test_driver_beacon_test_rides",
-      "label": "rides",
+      "id": "test_modal_sheets_test_trackingsheet",
+      "label": "trackingSheet",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "rides",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L60"
+      "norm_label": "trackingsheet",
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L258"
     },
     {
-      "id": "test_driver_beacon_test_session",
-      "label": "session",
+      "id": "test_ride_sheets_test",
+      "label": "ride_sheets_test.dart",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "session",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L57"
+      "norm_label": "ride_sheets_test.dart",
+      "source_file": "test/ride_sheets_test.dart",
+      "source_location": null
     },
     {
-      "id": "test_driver_beacon_test_sub",
-      "label": "sub",
+      "id": "test_ride_sheets_test_app",
+      "label": "app",
       "_origin": "ast",
       "community": 46,
-      "community_name": "driver_beacon_test.dart",
+      "community_name": "ride_sheets_test.dart",
       "file_type": "code",
-      "norm_label": "sub",
-      "source_file": "test/driver_beacon_test.dart",
-      "source_location": "L62"
+      "norm_label": "app",
+      "source_file": "test/ride_sheets_test.dart",
+      "source_location": "L39"
+    },
+    {
+      "id": "test_ride_sheets_test_layout",
+      "label": "layout",
+      "_origin": "ast",
+      "community": 46,
+      "community_name": "ride_sheets_test.dart",
+      "file_type": "code",
+      "norm_label": "layout",
+      "source_file": "test/ride_sheets_test.dart",
+      "source_location": "L44"
+    },
+    {
+      "id": "test_ride_sheets_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 46,
+      "community_name": "ride_sheets_test.dart",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/ride_sheets_test.dart",
+      "source_location": "L38"
+    },
+    {
+      "id": "test_ride_sheets_test_states",
+      "label": "states",
+      "_origin": "ast",
+      "community": 46,
+      "community_name": "ride_sheets_test.dart",
+      "file_type": "code",
+      "norm_label": "states",
+      "source_file": "test/ride_sheets_test.dart",
+      "source_location": "L81"
     },
     {
       "id": "flutterengine",
@@ -35223,16 +35312,37 @@
       "source_location": ""
     },
     {
-      "id": "docs_platforms_staying_awake_on_duty",
-      "label": "Staying awake on duty",
+      "id": "core_notifier_dart",
+      "label": "../core/notifier.dart",
       "_origin": "ast",
-      "community": 47,
-      "community_name": "MainActivity",
-      "file_type": "document",
-      "node_kind": "heading",
-      "norm_label": "staying awake on duty",
-      "source_file": "docs/PLATFORMS.md",
-      "source_location": "L317"
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "../core/notifier.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "lib_core_notifier",
+      "label": "notifier.dart",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "notifier.dart",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": null
+    },
+    {
+      "id": "lib_core_notifier_createnotifier",
+      "label": "createNotifier",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "createnotifier",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L102"
     },
     {
       "id": "lib_core_notifier_device",
@@ -35299,6 +35409,17 @@
       "norm_label": "_channelname",
       "source_file": "lib/core/notifier_device.dart",
       "source_location": "L17"
+    },
+    {
+      "id": "lib_core_notifier_device_devicenotifier",
+      "label": "_DeviceNotifier",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "_devicenotifier",
+      "source_file": "lib/core/notifier_device.dart",
+      "source_location": "L28"
     },
     {
       "id": "lib_core_notifier_device_ensureready",
@@ -35378,6 +35499,226 @@
       "source_location": "L114"
     },
     {
+      "id": "lib_core_notifier_notificationpermission",
+      "label": "NotificationPermission",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "notificationpermission",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_core_notifier_notifier",
+      "label": "Notifier",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "notifier",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_core_notifier_opensettings",
+      "label": "openSettings",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "opensettings",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_core_notifier_readyafterinitialize",
+      "label": "readyAfterInitialize",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "readyafterinitialize",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_core_notifier_requestpermission",
+      "label": "requestPermission",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "requestpermission",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_core_notifier_show",
+      "label": "show",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "show",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L55"
+    },
+    {
+      "id": "lib_core_notifier_silentnotifier",
+      "label": "SilentNotifier",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "silentnotifier",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L64"
+    },
+    {
+      "id": "lib_core_notifier_status",
+      "label": "status",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "status",
+      "source_file": "lib/core/notifier.dart",
+      "source_location": "L44"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row",
+      "label": "notification_setting_row.dart",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "notification_setting_row.dart",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": null
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_build",
+      "label": "build",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "build",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L81"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_createstate",
+      "label": "createState",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "createstate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_didchangeapplifecyclestate",
+      "label": "didChangeAppLifecycleState",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "didchangeapplifecyclestate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L47"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_dispose",
+      "label": "dispose",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "dispose",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_initstate",
+      "label": "initState",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "initstate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_notificationsettingrow",
+      "label": "NotificationSettingRow",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "notificationsettingrow",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_notificationsettingrowstate",
+      "label": "_NotificationSettingRowState",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "_notificationsettingrowstate",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_notifier",
+      "label": "_notifier",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "_notifier",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_ontap",
+      "label": "_onTap",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "_ontap",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_refresh",
+      "label": "_refresh",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "_refresh",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_widgets_notification_setting_row_status",
+      "label": "_status",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "_status",
+      "source_file": "lib/widgets/notification_setting_row.dart",
+      "source_location": "L29"
+    },
+    {
       "id": "notifier_dart",
       "label": "notifier.dart",
       "_origin": "ast",
@@ -35385,6 +35726,28 @@
       "community_name": "notifier_device.dart",
       "file_type": "code",
       "norm_label": "notifier.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "notifier_device_dart",
+      "label": "notifier_device.dart",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "notifier_device.dart",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "notifier_get",
+      "label": "Notifier get",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "notifier get",
       "source_file": null,
       "source_location": null
     },
@@ -35418,6 +35781,28 @@
       "community_name": "notifier_device.dart",
       "file_type": "code",
       "norm_label": "static final",
+      "source_file": null,
+      "source_location": null
+    },
+    {
+      "id": "test_notification_setting_row_test_fakenotifier",
+      "label": "_FakeNotifier",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "_fakenotifier",
+      "source_file": "test/notification_setting_row_test.dart",
+      "source_location": "L23"
+    },
+    {
+      "id": "widgetsbindingobserver",
+      "label": "WidgetsBindingObserver",
+      "_origin": "ast",
+      "community": 48,
+      "community_name": "notifier_device.dart",
+      "file_type": "code",
+      "norm_label": "widgetsbindingobserver",
       "source_file": null,
       "source_location": null
     },
@@ -36302,22 +36687,11 @@
       "source_location": null
     },
     {
-      "id": "dart_io",
-      "label": "dart:io",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "dart:io",
-      "file_type": "code",
-      "norm_label": "dart:io",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "lib_core_push_channel",
       "label": "push_channel.dart",
       "_origin": "ast",
       "community": 50,
-      "community_name": "dart:io",
+      "community_name": "push_channel.dart",
       "file_type": "code",
       "norm_label": "push_channel.dart",
       "source_file": "lib/core/push_channel.dart",
@@ -36328,7 +36702,7 @@
       "label": "_channel",
       "_origin": "ast",
       "community": 50,
-      "community_name": "dart:io",
+      "community_name": "push_channel.dart",
       "file_type": "code",
       "norm_label": "_channel",
       "source_file": "lib/core/push_channel.dart",
@@ -36339,7 +36713,7 @@
       "label": "readPushAddress",
       "_origin": "ast",
       "community": 50,
-      "community_name": "dart:io",
+      "community_name": "push_channel.dart",
       "file_type": "code",
       "norm_label": "readpushaddress",
       "source_file": "lib/core/push_channel.dart",
@@ -36350,77 +36724,22 @@
       "label": "token",
       "_origin": "ast",
       "community": 50,
-      "community_name": "dart:io",
+      "community_name": "push_channel.dart",
       "file_type": "code",
       "norm_label": "token",
       "source_file": "lib/core/push_channel.dart",
       "source_location": "L27"
     },
     {
-      "id": "package_get_teksi_core_push_dart",
-      "label": "package:get_teksi/core/push.dart",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "dart:io",
-      "file_type": "code",
-      "norm_label": "package:get_teksi/core/push.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "push_dart",
       "label": "push.dart",
       "_origin": "ast",
       "community": 50,
-      "community_name": "dart:io",
+      "community_name": "push_channel.dart",
       "file_type": "code",
       "norm_label": "push.dart",
       "source_file": null,
       "source_location": null
-    },
-    {
-      "id": "test_push_test",
-      "label": "push_test.dart",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "dart:io",
-      "file_type": "code",
-      "norm_label": "push_test.dart",
-      "source_file": "test/push_test.dart",
-      "source_location": null
-    },
-    {
-      "id": "test_push_test_iosaddress",
-      "label": "iosAddress",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "dart:io",
-      "file_type": "code",
-      "norm_label": "iosaddress",
-      "source_file": "test/push_test.dart",
-      "source_location": "L7"
-    },
-    {
-      "id": "test_push_test_main",
-      "label": "main",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "dart:io",
-      "file_type": "code",
-      "norm_label": "main",
-      "source_file": "test/push_test.dart",
-      "source_location": "L6"
-    },
-    {
-      "id": "test_push_test_webaddress",
-      "label": "webAddress",
-      "_origin": "ast",
-      "community": 50,
-      "community_name": "dart:io",
-      "file_type": "code",
-      "norm_label": "webaddress",
-      "source_file": "test/push_test.dart",
-      "source_location": "L8"
     },
     {
       "id": "lib_services_profile_sync",
@@ -37785,6 +38104,17 @@
       "norm_label": "rfc-8292",
       "source_file": "supabase/functions/_shared/webpush.ts",
       "source_location": "L1"
+    },
+    {
+      "id": "bool_get",
+      "label": "bool get",
+      "_origin": "ast",
+      "community": 58,
+      "community_name": "duty_presence.dart",
+      "file_type": "code",
+      "norm_label": "bool get",
+      "source_file": null,
+      "source_location": null
     },
     {
       "id": "core_duty_dart",
@@ -39412,48 +39742,81 @@
       "source_location": "L383"
     },
     {
-      "id": "lib_core_notifier_device_devicenotifier",
-      "label": "_DeviceNotifier",
+      "id": "package_flutter_localizations_flutter_localizations_dart",
+      "label": "package:flutter_localizations/flutter_localizations.dart",
       "_origin": "ast",
       "community": 68,
-      "community_name": "Notifier",
+      "community_name": "return",
       "file_type": "code",
-      "norm_label": "_devicenotifier",
-      "source_file": "lib/core/notifier_device.dart",
-      "source_location": "L28"
+      "norm_label": "package:flutter_localizations/flutter_localizations.dart",
+      "source_file": null,
+      "source_location": null
     },
     {
-      "id": "lib_core_notifier_notifier",
-      "label": "Notifier",
+      "id": "return",
+      "label": "return",
       "_origin": "ast",
       "community": 68,
-      "community_name": "Notifier",
+      "community_name": "return",
       "file_type": "code",
-      "norm_label": "notifier",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L32"
+      "norm_label": "return",
+      "source_file": null,
+      "source_location": null
     },
     {
-      "id": "lib_core_notifier_silentnotifier",
-      "label": "SilentNotifier",
+      "id": "test_date_format_test",
+      "label": "date_format_test.dart",
       "_origin": "ast",
       "community": 68,
-      "community_name": "Notifier",
+      "community_name": "return",
       "file_type": "code",
-      "norm_label": "silentnotifier",
-      "source_file": "lib/core/notifier.dart",
-      "source_location": "L64"
+      "norm_label": "date_format_test.dart",
+      "source_file": "test/date_format_test.dart",
+      "source_location": null
     },
     {
-      "id": "test_notification_setting_row_test_fakenotifier",
-      "label": "_FakeNotifier",
+      "id": "test_date_format_test_formatted",
+      "label": "formatted",
       "_origin": "ast",
       "community": 68,
-      "community_name": "Notifier",
+      "community_name": "return",
       "file_type": "code",
-      "norm_label": "_fakenotifier",
-      "source_file": "test/notification_setting_row_test.dart",
-      "source_location": "L23"
+      "norm_label": "formatted",
+      "source_file": "test/date_format_test.dart",
+      "source_location": "L16"
+    },
+    {
+      "id": "test_date_format_test_main",
+      "label": "main",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "return",
+      "file_type": "code",
+      "norm_label": "main",
+      "source_file": "test/date_format_test.dart",
+      "source_location": "L40"
+    },
+    {
+      "id": "test_date_format_test_monthyearin",
+      "label": "_monthYearIn",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "return",
+      "file_type": "code",
+      "norm_label": "_monthyearin",
+      "source_file": "test/date_format_test.dart",
+      "source_location": "L15"
+    },
+    {
+      "id": "test_date_format_test_pumpwidget",
+      "label": "pumpWidget",
+      "_origin": "ast",
+      "community": 68,
+      "community_name": "return",
+      "file_type": "code",
+      "norm_label": "pumpwidget",
+      "source_file": "test/date_format_test.dart",
+      "source_location": "L17"
     },
     {
       "id": "claude_skills_ui_ux_pro_max_scripts_core_rationale_283",
@@ -42409,171 +42772,6 @@
       "source_location": "L1"
     },
     {
-      "id": "core_notifier_dart",
-      "label": "../core/notifier.dart",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "../core/notifier.dart",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "lib_widgets_notification_setting_row",
-      "label": "notification_setting_row.dart",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "notification_setting_row.dart",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": null
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_build",
-      "label": "build",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "build",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L81"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_createstate",
-      "label": "createState",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "createstate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L24"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_didchangeapplifecyclestate",
-      "label": "didChangeAppLifecycleState",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "didchangeapplifecyclestate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L47"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_dispose",
-      "label": "dispose",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "dispose",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L41"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_initstate",
-      "label": "initState",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "initstate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L34"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_notificationsettingrow",
-      "label": "NotificationSettingRow",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "notificationsettingrow",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L20"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_notificationsettingrowstate",
-      "label": "_NotificationSettingRowState",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "_notificationsettingrowstate",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L27"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_notifier",
-      "label": "_notifier",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "_notifier",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L31"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_ontap",
-      "label": "_onTap",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "_ontap",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L60"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_refresh",
-      "label": "_refresh",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "_refresh",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L54"
-    },
-    {
-      "id": "lib_widgets_notification_setting_row_status",
-      "label": "_status",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "_status",
-      "source_file": "lib/widgets/notification_setting_row.dart",
-      "source_location": "L29"
-    },
-    {
-      "id": "notifier_get",
-      "label": "Notifier get",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "notifier get",
-      "source_file": null,
-      "source_location": null
-    },
-    {
-      "id": "widgetsbindingobserver",
-      "label": "WidgetsBindingObserver",
-      "_origin": "ast",
-      "community": 84,
-      "community_name": "notification_setting_row.dart",
-      "file_type": "code",
-      "norm_label": "widgetsbindingobserver",
-      "source_file": null,
-      "source_location": null
-    },
-    {
       "id": "package_flutter_semantics_dart",
       "label": "package:flutter/semantics.dart",
       "_origin": "ast",
@@ -42695,59 +42893,26 @@
       "source_location": "L28"
     },
     {
-      "id": "test_no_glyph_icons_test",
-      "label": "no_glyph_icons_test.dart",
+      "id": "test_pricing_test",
+      "label": "pricing_test.dart",
       "_origin": "ast",
       "community": 85,
       "community_name": "package:flutter_test/flutter_test.dart",
       "file_type": "code",
-      "norm_label": "no_glyph_icons_test.dart",
-      "source_file": "test/no_glyph_icons_test.dart",
+      "norm_label": "pricing_test.dart",
+      "source_file": "test/pricing_test.dart",
       "source_location": null
     },
     {
-      "id": "test_no_glyph_icons_test_blockof",
-      "label": "blockOf",
-      "_origin": "ast",
-      "community": 85,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "blockof",
-      "source_file": "test/no_glyph_icons_test.dart",
-      "source_location": "L36"
-    },
-    {
-      "id": "test_no_glyph_icons_test_code",
-      "label": "code",
-      "_origin": "ast",
-      "community": 85,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "code",
-      "source_file": "test/no_glyph_icons_test.dart",
-      "source_location": "L45"
-    },
-    {
-      "id": "test_no_glyph_icons_test_main",
+      "id": "test_pricing_test_main",
       "label": "main",
       "_origin": "ast",
       "community": 85,
       "community_name": "package:flutter_test/flutter_test.dart",
       "file_type": "code",
       "norm_label": "main",
-      "source_file": "test/no_glyph_icons_test.dart",
-      "source_location": "L20"
-    },
-    {
-      "id": "test_no_glyph_icons_test_ranges",
-      "label": "ranges",
-      "_origin": "ast",
-      "community": 85,
-      "community_name": "package:flutter_test/flutter_test.dart",
-      "file_type": "code",
-      "norm_label": "ranges",
-      "source_file": "test/no_glyph_icons_test.dart",
-      "source_location": "L22"
+      "source_file": "test/pricing_test.dart",
+      "source_location": "L9"
     },
     {
       "id": "test_screen_layout_test",
@@ -43718,72 +43883,6 @@
       "norm_label": "where",
       "source_file": "lib/services/pricing.dart",
       "source_location": "L98"
-    },
-    {
-      "id": "lib_l10n_app_localizations_applocalizations",
-      "label": "AppLocalizations",
-      "_origin": "ast",
-      "community": 90,
-      "community_name": "AppLocalizations",
-      "file_type": "code",
-      "norm_label": "applocalizations",
-      "source_file": "lib/l10n/app_localizations.dart",
-      "source_location": "L64"
-    },
-    {
-      "id": "lib_l10n_app_localizations_applocalizationsdelegate",
-      "label": "_AppLocalizationsDelegate",
-      "_origin": "ast",
-      "community": 90,
-      "community_name": "AppLocalizations",
-      "file_type": "code",
-      "norm_label": "_applocalizationsdelegate",
-      "source_file": "lib/l10n/app_localizations.dart",
-      "source_location": "L3131"
-    },
-    {
-      "id": "lib_l10n_app_localizations_en_applocalizationsen",
-      "label": "AppLocalizationsEn",
-      "_origin": "ast",
-      "community": 90,
-      "community_name": "AppLocalizations",
-      "file_type": "code",
-      "norm_label": "applocalizationsen",
-      "source_file": "lib/l10n/app_localizations_en.dart",
-      "source_location": "L9"
-    },
-    {
-      "id": "lib_l10n_app_localizations_ms_applocalizationsms",
-      "label": "AppLocalizationsMs",
-      "_origin": "ast",
-      "community": 90,
-      "community_name": "AppLocalizations",
-      "file_type": "code",
-      "norm_label": "applocalizationsms",
-      "source_file": "lib/l10n/app_localizations_ms.dart",
-      "source_location": "L9"
-    },
-    {
-      "id": "lib_l10n_app_localizations_of",
-      "label": "of",
-      "_origin": "ast",
-      "community": 90,
-      "community_name": "AppLocalizations",
-      "file_type": "code",
-      "norm_label": "of",
-      "source_file": "lib/l10n/app_localizations.dart",
-      "source_location": "L70"
-    },
-    {
-      "id": "localizationsdelegate",
-      "label": "LocalizationsDelegate",
-      "_origin": "ast",
-      "community": 90,
-      "community_name": "AppLocalizations",
-      "file_type": "code",
-      "norm_label": "localizationsdelegate",
-      "source_file": null,
-      "source_location": null
     },
     {
       "id": "claude_hooks_session_start",
@@ -89836,6 +89935,94 @@
       "weight": 1.0
     },
     {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_sheets",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_sheet",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_pricesheet",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L192",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_offerssheet",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_trackingsheet",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L258",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_main",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_app",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "test_modal_sheets_test_openandlayout",
+      "relation": "defines",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
       "source": "test_no_glyph_icons_test",
       "target": "test_no_glyph_icons_test_main",
       "relation": "defines",
@@ -98669,6 +98856,83 @@
       "weight": 1.0
     },
     {
+      "source": "test_modal_sheets_test",
+      "target": "package_flutter_material_dart",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "package_flutter_test_flutter_test_dart",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "package_get_teksi_l10n_app_localizations_dart",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "package_get_teksi_models_models_dart",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "package_get_teksi_state_draft_dart",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "support_screens_dart",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "test_modal_sheets_test",
+      "target": "support_semantics_dart",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "test/modal_sheets_test.dart",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
       "source": "test_no_glyph_icons_test",
       "target": "dart_io",
       "relation": "imports",
@@ -103937,5 +104201,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "5747c3142da79f9f2cf0b7a8ff781ce0c37f7d16"
+  "built_at_commit": "36bb560baab8345922c5aea0f9b64178ecaec28b"
 }
