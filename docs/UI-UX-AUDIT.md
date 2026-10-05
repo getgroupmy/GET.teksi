@@ -439,14 +439,103 @@ real widths and does not show the row overflows at 1.0x with a real font. What
 stands on its own is that the row had no flex at all and the Malay label is 29
 characters.
 
-### What these seven have in common
+### 15. The sheets that only exist part-way through a ride
+
+Both home screens choose their sheet from the user's live ride, and the
+fixture publishes somebody else's — so every gate that walks the
+twenty-three screens drew the idle sheet and the order feed, and four others
+had never been laid out at all: price, offers, tracking and active-ride.
+Finding 14 reached the price sheet by taking a journey, and found a Row with
+no flex in it. `test/ride_sheets_test.dart` now covers all four on purpose,
+in both locales at both text sizes.
+
+**ActiveRideSheet overflowed at the normal text size** — the trip's distance
+beside the service fee, the same `spaceBetween`-with-no-flex shape as the
+price sheet. That is the bar all 23 screens already clear. Eight more rows
+were over at 2.0x, across four files and one shared widget: `RatingChip`,
+which is what both driver cards were really running out of room for.
+
+Where both sides are numbers — a fare and a rating — nothing is ellipsised,
+because a shortened number is a wrong one. Those wrap onto another line or
+stack, through `stackAtLargeText` in `widgets/ui.dart`.
+
+Three hardcoded English strings turned up on the way, all shown to drivers:
+"you get {amount}", "net {amount}", and "{gross} in fares · {fee} service
+fee". `test/no_hardcoded_strings_test.dart` could not have caught them —
+both its patterns stop at the first `$`, and a string with a value dropped
+into it is how a user-facing string most often looks. It has a third check
+now, with self-checks for what it must catch and what it must leave alone.
+
+### 16. What two shared widgets said, which is what twelve files said
+
+Two of the three accessibility candidates finding 11 left for "a person with
+VoiceOver" were mechanical. The menu row showed both at once:
+
+```
+was  "NA Nurul Ain binti Abdullah 4.9 1204 trips given"
+now  "Nurul Ain binti Abdullah Rating 4.9 1204 trips given"
+```
+
+`Avatar` draws a person's initials where a photo would go. Those are a
+picture of a name, not words, and were read out as though they were —
+directly before the name they stand for. `RatingChip` announced a bare
+"4.9": the star carries the meaning visually and an icon says nothing.
+
+The third candidate was mechanical too, and is recorded here rather than
+quietly fixed because it was misfiled twice. SafetyScreen's `"Add"` sits
+beside a section heading that a screen reader does not announce with it, so
+it said "Add" and nothing else — on the screen where what is being added is
+who gets called if someone presses SOS. The words already existed: it is the
+title of the sheet the button opens.
+
+`test/semantics_test.dart` also gates the shape that made the Promos screen
+unusable before finding 11: **no two controls on a screen may announce the
+same name.** Three buttons that all say "Use" tell a screen reader user how
+many there are and nothing about which is which. No screen has a duplicate
+today, so it is a line that holds rather than a cleanup to do.
+
+### 17. The sheets that only exist after a tap
+
+`showAppSheet` is called from twenty places and exactly one had ever been
+rendered by a test — the wallet's top-up sheet, and only because finding 12
+walked into it looking for something else.
+`test/modal_sheets_test.dart` opens all twenty, each carrying the sheet's own
+title as the proof that the right one opened.
+
+**What it found was not in a sheet.** The driver's order feed only draws
+cards when the driver is online, and the fixture is offline by default, so
+every gate walking DriverHomeScreen had rendered "You're offline. Go online
+to see ride requests" and nothing else. Going online to reach the filter
+sheet drew the feed for the first time, and its card carried both shapes
+fixed five times over by then: 94 pixels over at the normal text size, 514 at
+double.
+
+Three sheets looked like findings and were not — they failed only because of
+a mistake in the harness. Fixing the harness before touching the app is the
+only reason three things nobody needed were not "fixed". The mistakes are
+worth keeping: a `ListView` only builds what is on screen, so scrolling has
+to come before the lookup; `ensureVisible` drives the nearest `Scrollable`
+even when its target is already visible, and twice never returned; and the
+default per-test timeout of ten minutes turned a twenty second run into
+twenty minutes.
+
+### What these ten have in common
 
 Every one was invisible to a gate that reported covering the thing it was in.
 The shape repeats: a gate walks *screens*, and what it misses is **states** —
 a screen as the other role sees it, as a new account sees it, as it looks when
-something failed, and as it looks part-way through a journey. Each new gate
-here is the same walk with a different fixture, and four of the seven found a
-real defect the moment a fixture reached that state for the first time.
+something failed, part-way through a journey, mid-ride, after a tap, and with
+the driver online rather than off. Each new gate here is the same walk with a
+different fixture, and six of the ten found a real defect the moment a fixture
+reached that state for the first time.
+
+Three of the gates that reported covering those areas were themselves green
+while missing what they were written for: the glyph scan's range started
+above the flag it should have caught, the hardcoded-string patterns stopped
+at the first interpolation, and the first version of the label-leak check
+reported two things that were not findings. A gate is worth what its own
+failure case is worth, which is why each one here carries a test that it
+fails when it should.
 
 ## Verification
 
@@ -456,11 +545,11 @@ real defect the moment a fixture reached that state for the first time.
 - Light mode was built and opened in a browser for the first time during this
   pass; the settings and fare screens were checked visually after the fix.
 - Chip hit box measured in the running app: **104 × 52** (was ~33 tall).
-- Full suite: **583 tests**, `flutter analyze --fatal-infos --fatal-warnings`
+- Full suite: **798 tests**, `flutter analyze --fatal-infos --fatal-warnings`
   clean. (79 at the time of the original audit, 379 when findings 1–7 were
-  written.)
+  written, 583 at findings 8–14.)
 
-Gates added by findings 8–14, each proven to fail against the defect it was
+Gates added by findings 8–17, each proven to fail against the defect it was
 written for before being relied on:
 
 | Gate | Asks |
@@ -472,8 +561,11 @@ written for before being relied on:
 | `error_states_test.dart` | do the failure screens lay out, in both locales at both text sizes |
 | `empty_states_test.dart` | does a new account's app lay out, and announce itself |
 | `ride_flow_test.dart` | does a journey land where each screen says it will |
+| `ride_sheets_test.dart` | do the four mid-ride sheets lay out, and announce themselves |
+| `shared_widget_semantics_test.dart` | what Avatar and RatingChip say, which is what twelve files say |
+| `modal_sheets_test.dart` | do all twenty tap-to-open sheets lay out, and announce themselves |
 
-Findings 8–14 came from rendering the built app in a browser and from reading
+Findings 8–17 came from rendering the built app in a browser and from reading
 Chromium's accessibility tree, not from the skill. The skill's contribution is
 findings 1–7.
 
@@ -517,28 +609,54 @@ quiet the gate once a month at an hour nobody is watching.
 
 ## Not addressed
 
-- **Whether labels read well aloud.** Narrowed twice: finding 7 gates labels
-  and reachability on every screen, and finding 11 gates whether a declared
-  label is what actually gets read. Neither can judge whether the words make
-  sense spoken. Two candidates were found by reading the accessibility tree
-  and deliberately left, because the fix is a wording judgement rather than a
-  mechanical one: MenuScreen announces the avatar initials (`"NA Nurul Ain
-  binti Abdullah"`) and a context-free `"4.9"`, and SafetyScreen has a bare
-  `"Add"`. A widget test can prove a control says something; only a person
-  with VoiceOver can tell you it says the right thing.
-- **Screen-reader traversal order.** Still not gated, but no longer unlooked
-  at: the accessibility tree read under finding 11 collected the traversal
-  order of every control on nineteen screens. Several orderings looked wrong —
-  Back appearing after the field it precedes visually, a text field listed
-  twice — but Flutter web's semantics DOM is a plausible cause for each, and
-  telling a framework artefact from a real ordering bug needs a screen reader
-  and a person listening. Recorded rather than acted on.
-- **The mid-ride sheets.** Four of the app's six sheets — price, offers,
-  tracking and active-ride — only exist while a ride is in a particular
-  state, so the screen-walking gates never lay them out. Finding 14 reached
-  the price sheet and found an overflow in it on the first try. The other
-  three remain unmeasured.
+- **Whether labels read well aloud.** Still the honest limit, but smaller
+  than it was written. Finding 7 gates that a control announces something,
+  finding 11 that a declared label is what actually gets read, and finding 16
+  that no two controls on a screen say the same thing. What none of them can
+  judge is whether the words are the right words.
+
+  The three candidates recorded here as needing a person with VoiceOver were
+  all mechanical in the end, and the entry stayed wrong through two rewrites
+  of this document before anyone checked: the avatar's initials, the
+  context-free rating, and SafetyScreen's bare "Add" — whose replacement text
+  already existed in both languages as the title of the sheet that button
+  opens. The lesson is in the misfiling, not the fixes. "Needs a human" is a
+  conclusion, and it was being used as a shelf.
+
+  What genuinely needs listening to is reading *order*, below, and whether a
+  sentence like "Earnings, RM18,945.00, offline" is how anyone would want to
+  hear it.
+
+- **Screen-reader traversal order.** Not gated. The order of every control on
+  nineteen screens was collected under finding 11 and several orderings
+  looked wrong — Back announced after the field it precedes visually, a text
+  field listed twice — but every one has a plausible Flutter-web
+  semantics-DOM explanation, and telling a framework artefact from a real
+  ordering bug needs a screen reader and a person listening. Recorded rather
+  than claimed either way.
+
 - **Landscape and tablet layouts.** The app is portrait-locked
-  (`SystemChrome.setPreferredOrientations`) and constrained to a 480 px column,
-  so the checklist's landscape/tablet items don't currently apply. Revisit if
-  the orientation lock is lifted.
+  (`SystemChrome.setPreferredOrientations`) and constrained to a 480 px
+  column, so the checklist's landscape/tablet items don't currently apply.
+  Revisit if the orientation lock is lifted.
+
+- **The real font.** Every measurement at 2.0x in findings 12 and 14 to 17
+  was taken under the test font, where each glyph is drawn the same width as
+  the font size. That overstates real text widths, so a 2.0x overflow here is
+  evidence that a row has no flex in it rather than proof that a user sees it
+  clipped. The failures at 1.0x — OtpScreen with an error showing,
+  ActiveRideSheet's fee row, the order card — need no such caveat.
+
+## Shipping, which is not a UI question
+
+Recorded here because the audit is where the state of the app is written
+down, and none of it is reachable from this repository:
+
+- the Android upload keystore, which only the account owner can generate and
+  which must stay out of the repository (`*.jks` and `android/key.properties`
+  are git-ignored for this reason);
+- the APNs `.p8` and the VAPID pair. The push transport is built and tested
+  end to end — 30 tests over hand-rolled RFC 8291 encryption — and does
+  nothing in production without them;
+- the Supabase `DROP` that hangs on the live project, which blocks the
+  row-level-security policy merge. A support ticket is written and sent.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_teksi/l10n/app_localizations.dart';
 
 import 'support/screens.dart';
 import 'support/semantics.dart';
@@ -110,7 +111,91 @@ void main() {
     });
   });
 
+  /// Two controls on one screen that say the same thing.
+  ///
+  /// Reaching a list of buttons that all announce "Use" tells a screen
+  /// reader user how many there are and nothing about which is which. That
+  /// was the Promos screen until #27: three promo cards, three buttons, one
+  /// word between them, because the code that distinguishes them is in a
+  /// separate Text beside each button rather than in it.
+  ///
+  /// Distinct names are not a style preference here — they are the only way
+  /// to tell the controls apart without sight. No screen has a duplicate
+  /// today, so this is a line that holds rather than a cleanup to do.
+  group('no two controls say the same thing', () {
+    app.screens().forEach((name, _) {
+      testWidgets(name, (tester) async {
+        final (root: root, handle: handle) = await pump(
+          tester,
+          app.screens()[name]!(),
+        );
+
+        final spoken = controls(root)
+            .map((n) => n.label.trim())
+            .where((l) => l.isNotEmpty)
+            .toList();
+        final repeated = {
+          for (final l in spoken)
+            if (spoken.where((o) => o == l).length > 1) l,
+        };
+
+        expect(
+          repeated,
+          isEmpty,
+          reason:
+              'On $name these are said by more than one control, so a '
+              'screen reader user has no way to tell those controls '
+              'apart:\n${repeated.join('\n')}',
+        );
+        handle.dispose();
+      });
+    });
+  });
+
+  /// One screen's own regression, because the rule it broke is not one a
+  /// gate can state. "Add" beside a section heading reads fine and hears
+  /// badly: the heading is not announced with the button, so it said "Add"
+  /// and nothing else — on the screen where what is being added is who gets
+  /// called if someone presses SOS.
+  ///
+  /// It is here rather than in the audit's "needs a person with VoiceOver"
+  /// list, where I put it twice, because the words already existed: it is
+  /// the title of the sheet the button opens.
+  testWidgets('SafetyScreen says what the Add button adds', (tester) async {
+    final (root: root, handle: handle) = await pump(
+      tester,
+      app.screens()['SafetyScreen']!(),
+    );
+    final l = await AppLocalizations.delegate.load(const Locale('en'));
+
+    final spoken = controls(root).map((n) => n.label.trim()).toList();
+    expect(spoken, contains(l.addEmergencyContact));
+    expect(
+      spoken,
+      isNot(contains(l.add)),
+      reason: 'a bare "Add" is what this said before',
+    );
+    handle.dispose();
+  });
+
   group('the gate itself', () {
+    testWidgets('catches two controls that say the same thing', (tester) async {
+      final (root: root, handle: handle) = await pump(
+        tester,
+        Scaffold(
+          body: Column(
+            children: [
+              TextButton(onPressed: () {}, child: const Text('Use')),
+              TextButton(onPressed: () {}, child: const Text('Use')),
+            ],
+          ),
+        ),
+      );
+      final spoken = controls(root).map((n) => n.label.trim()).toList();
+      expect(spoken.where((l) => l == 'Use'), hasLength(2));
+      handle.dispose();
+    });
+
     testWidgets('catches a control that announces nothing', (tester) async {
       final (root: root, handle: handle) = await pump(
         tester,
