@@ -2977,6 +2977,12 @@ abstract class AppLocalizations {
   /// **'Switch to passenger'**
   String get switchToPassengerTooltip;
 
+  /// Screen-reader label for the rating chip, which otherwise reads as a bare number.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating {value}'**
+  String ratingValue(String value);
+
   /// The driver's share, under the fare on the active-ride card.
   ///
   /// In en, this message translates to:

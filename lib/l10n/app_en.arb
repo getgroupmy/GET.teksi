@@ -987,6 +987,11 @@
   "notificationsUnavailableSubtitle": "Not available on this device",
   "notificationsBlockedHint": "Your browser is blocking notifications for this site. Change it there and come back.",
   "switchToPassengerTooltip": "Switch to passenger",
+  "ratingValue": "Rating {value}",
+  "@ratingValue": {
+    "description": "Screen-reader label for the rating chip, which otherwise reads as a bare number.",
+    "placeholders": { "value": { "type": "String" } }
+  },
   "youGet": "you get {amount}",
   "@youGet": {
     "description": "The driver's share, under the fare on the active-ride card.",
