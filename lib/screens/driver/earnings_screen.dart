@@ -96,7 +96,7 @@ class _EarningsScreenState extends State<EarningsScreen> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  '${money(gross)} in fares · ${money(gross - net)} service fee',
+                  l.faresAndFee(money(gross), money(gross - net)),
                   style: TextStyle(fontSize: 13, color: c.textDim),
                 ),
               ],

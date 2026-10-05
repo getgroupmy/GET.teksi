@@ -347,7 +347,9 @@ class _OrderCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'net ${money(driverNet(ride.askingPrice), decimals: false)}',
+                      l.netIs(
+                        money(driverNet(ride.askingPrice), decimals: false),
+                      ),
                       style: TextStyle(fontSize: 11, color: c.textDim),
                     ),
                   ],

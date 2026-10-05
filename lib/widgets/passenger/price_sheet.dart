@@ -224,14 +224,21 @@ class PriceSheet extends StatelessWidget {
                 money(bounds.min, decimals: false),
                 style: TextStyle(fontSize: 12, color: c.textMute),
               ),
-              InkWell(
-                onTap: () => draft.setPrice(trip.recommended),
-                child: Text(
-                  l.recommendedFare(money(trip.recommended, decimals: false)),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: c.textDim,
+              // The two prices either side are the slider's bounds and have
+              // to read exactly; this one is a sentence and can give way.
+              Flexible(
+                child: InkWell(
+                  onTap: () => draft.setPrice(trip.recommended),
+                  child: Text(
+                    l.recommendedFare(money(trip.recommended, decimals: false)),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: c.textDim,
+                    ),
                   ),
                 ),
               ),

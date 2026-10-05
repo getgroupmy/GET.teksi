@@ -143,9 +143,16 @@ class _OffersSheetState extends State<OffersSheet> {
               children: [
                 const Icon(Icons.trending_up_rounded, size: 18),
                 const SizedBox(width: 8),
-                Text(
-                  l.raiseYourPrice,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+                // Centred in a full-width button, so there is room until the
+                // text size doubles and then there is not — "Naikkan harga
+                // anda" is longer again.
+                Flexible(
+                  child: Text(
+                    l.raiseYourPrice,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
                 ),
               ],
             ),
@@ -206,13 +213,19 @@ class _OffersSheetState extends State<OffersSheet> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Text(
-                          '+${money(suggestions[i] - ride.askingPrice, decimals: false)}'
-                          '${i == 1 ? l.recommendedSuffix : ''}',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: c.textDim,
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            '+${money(suggestions[i] - ride.askingPrice, decimals: false)}'
+                            '${i == 1 ? l.recommendedSuffix : ''}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: c.textDim,
+                            ),
                           ),
                         ),
                       ],
@@ -369,48 +382,60 @@ class _OfferCardState extends State<_OfferCard> {
                 ),
               ),
               const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    money(offer.price, decimals: false),
-                    style: const TextStyle(
-                      fontSize: 19,
-                      fontWeight: FontWeight.w800,
-                      height: 1,
+              // Flexible, and nothing in it truncates. A price and a
+              // difference are both numbers, so a shortened one is a wrong
+              // one — given less width they wrap onto another line and the
+              // card grows, which is what should happen when someone has
+              // turned their text size up.
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      money(offer.price, decimals: false),
+                      style: const TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w800,
+                        height: 1,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    diff == 0
-                        ? l.yourPrice
-                        : diff > 0
-                        ? '+${money(diff, decimals: false)}'
-                        : '−${money(-diff, decimals: false)}',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: diff == 0 ? c.accent : (diff > 0 ? c.warn : c.ok),
+                    const SizedBox(height: 4),
+                    Text(
+                      diff == 0
+                          ? l.yourPrice
+                          : diff > 0
+                          ? '+${money(diff, decimals: false)}'
+                          : '−${money(-diff, decimals: false)}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: diff == 0
+                            ? c.accent
+                            : (diff > 0 ? c.warn : c.ok),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l.offerMetaLine(
-                    offer.etaMinutes,
-                    distanceLabel(offer.distanceKm),
-                    compactCount(offer.driverRidesGiven),
-                  ),
-                  style: TextStyle(fontSize: 12.5, color: c.textDim),
+          // The meta line and the two controls stop fitting on one line well
+          // before the text reaches its maximum: the decline button is a
+          // fixed 48 and the accept button carries a word, a tick and a
+          // countdown. Below the threshold they stack, so nothing has to be
+          // shortened — see stackAtLargeText in widgets/ui.dart.
+          Builder(
+            builder: (context) {
+              final meta = Text(
+                l.offerMetaLine(
+                  offer.etaMinutes,
+                  distanceLabel(offer.distanceKm),
+                  compactCount(offer.driverRidesGiven),
                 ),
-              ),
-              IconButton(
+                style: TextStyle(fontSize: 12.5, color: c.textDim),
+              );
+              final decline = IconButton(
                 icon: const Icon(Icons.close_rounded, size: 18),
                 tooltip: l.declineOffer,
                 onPressed: widget.onDecline,
@@ -418,9 +443,8 @@ class _OfferCardState extends State<_OfferCard> {
                   backgroundColor: c.surface3,
                   minimumSize: const Size(48, 48),
                 ),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
+              );
+              final accept = FilledButton(
                 onPressed: widget.onAccept,
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(0, 48),
@@ -434,7 +458,13 @@ class _OfferCardState extends State<_OfferCard> {
                   children: [
                     const Icon(Icons.check_rounded, size: 16),
                     const SizedBox(width: 4),
-                    Text(l.accept),
+                    Flexible(
+                      child: Text(
+                        l.accept,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     const SizedBox(width: 5),
                     Text(
                       '${_secondsLeft}s',
@@ -442,8 +472,33 @@ class _OfferCardState extends State<_OfferCard> {
                     ),
                   ],
                 ),
-              ),
-            ],
+              );
+
+              if (stackAtLargeText(context)) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    meta,
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        decline,
+                        const SizedBox(width: 8),
+                        Expanded(child: accept),
+                      ],
+                    ),
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  Expanded(child: meta),
+                  decline,
+                  const SizedBox(width: 8),
+                  Flexible(child: accept),
+                ],
+              );
+            },
           ),
         ],
       ),

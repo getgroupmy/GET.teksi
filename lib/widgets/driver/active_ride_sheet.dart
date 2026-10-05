@@ -60,6 +60,66 @@ class ActiveRideSheet extends StatelessWidget {
       _ => l.pickUpName(ride.passengerName),
     };
 
+    // The passenger card's two halves, named so the layout below can put
+    // them in a row or a column without either being written twice.
+    final identity = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Wrap, not Row: the name already ellipsises, so at double the text
+        // size what stops fitting is the rating chip — and a truncated
+        // rating is a different number, not a shorter one.
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            Text(
+              ride.passengerName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+            ),
+            RatingChip(value: ride.passengerRating),
+          ],
+        ),
+        const SizedBox(height: 2),
+        Text(
+          '${l.passengerCount(ride.passengerCount)} · '
+          '${ride.paymentMethod == PaymentMethod.cash
+              ? l.cash
+              : ride.paymentMethod == PaymentMethod.card
+              ? l.card
+              : l.wallet}',
+          style: TextStyle(fontSize: 12.5, color: c.textDim),
+        ),
+      ],
+    );
+
+    final fare = Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          money(ride.fare, decimals: false),
+          style: const TextStyle(
+            fontSize: 19,
+            fontWeight: FontWeight.w800,
+            height: 1,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l.youGet(money(driverNet(ride.fare), decimals: false)),
+          style: TextStyle(fontSize: 11, color: c.textDim),
+        ),
+      ],
+    );
+
+    final avatar = Avatar(
+      name: ride.passengerName,
+      color: ride.passengerAvatarColor,
+      size: 44,
+    );
+
     return MapSheet(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,12 +137,18 @@ class ActiveRideSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              Text(
-                '${durationLabel(l, eta)} · ${distanceLabel(km)}',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: c.accent,
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  '${durationLabel(l, eta)} · ${distanceLabel(km)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: c.accent,
+                  ),
                 ),
               ),
             ],
@@ -95,68 +161,32 @@ class ActiveRideSheet extends StatelessWidget {
               color: c.surface2,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Row(
-              children: [
-                Avatar(
-                  name: ride.passengerName,
-                  color: ride.passengerAvatarColor,
-                  size: 44,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
+            // Stacked at large text rather than squeezed: the fare and the
+            // rating are both numbers that have to read exactly, so once the
+            // row is full there is nothing left to ellipsise.
+            child: stackAtLargeText(context)
+                ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Flexible(
-                            child: Text(
-                              ride.passengerName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          RatingChip(value: ride.passengerRating),
+                          avatar,
+                          const SizedBox(width: 12),
+                          Expanded(child: identity),
                         ],
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '${l.passengerCount(ride.passengerCount)} · '
-                        '${ride.paymentMethod == PaymentMethod.cash
-                            ? l.cash
-                            : ride.paymentMethod == PaymentMethod.card
-                            ? l.card
-                            : l.wallet}',
-                        style: TextStyle(fontSize: 12.5, color: c.textDim),
-                      ),
+                      const SizedBox(height: 10),
+                      Align(alignment: Alignment.centerRight, child: fare),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      avatar,
+                      const SizedBox(width: 12),
+                      Expanded(child: identity),
+                      fare,
                     ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      money(ride.fare, decimals: false),
-                      style: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w800,
-                        height: 1,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'you get ${money(driverNet(ride.fare), decimals: false)}',
-                      style: TextStyle(fontSize: 11, color: c.textDim),
-                    ),
-                  ],
-                ),
-              ],
-            ),
           ),
 
           if (ride.comment != null) ...[
@@ -242,19 +272,33 @@ class ActiveRideSheet extends StatelessWidget {
                   compact: true,
                 ),
                 Divider(height: 24, color: c.line),
+                // The same shape as the price sheet's class row fixed in
+                // #30 — spaceBetween with neither child flexible — and this
+                // one overflowed at the normal text size, the bar every
+                // screen in the app already clears.
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      l.tripDistanceDuration(
-                        distanceLabel(ride.distanceKm),
-                        durationLabel(l, ride.durationMinutes),
+                    Flexible(
+                      child: Text(
+                        l.tripDistanceDuration(
+                          distanceLabel(ride.distanceKm),
+                          durationLabel(l, ride.durationMinutes),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 12.5, color: c.textDim),
                       ),
-                      style: TextStyle(fontSize: 12.5, color: c.textDim),
                     ),
-                    Text(
-                      l.feeIs(money(commissionOn(ride.fare))),
-                      style: TextStyle(fontSize: 12.5, color: c.textDim),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        l.feeIs(money(commissionOn(ride.fare))),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: TextStyle(fontSize: 12.5, color: c.textDim),
+                      ),
                     ),
                   ],
                 ),

@@ -498,5 +498,8 @@
   "lowerFareTooltip": "Turunkan tambang",
   "raiseFareTooltip": "Naikkan tambang",
   "close": "Tutup",
-  "usePromoSemantics": "Guna {code}"
+  "usePromoSemantics": "Guna {code}",
+  "youGet": "anda dapat {amount}",
+  "netIs": "bersih {amount}",
+  "faresAndFee": "{gross} tambang · {fee} yuran perkhidmatan"
 }

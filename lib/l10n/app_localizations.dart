@@ -2977,6 +2977,24 @@ abstract class AppLocalizations {
   /// **'Switch to passenger'**
   String get switchToPassengerTooltip;
 
+  /// The driver's share, under the fare on the active-ride card.
+  ///
+  /// In en, this message translates to:
+  /// **'you get {amount}'**
+  String youGet(String amount);
+
+  /// The driver's share of an order in the feed.
+  ///
+  /// In en, this message translates to:
+  /// **'net {amount}'**
+  String netIs(String amount);
+
+  /// Under the net total on the earnings screen.
+  ///
+  /// In en, this message translates to:
+  /// **'{gross} in fares · {fee} service fee'**
+  String faresAndFee(String gross, String fee);
+
   /// Screen-reader label for a promo card's Use button. Three of them sit in a list and all read "Use" otherwise.
   ///
   /// In en, this message translates to:

@@ -54,12 +54,21 @@ class RatingChip extends StatelessWidget {
       children: [
         Icon(Icons.star_rounded, size: size + 3, color: context.c.accent),
         const SizedBox(width: 2),
-        Text(
-          value.toStringAsFixed(1),
-          style: TextStyle(
-            fontSize: size,
-            fontWeight: FontWeight.w600,
-            color: context.c.textDim,
+        // The chip is `mainAxisSize: min`, so it takes exactly the width its
+        // number needs — and at large text sizes, inside a card that is
+        // already full, that is sometimes more than it is given. Flexible
+        // means it gives way instead of painting a striped overflow bar,
+        // which clips the number anyway and says nothing about why.
+        Flexible(
+          child: Text(
+            value.toStringAsFixed(1),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: size,
+              fontWeight: FontWeight.w600,
+              color: context.c.textDim,
+            ),
           ),
         ),
       ],
@@ -925,3 +934,18 @@ Widget reasonList(
     ],
   );
 }
+
+/// Whether a row of two things that must both stay legible should become a
+/// column instead.
+///
+/// At the accessibility text sizes the app does not clamp — `MaterialApp`
+/// passes the platform's scale straight through, and Android's slider reaches
+/// 2.0 — a card laid out as `[avatar | name and rating | price]` runs out of
+/// width whatever ellipsising is applied, because the price and the rating are
+/// numbers and a truncated number is a different number rather than a shorter
+/// one. Past this point those cards stack instead.
+///
+/// 1.4 rather than a width breakpoint: the app is a fixed 480-pixel column on
+/// every device, so what varies is the text, not the viewport.
+bool stackAtLargeText(BuildContext context) =>
+    MediaQuery.textScalerOf(context).scale(1) >= 1.4;
