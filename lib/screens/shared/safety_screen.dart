@@ -186,10 +186,20 @@ class _SafetyScreenState extends State<SafetyScreen> {
                     ),
                   ),
                 ),
+                // "Add" beside a section heading is enough to look at and
+                // not enough to hear: a screen reader announces the button
+                // without the heading, so it said "Add" and nothing else, on
+                // the screen where the thing being added is who gets called
+                // if someone presses SOS. The words already existed — it is
+                // the title of the sheet this very button opens.
                 TextButton.icon(
                   onPressed: () => _addContact(context),
                   icon: Icon(Icons.add_rounded, size: 16, color: c.accent),
-                  label: Text(l.add, style: TextStyle(color: c.accent)),
+                  label: Text(
+                    l.add,
+                    semanticsLabel: l.addEmergencyContact,
+                    style: TextStyle(color: c.accent),
+                  ),
                 ),
               ],
             ),
