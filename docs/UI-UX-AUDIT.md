@@ -9,6 +9,12 @@ are WCAG relative-luminance ratios computed from the actual token values, and
 they are now locked in by `test/contrast_test.dart` so the palette cannot
 silently regress.
 
+Findings 1–7 came from that skill pass. **Findings 8–14 did not** — they came
+from rendering the built app in a browser and from reading Chromium's own
+accessibility tree, and each one was invisible to a gate that reported
+covering the screen it was on. What they have in common is set out after
+finding 14.
+
 ---
 
 ## What the skill was and wasn't used for
@@ -224,6 +230,224 @@ That `Semantics`-wrapper mistake is the one worth remembering: it looks
 exactly like a fix, and it is the reason a gate was needed rather than a
 reading of the code.
 
+### 8. The redirect matched by prefix, so a driver could not open their profile
+
+`lib/router.dart` decided which section a path belonged to with
+`path.startsWith('/p')`. That also matches `/profile`, `/places` and
+`/promos`, so a signed-in driver who tapped Profile in the menu was bounced to
+the driver home — along with Saved places, Promotions, and the Promotions
+button on the wallet. Four entry points, all dead, for one of the app's two
+roles.
+
+Nothing here could have caught it. These are not layout bugs, so the
+text-scale gate had nothing to say, and the screens are reachable in a widget
+test because a widget test builds them directly and never consults the router.
+It took opening them in a browser as a driver and reading the address bar.
+
+`test/route_guard_test.dart` drives the real `GoRouterConfig` through
+`MaterialApp.router` instead of building a screen: seven tests covering both
+roles against all three routes, plus the role separation the guard is actually
+for.
+
+### 9. Characters standing in for icons
+
+Two, both found by rendering in a browser and neither visible to any widget
+test — the test font draws every glyph as an identical box, so a tofu and a
+star are the same pixels and a box is what passing looks like.
+
+**The earnings rating** was a literal `U+2605` in the string: `48.6 km · ★ 5`.
+That character is in no font the app ships, so it renders only where the
+platform font happens to carry one. On the web build it did not.
+
+**The phone screen's country code** was `'🇲🇾 +60'`. A flag emoji is a pair of
+regional indicators drawn by whatever emoji font the device has; Android and
+iOS carry one, the web build does not. The first screen anyone sees opened
+with two empty boxes.
+
+`test/no_glyph_icons_test.dart` scans `lib/` with comments stripped and fails
+on runes in the arrow, technical, geometric, dingbat and emoji blocks.
+Punctuation the copy genuinely needs — `·`, `—`, `’` — is outside those ranges,
+and the test asserts that distinction itself rather than trusting the range
+list.
+
+Worth recording that the gate was wrong on its first outing: its emoji range
+started at `U+1F300`, and regional indicators are at `U+1F1E6..U+1F1FF`, below
+it. It reported green with a tofu live on the sign-in screen — a check that
+greps for the wrong string, passing and meaningless at the same time. The
+range starts at `U+1F000` now and the self-check asserts a flag is caught.
+
+### 10. Two auth steps could be reached without a phone number
+
+`/auth/otp` and `/auth/profile` take the number in `extra` rather than in the
+path, because a phone number does not belong in a URL. On a phone that is
+enough: the only way in is the step before. On the web every route is
+addressable and `extra` does not survive a page load, so a reload on the OTP
+screen — the screen people reload, because they are waiting for a message —
+arrived with nothing, and both screens rendered anyway.
+
+| Route | What it did with no number |
+|---|---|
+| `/auth/otp` | "Sent to +60" with no digits, and a Verify that would have called `verifyOtp('', code)` |
+| `/auth/profile` | Its submit button only checks the name, so typing one and tapping Start riding called `signIn('')` |
+
+The second matters more than it looks: the phone number is the identity. It
+keys the stored profile, picks the avatar colour, and is what a returning user
+is matched on, so an account whose number is the empty string matches every
+other account whose number is the empty string.
+
+The redirect sends either route back to `/auth/phone` when the number is
+missing; the guard and both builders read `extra` through one function so they
+cannot disagree about what counts as having one; and `SessionStore.signIn`
+asserts the same rule where no route can reach around it.
+`test/auth_deeplink_test.dart` covers both directions — the deep links *and*
+the real flow, because a guard that blocked everything would have made the
+first half pass too.
+
+### 11. What a screen reader is told was not what was written
+
+Finding 7 gates whether a control announces *something*. It cannot see whether
+what it announces makes sense, and the audit said so. Half of that turns out
+to be mechanically checkable after all: Flutter web builds a real DOM
+semantics tree, and Chromium will hand over the accessibility tree a screen
+reader actually consumes. Read against the web build, screen by screen:
+
+```
+wrote "Earnings, RM18,945.00, offline"
+read  "Earnings, RM18,945.00, offline RM18,945 Off"
+
+wrote "Notifications, 1 unread"
+read  "Notifications, 1 unread 1"
+```
+
+`Semantics(label:)` does not replace what the child announces, it adds to it.
+Seven `Semantics` widgets in `lib/` at the time and none set
+`excludeSemantics` — but only the three wrapping visible text were wrong,
+because an icon-only control has nothing to merge. (A first count said
+thirteen. That was a grep for `Semantics(` catching `ExcludeSemantics`,
+`MergeSemantics` and the `earningsSemantics` message name along with the
+widgets; the number reached #27's description before it was checked.)
+
+Three more the tree showed, each a different kind of wrong:
+
+| Screen | Read out | Now |
+|---|---|---|
+| Promos | `"Use"`, three times, with nothing to tell them apart | `"Use TEKSI50"`, `"Use WELCOME5"`, `"Use KLIA15"` |
+| Earnings | `"48.6 km · 5"` — a number with nothing saying what it counts | `"48.6 km · Rating 5"` |
+| Phone | `"12 345 6789"`, the example in its hint, so it never said what to type | `"Phone number"` |
+
+The Promos fix is a `semanticsLabel` on the `Text`, not a `Semantics` wrapper
+round the button: `excludeSemantics` there takes the button's own node and its
+tap action with it, leaving something that announces "button" and does nothing
+when activated. Checked in the browser that all three are still tappable.
+
+The phone field is deliberately *not* excluded — the field has to stay in the
+tree or there is nothing to type into, which is finding 7's OtpScreen bug.
+
+`test/semantics_label_leak_test.dart` compares what each `Semantics` widget
+declared against the label the rendered node carries, reporting only a node
+whose label *begins with* the declared one. The first version compared
+declared ≠ spoken and produced two false positives, because `getSemantics`
+answers with the nearest node — so a bare mismatch also means "that label
+belongs to something else".
+
+### 12. The error states had never been drawn
+
+There are failure strings in the `.arb` files that nothing had ever rendered.
+Every one sits behind a guard of this shape:
+
+```dart
+if (!Backend.isLive) { …demo path…; return; }
+```
+
+`Backend._client` is null in a widget test *and* in the demo web build, so
+that early return is always taken. The error branches were unreachable from
+the gates and from the browser alike — never laid out at double the text size,
+never in Malay, never walked for what a screen reader is given — while the two
+gates above both reported covering every screen.
+
+`Backend.debugUnreachable` makes `isLive` true with a null client, so the
+calls throw exactly where an unreachable backend makes them throw. It models
+"configured but unreachable", which is the state a passenger on a bad
+connection is in, rather than "not configured".
+
+**It found OtpScreen overflowing by 132 pixels at 2.0x with an error showing.**
+Its column pushes the Verify button down with a `Spacer` and had no scroll
+view, so past the viewport the Spacer collapses and the resend link and Verify
+are cut off — while the error line is the only thing telling the user the code
+was wrong. PhoneScreen already had the fix and its comment describes the
+failure exactly.
+
+`test/error_states_test.dart` drives six states in both locales at both text
+sizes, each with a proof string asserted before the layout check. That earned
+its place immediately: the wallet sheet is behind the same `isLive` guard, so
+four of its own tests were measuring a working screen until the proof failed
+them.
+
+### 13. The empty states had never been drawn either
+
+The mirror image, and a consequence of the fix recorded under *What "all 23
+screens" was worth*. Filling the fixture's lists stopped the gates measuring
+empty screens — and because every gate resets the same way, it made the empty
+screens unreachable instead. `EmptyState(` appears in ten files and no test had
+ever rendered one; the only mention of it anywhere under `test/` was the
+comment explaining why the fixture prevents them.
+
+Empty is what a new account opens on. History, Wallet, Notifications and
+Earnings all start there.
+
+`reset(populate: false)` is the day-one account, and
+`test/empty_states_test.dart` walks all 23 screens with it in both locales at
+both text sizes, asking what finding 7's gate asks of the controls that remain.
+
+**It found nothing.** Everything lays out and every control announces itself.
+Worth stating plainly: the value is the 120 checks that now run, not a bug
+count. What it carries is the proof that it is asking anything at all — the
+four screens that really do go empty asserted empty, the populated fixture
+asserted *not* empty, and a deliberate overflow through its own copy of the
+capture. That last one reported nothing on the first attempt, because `wrap`
+gives unbounded height and a tall column simply grows.
+
+Only four of the ten `EmptyState` files are reachable from a day-one account.
+The other six need no ride, no documents or no messages; a missing ride has
+tests under finding 12.
+
+### 14. Nothing ever walked a journey
+
+Findings 8 and 10 drive the real router, and both ask the same single
+question: open one location, see what rendered. Nothing had ever navigated
+*from* one screen *to* the next, so every multi-screen journey in the app was
+unexercised as a journey.
+
+`test/ride_flow_test.dart` walks both sides — home to destination search and
+back, an order opened and left, and a finished ride through rating to the
+right home for the role — reading the route rather than the rendered widget,
+because a redirect can land somewhere that looks similar.
+
+**It found an overflow in the price sheet.** The row carrying the trip
+distance beside its vehicle class is a `spaceBetween` `Row` with neither child
+flexible, and the class label is not a short name: `carEconomy` is "Everyday
+cars, 4 seats", and in Malay "Kereta harian, 4 tempat duduk".
+
+An overflow is an uncaught `FlutterError` and an uncaught `FlutterError` fails
+the test it happens in, so the walk doubles as a layout check for every state
+it passes through. That is the only reason this surfaced: the price sheet
+appears once a draft has both ends, and a fixture does not take a journey.
+
+The measurement caveat belongs here. The overflow read 145 pixels under the
+test font, where every glyph is a fixed-width box, so that number overstates
+real widths and does not show the row overflows at 1.0x with a real font. What
+stands on its own is that the row had no flex at all and the Malay label is 29
+characters.
+
+### What these seven have in common
+
+Every one was invisible to a gate that reported covering the thing it was in.
+The shape repeats: a gate walks *screens*, and what it misses is **states** —
+a screen as the other role sees it, as a new account sees it, as it looks when
+something failed, and as it looks part-way through a journey. Each new gate
+here is the same walk with a different fixture, and four of the seven found a
+real defect the moment a fixture reached that state for the first time.
+
 ## Verification
 
 - `test/contrast_test.dart` — 24 tests asserting every text token clears 4.5:1
@@ -232,8 +456,26 @@ reading of the code.
 - Light mode was built and opened in a browser for the first time during this
   pass; the settings and fare screens were checked visually after the fix.
 - Chip hit box measured in the running app: **104 × 52** (was ~33 tall).
-- Full suite: **379 tests**, `flutter analyze` clean. (79 at the time of the
-  original audit.)
+- Full suite: **583 tests**, `flutter analyze --fatal-infos --fatal-warnings`
+  clean. (79 at the time of the original audit, 379 when findings 1–7 were
+  written.)
+
+Gates added by findings 8–14, each proven to fail against the defect it was
+written for before being relied on:
+
+| Gate | Asks |
+|---|---|
+| `route_guard_test.dart` | can each role reach the routes its menu links to |
+| `no_glyph_icons_test.dart` | does any screen draw a picture with a character |
+| `auth_deeplink_test.dart` | is an auth step reachable without what it needs |
+| `semantics_label_leak_test.dart` | is a declared label what actually gets read |
+| `error_states_test.dart` | do the failure screens lay out, in both locales at both text sizes |
+| `empty_states_test.dart` | does a new account's app lay out, and announce itself |
+| `ride_flow_test.dart` | does a journey land where each screen says it will |
+
+Findings 8–14 came from rendering the built app in a browser and from reading
+Chromium's accessibility tree, not from the skill. The skill's contribution is
+findings 1–7.
 
 ### What "all 23 screens" was worth when findings 6 and 7 were written
 
@@ -255,11 +497,15 @@ Measured before and after populating the fixture, `Text`/`Row` per screen:
 | EarningsScreen | 21 / 3 | 23 / 4 |
 | ChatScreen | 7 / 5 | 12 / 5 |
 
-No screen renders an `EmptyState` now. Populating it surfaced no new overflow,
-so those five layouts are clean — but that is only worth saying because the
-gate was then checked for its ability to fail: forcing a 600-pixel minimum
-into the notification row gives a 379-pixel overflow with the current fixture,
-and `All tests passed` with the old one.
+No screen renders an `EmptyState` with the populated fixture. Populating it
+surfaced no new overflow, so those five layouts are clean — but that is only
+worth saying because the gate was then checked for its ability to fail:
+forcing a 600-pixel minimum into the notification row gives a 379-pixel
+overflow with the current fixture, and `All tests passed` with the old one.
+
+Fixing this half is what made the other half unreachable, which is finding 13.
+`reset(populate: false)` is the day-one account now, and the walks run over
+both.
 
 Two things the fixture has to get right, both of which fail silently. Completed
 rides carry a rating from *both* sides, or the home screens push to `/rate/...`
@@ -271,13 +517,28 @@ quiet the gate once a month at an hour nobody is watching.
 
 ## Not addressed
 
+- **Whether labels read well aloud.** Narrowed twice: finding 7 gates labels
+  and reachability on every screen, and finding 11 gates whether a declared
+  label is what actually gets read. Neither can judge whether the words make
+  sense spoken. Two candidates were found by reading the accessibility tree
+  and deliberately left, because the fix is a wording judgement rather than a
+  mechanical one: MenuScreen announces the avatar initials (`"NA Nurul Ain
+  binti Abdullah"`) and a context-free `"4.9"`, and SafetyScreen has a bare
+  `"Add"`. A widget test can prove a control says something; only a person
+  with VoiceOver can tell you it says the right thing.
+- **Screen-reader traversal order.** Still not gated, but no longer unlooked
+  at: the accessibility tree read under finding 11 collected the traversal
+  order of every control on nineteen screens. Several orderings looked wrong —
+  Back appearing after the field it precedes visually, a text field listed
+  twice — but Flutter web's semantics DOM is a plausible cause for each, and
+  telling a framework artefact from a real ordering bug needs a screen reader
+  and a person listening. Recorded rather than acted on.
+- **The mid-ride sheets.** Four of the app's six sheets — price, offers,
+  tracking and active-ride — only exist while a ride is in a particular
+  state, so the screen-walking gates never lay them out. Finding 14 reached
+  the price sheet and found an overflow in it on the first try. The other
+  three remain unmeasured.
 - **Landscape and tablet layouts.** The app is portrait-locked
   (`SystemChrome.setPreferredOrientations`) and constrained to a 480 px column,
   so the checklist's landscape/tablet items don't currently apply. Revisit if
   the orientation lock is lifted.
-- **Screen-reader traversal order, and whether labels read well aloud.**
-  Narrowed by finding 7 below, which gates labels and reachability on every
-  screen — but *order* is not what it checks, and neither is whether a label
-  makes sense when spoken. Both need a real screen reader and a person
-  listening. A widget test can prove a control says something; only a human
-  can tell you it says the right thing in the right place.
