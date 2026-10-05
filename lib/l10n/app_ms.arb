@@ -497,5 +497,6 @@
   "nothingNewBody": "Kemas kini perjalanan, tawaran dan promosi akan muncul di sini.",
   "lowerFareTooltip": "Turunkan tambang",
   "raiseFareTooltip": "Naikkan tambang",
-  "close": "Tutup"
+  "close": "Tutup",
+  "usePromoSemantics": "Guna {code}"
 }

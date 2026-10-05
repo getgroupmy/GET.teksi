@@ -160,7 +160,20 @@ class _PromosScreenState extends State<PromosScreen> {
                           minimumSize: const Size(0, 36),
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                         ),
-                        child: Text(l.use),
+                        // Three of these sit in a list and the visible word on
+                        // all three is "Use", which was the whole of what a
+                        // screen reader had to tell them apart — the code is
+                        // in a separate Text beside the button, not in it.
+                        //
+                        // semanticsLabel on the Text, not a Semantics wrapper
+                        // round the button: excludeSemantics would take the
+                        // button's own node with it, and the tap action with
+                        // that, leaving something that says "button" and does
+                        // nothing when a screen reader activates it.
+                        child: Text(
+                          l.use,
+                          semanticsLabel: l.usePromoSemantics(promo.code),
+                        ),
                       ),
                   ],
                 ),

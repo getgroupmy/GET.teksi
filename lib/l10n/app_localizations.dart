@@ -2977,6 +2977,12 @@ abstract class AppLocalizations {
   /// **'Switch to passenger'**
   String get switchToPassengerTooltip;
 
+  /// Screen-reader label for a promo card's Use button. Three of them sit in a list and all read "Use" otherwise.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {code}'**
+  String usePromoSemantics(String code);
+
   /// Screen-reader label for the driver's earnings pill.
   ///
   /// In en, this message translates to:
