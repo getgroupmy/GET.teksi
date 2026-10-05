@@ -25,7 +25,12 @@ void main() {
     (0x25A0, 0x25FF, 'geometric shapes'),
     (0x2600, 0x27BF, 'symbols and dingbats'),
     (0x2B00, 0x2BFF, 'arrows and shapes'),
-    (0x1F300, 0x1FAFF, 'emoji'),
+    // From 0x1F000, not 0x1F300. Regional indicators — the pairs that
+    // make flag emoji — live at 0x1F1E6..0x1F1FF, below where this range
+    // used to start, and PhoneScreen had '\u{1F1F2}\u{1F1FE} +60' in it the whole time
+    // this test was green. Nothing between 0x1F000 and 0x1F300 (mahjong,
+    // dominoes, cards, enclosed letters) belongs in this app either.
+    (0x1F000, 0x1FAFF, 'emoji, flags and pictographs'),
   ];
 
   String? blockOf(int rune) {
@@ -92,6 +97,8 @@ void main() {
     expect(blockOf('★'.runes.first), 'symbols and dingbats');
     expect(blockOf('→'.runes.first), 'arrows');
     expect(blockOf('●'.runes.first), 'geometric shapes');
+    // The one this test used to miss: a flag is two regional indicators.
+    expect(blockOf('🇲'.runes.first), 'emoji, flags and pictographs');
     // And the punctuation the app genuinely uses, which must not be flagged.
     for (final ok in ['—', '·', '’', '“', '…', 'é', 'ü']) {
       expect(blockOf(ok.runes.first), isNull, reason: '$ok is punctuation');

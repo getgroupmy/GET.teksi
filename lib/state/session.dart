@@ -157,6 +157,15 @@ class SessionStore extends ChangeNotifier {
   /// carry the authenticated account's id, because every row-level security
   /// policy compares against it. Without a backend it is minted locally.
   AppUser signIn(String phone, {String? name, String? id}) {
+    // The phone number is the identity. It keys the stored profile, picks the
+    // avatar colour, and is what a returning user is matched on below — an
+    // account without one matches every other account without one. The router
+    // keeps the auth steps that produce it from being reached without it;
+    // this is the same rule stated where it cannot be routed around.
+    assert(
+      phone.trim().isNotEmpty,
+      'signIn needs a phone number: it is the identity, not a display field.',
+    );
     final existing = _user;
     // Returning to the same number keeps the profile, rating and history —
     // unless the backend says this is a different account, in which case the
