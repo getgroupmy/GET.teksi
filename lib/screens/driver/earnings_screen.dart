@@ -200,10 +200,40 @@ class _EarningsScreenState extends State<EarningsScreen> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      Text(
-                                        '${clockTime(entry.value[i].completedAt ?? entry.value[i].createdAt)} · '
-                                        '${distanceLabel(entry.value[i].distanceKm)}'
-                                        '${entry.value[i].ratingByPassenger != null ? ' · ★ ${entry.value[i].ratingByPassenger!.stars}' : ''}',
+                                      // The star is an Icon, not a ★ in the
+                                      // string. U+2605 is only there if the
+                                      // platform font happens to carry it,
+                                      // and on the web build it does not —
+                                      // it rendered as an empty box beside
+                                      // the rating. Icons.star_rounded comes
+                                      // from the Material icon font, which
+                                      // ships with the app.
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  '${clockTime(entry.value[i].completedAt ?? entry.value[i].createdAt)} · '
+                                                  '${distanceLabel(entry.value[i].distanceKm)}',
+                                            ),
+                                            if (entry.value[i].ratingByPassenger
+                                                case final rating?) ...[
+                                              const TextSpan(text: ' · '),
+                                              WidgetSpan(
+                                                alignment:
+                                                    PlaceholderAlignment.middle,
+                                                child: Icon(
+                                                  Icons.star_rounded,
+                                                  size: 13,
+                                                  color: c.accent,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ' ${rating.stars}',
+                                              ),
+                                            ],
+                                          ],
+                                        ),
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: c.textDim,

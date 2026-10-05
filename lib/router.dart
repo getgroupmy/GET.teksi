@@ -137,8 +137,18 @@ class GoRouterConfig {
 
     // Keep each role on its own home screen. Driver onboarding is exempt —
     // a passenger must be able to open it to become a driver at all.
-    final isDriverRoute = path.startsWith('/d') && path != '/d/onboarding';
-    final isPassengerRoute = path.startsWith('/p');
+    //
+    // By section, not by prefix. `startsWith('/p')` also matches /profile,
+    // /places and /promos, so a signed-in driver who tapped Profile in the
+    // menu was redirected to the driver home — along with Saved places and
+    // Promotions, and the Promotions button on the wallet. A section is the
+    // route itself or something under it: '/p' and '/p/search', never
+    // '/profile'.
+    bool inSection(String section) =>
+        path == section || path.startsWith('$section/');
+
+    final isDriverRoute = inSection('/d') && path != '/d/onboarding';
+    final isPassengerRoute = inSection('/p');
     if (_session.prefs.role == Role.driver && isPassengerRoute) return '/d';
     if (_session.prefs.role == Role.passenger && isDriverRoute) return '/p';
 
