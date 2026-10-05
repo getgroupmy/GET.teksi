@@ -111,8 +111,16 @@ class _PhoneScreenState extends State<PhoneScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         child: Row(
                           children: [
+                            // '\u{1F1F2}\u{1F1FE} +60' until a browser showed it as
+                            // two empty boxes. A flag emoji is a pair of
+                            // regional indicators drawn by whatever emoji
+                            // font the device has, and the app bundles none
+                            // — Android and iOS carry one, the web build
+                            // does not. This is the first screen anyone
+                            // sees. The dialling code says the country on
+                            // its own, and the app is Malaysia-only.
                             Text(
-                              '🇲🇾 +60',
+                              '+60',
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600,

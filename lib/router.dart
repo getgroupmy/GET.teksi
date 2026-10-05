@@ -40,7 +40,14 @@ class GoRouterConfig {
         GoRoute(path: '/auth/phone', builder: (_, _) => const PhoneScreen()),
         GoRoute(
           path: '/auth/otp',
-          builder: (_, state) => OtpScreen(phone: state.extra as String? ?? ''),
+          builder: (_, state) => switch (_authStep(state.extra)) {
+            final step? => OtpScreen(phone: step.phone),
+            // Unreachable: _redirect sends a missing number back to the
+            // phone step before anything is built. Showing that step rather
+            // than an OTP screen with no number keeps the two in agreement
+            // if it ever stops being unreachable.
+            _ => const PhoneScreen(),
+          },
         ),
         GoRoute(
           path: '/auth/profile',
@@ -48,13 +55,12 @@ class GoRouterConfig {
           // profile has to be created under the authenticated account's id,
           // so the OTP screen passes it alongside the number; without one it
           // sends the number alone and the id is minted locally.
-          builder: (_, state) => switch (state.extra) {
-            (final String phone, final String? authId) => ProfileSetupScreen(
-              phone: phone,
-              authId: authId,
+          builder: (_, state) => switch (_authStep(state.extra)) {
+            final step? => ProfileSetupScreen(
+              phone: step.phone,
+              authId: step.authId,
             ),
-            final String phone => ProfileSetupScreen(phone: phone),
-            _ => const ProfileSetupScreen(phone: ''),
+            _ => const PhoneScreen(),
           },
         ),
 
@@ -128,7 +134,7 @@ class GoRouterConfig {
     final onAuthRoute = path.startsWith('/auth') || path == '/intro';
 
     if (!signedIn) {
-      if (onAuthRoute) return null;
+      if (onAuthRoute) return _authStepRedirect(path, state.extra);
       return _session.prefs.hasSeenIntro ? '/auth/phone' : '/intro';
     }
 
@@ -154,7 +160,40 @@ class GoRouterConfig {
 
     return null;
   }
+
+  /// Back to the step that produces the number, when a route that needs one
+  /// was reached without it.
+  ///
+  /// `/auth/otp` and `/auth/profile` take the number in `extra` rather than
+  /// in the path, because a phone number does not belong in a URL. On a
+  /// phone that is enough: the only way in is the step before. On the web
+  /// every route is addressable and `extra` does not survive a page load, so
+  /// a reload on the OTP screen — the screen people reload most, because
+  /// they are waiting for a message — arrived with nothing, and both screens
+  /// rendered anyway. OTP read "Sent to +60"; profile setup, whose submit
+  /// button only checks the name, signed the account in under an empty
+  /// phone number.
+  static String? _authStepRedirect(String path, Object? extra) {
+    const needsNumber = {'/auth/otp', '/auth/profile'};
+    if (!needsNumber.contains(path)) return null;
+    return _authStep(extra) == null ? '/auth/phone' : null;
+  }
 }
+
+/// The identity an auth step carries in `extra`, or null when it is not
+/// there. The guard and the two builders read it through this one function,
+/// so they cannot disagree about what counts as having a number.
+({String phone, String? authId})? _authStep(Object? extra) => switch (extra) {
+  (final String phone, final String? authId) when phone.trim().isNotEmpty => (
+    phone: phone,
+    authId: authId,
+  ),
+  final String phone when phone.trim().isNotEmpty => (
+    phone: phone,
+    authId: null,
+  ),
+  _ => null,
+};
 
 /// go_router rebuilds its redirect when this fires.
 class _RouterNotifier extends ChangeNotifier {

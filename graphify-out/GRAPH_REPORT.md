@@ -1,17 +1,17 @@
 # Graph Report - GET.teksi  (2026-10-05)
 
 ## Corpus Check
-- 170 files · ~286,750 words
+- 171 files · ~287,851 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 70 file(s) not represented in the graph (top: .csv 35, .xml 7, (none) 5)
 
 ## Summary
-- 3904 nodes · 5164 edges · 132 communities (103 shown, 29 thin omitted)
+- 3913 nodes · 5190 edges · 135 communities (105 shown, 30 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 9 edges (avg confidence: 0.93)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8b961b25`
+- Built from commit: `46eee17b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,14 +59,14 @@
 - marketplace_test.dart
 - storage.dart
 - notification_setting_row_test.dart
-- notification_setting_row.dart
+- auth_deeplink_test.dart
 - DutyService.kt
 - UI/UX Pro Max - Design Intelligence
 - driver_beacon_test.dart
 - MainActivity
 - notifier_device.dart
 - profile_setup_screen.dart
-- package:flutter_test/flutter_test.dart
+- no_service_role_key_test.dart
 - profile_sync.dart
 - 20260815120000_marketplace.sql
 - wallet_screen.dart
@@ -90,7 +90,7 @@
 - location.dart
 - safety_screen.dart
 - fixtures.dart
-- otp_semantics_test.dart
+- package:flutter_test/flutter_test.dart
 - GET.teksi
 - manifest.json
 - _select_palette_for_mode
@@ -98,9 +98,10 @@
 - _
 - ../../models/models.dart
 - graphify reference: extra exports and benchmark
-- notifier.dart
+- dart:async
 - README.md
-- dart:math
+- no_hardcoded_strings_test.dart
+- date_format_test.dart
 - live-ride.sh
 - GET.teksi — working agreements
 - graphify reference: query, path, explain
@@ -128,19 +129,21 @@
 - harness.sql
 - Android
 - 20260822170000_push_on_row_change.sql
+- l10n_test.dart
 - UI/UX accessibility audit
 - push_channel.dart
 - The four transports, and what each actually costs
 - public.push_tokens
+- dart:io
 - _RadarBarState
 - run-tests.sh
 
 ## God Nodes (most connected - your core abstractions)
-1. `SessionStore` - 89 edges
-2. `RidesStore` - 78 edges
+1. `SessionStore` - 90 edges
+2. `RidesStore` - 79 edges
 3. `_` - 41 edges
 4. `_` - 40 edges
-5. `DraftStore` - 29 edges
+5. `DraftStore` - 30 edges
 6. `_` - 23 edges
 7. `search()` - 20 edges
 8. `MainActivity` - 16 edges
@@ -152,17 +155,17 @@
   docs/RELEASING.md → .claude/skills/ui-ux-pro-max/scripts/validate_data.py
 - `What arrives today, and what does not` --references--> `DutyService`  [INFERRED]
   docs/PUSH.md → android/app/src/main/kotlin/my/get/teksi/DutyService.kt
-- `Staying awake on duty` --references--> `MainActivity`  [INFERRED]
-  docs/PLATFORMS.md → android/app/src/main/kotlin/my/get/teksi/MainActivity.kt
 - `What was built` --references--> `PushBridge`  [INFERRED]
   docs/PUSH.md → ios/Runner/AppDelegate.swift
+- `Staying awake on duty` --references--> `MainActivity`  [INFERRED]
+  docs/PLATFORMS.md → android/app/src/main/kotlin/my/get/teksi/MainActivity.kt
 - `_Fixed` --implements--> `PlaceSearch`  [EXTRACTED]
   test/geocoding_test.dart → lib/core/geocoding.dart
 
 ## Import Cycles
 - None detected.
 
-## Communities (132 total, 29 thin omitted)
+## Communities (135 total, 30 thin omitted)
 
 ### Community 0 - "app_localizations.dart"
 Cohesion: 0.00
@@ -246,15 +249,15 @@ Nodes (27): accent, AppColors, AppColorsX, bg, body, brand, brandInk, buildTheme
 
 ### Community 20 - "router.dart"
 Cohesion: 0.06
-Nodes (8): bump, dispose, GoRouterConfig, _notifier, _redirect, router, _RouterNotifier, _session
+Nodes (10): _authStepRedirect, bump, dispose, GoRouterConfig, _notifier, _redirect, router, _RouterNotifier (+2 more)
 
 ### Community 21 - "offers_sheet.dart"
 Cohesion: 0.08
 Nodes (27): _Root, _RootState, Offer, DriverOnboardingScreen, _DriverOnboardingScreenState, HistoryScreen, _HistoryScreenState, askingPrice (+19 more)
 
 ### Community 22 - "Push notifications: the decision, not the design"
-Cohesion: 0.22
-Nodes (9): Four ways to go, Push notifications: the decision, not the design, Still to do before it works, The language question, which is not settled, What CI could keep honest, What I would pick, and why, What was built, Where the sender lives (+1 more)
+Cohesion: 0.20
+Nodes (10): Four ways to go, Push notifications: the decision, not the design, Still to do before it works, The language question, which is not settled, What arrives today, and what does not, What CI could keep honest, What I would pick, and why, What was built (+2 more)
 
 ### Community 23 - "formats.dart"
 Cohesion: 0.06
@@ -269,7 +272,7 @@ Cohesion: 0.07
 Nodes (28): _, baseUrl, _categoryFor, _client, countryCodes, _defaultTimeout, display, Geocoding (+20 more)
 
 ### Community 26 - "supabase_transport.dart"
-Cohesion: 0.06
+Cohesion: 0.07
 Nodes (27): _authSub, _backlogFor, _channels, _client, _consumeSelfWrite, _controller, dispose, _emit (+19 more)
 
 ### Community 27 - "onboarding_screen.dart"
@@ -305,8 +308,8 @@ Cohesion: 0.12
 Nodes (3): DesignSystemGenerator, _filter_anti_patterns_for_mode(), _resolve_dial()
 
 ### Community 35 - "screens.dart"
-Cohesion: 0.04
-Nodes (24): app, main, openAs, shared, appLocales, buildFinishedRide, buildRide, draft (+16 more)
+Cohesion: 0.05
+Nodes (20): appLocales, buildFinishedRide, buildRide, draft, ended, klcc, maxColumnWidth, midValley (+12 more)
 
 ### Community 36 - "otp_screen.dart"
 Cohesion: 0.09
@@ -333,16 +336,12 @@ Cohesion: 0.10
 Nodes (16): _alphabet, body, bytes, clearAll, hex, init, _instance, _prefix (+8 more)
 
 ### Community 42 - "notification_setting_row_test.dart"
-Cohesion: 0.11
-Nodes (12): _kl, main, pumpMap, calls, canOpenSettings, grantsOnRequest, main, openSettings (+4 more)
+Cohesion: 0.17
+Nodes (9): calls, canOpenSettings, grantsOnRequest, main, openSettings, pump, requestPermission, show (+1 more)
 
-### Community 43 - "notification_setting_row.dart"
-Cohesion: 0.14
-Nodes (11): build, createState, didChangeAppLifecycleState, dispose, initState, NotificationSettingRow, _NotificationSettingRowState, _notifier (+3 more)
-
-### Community 44 - "DutyService.kt"
-Cohesion: 0.16
-Nodes (3): DutyService, Staying awake on duty, What arrives today, and what does not
+### Community 43 - "auth_deeplink_test.dart"
+Cohesion: 0.08
+Nodes (12): draft, main, open, rides, session, _kl, main, pumpMap (+4 more)
 
 ### Community 45 - "UI/UX Pro Max - Design Intelligence"
 Cohesion: 0.11
@@ -353,16 +352,16 @@ Cohesion: 0.11
 Nodes (15): beaconWith, calls, current, delay, fixes, _jitter, main, _north (+7 more)
 
 ### Community 48 - "notifier_device.dart"
-Cohesion: 0.12
-Nodes (12): _appChannel, buildNotifier, _channelDescription, _channelId, _channelName, _ensureReady, openSettings, _plugin (+4 more)
+Cohesion: 0.05
+Nodes (34): createNotifier, _appChannel, buildNotifier, _channelDescription, _channelId, _channelName, _DeviceNotifier, _ensureReady (+26 more)
 
 ### Community 49 - "profile_setup_screen.dart"
 Cohesion: 0.08
 Nodes (22): build, _continue, _controller, createState, _digits, dispose, _error, PhoneScreen (+14 more)
 
-### Community 50 - "package:flutter_test/flutter_test.dart"
-Cohesion: 0.06
-Nodes (25): en, json, _keysOf, main, ms, blockOf, code, main (+17 more)
+### Community 50 - "no_service_role_key_test.dart"
+Cohesion: 0.29
+Nodes (5): main, publishablePrefix, secretPrefix, serviceRole, serviceRoleJwtsIn
 
 ### Community 51 - "profile_sync.dart"
 Cohesion: 0.12
@@ -389,8 +388,8 @@ Cohesion: 0.07
 Nodes (37): RFC-8188, RFC-8291, RFC-8292, handlePush(), json(), PushRow, Call, Alert (+29 more)
 
 ### Community 58 - "duty_presence.dart"
-Cohesion: 0.13
-Nodes (12): AndroidDutyService, NoDutyService, _asked, backendLive, dispose, DutyPresence, isRunning, _running (+4 more)
+Cohesion: 0.17
+Nodes (9): _asked, backendLive, dispose, DutyPresence, isRunning, _running, service, _session (+1 more)
 
 ### Community 59 - "places.dart"
 Cohesion: 0.14
@@ -417,8 +416,8 @@ Cohesion: 0.15
 Nodes (12): 10. Charts & Data (LOW), 1. Accessibility (CRITICAL), 2. Touch & Interaction (CRITICAL), 3. Performance (HIGH), 4. Style Selection (HIGH), 5. Layout & Responsive (HIGH), 6. Typography & Color (MEDIUM), 7. Animation (MEDIUM) (+4 more)
 
 ### Community 65 - "duty.dart"
-Cohesion: 0.25
-Nodes (5): _channel, createDutyService, DutyService, start, stop
+Cohesion: 0.18
+Nodes (8): AndroidDutyService, _channel, createDutyService, DutyService, NoDutyService, start, stop, _RecordingDuty
 
 ### Community 66 - "rate_screen.dart"
 Cohesion: 0.17
@@ -448,9 +447,9 @@ Nodes (12): _addContact, build, createState, _emergencyNumber, initState, _persi
 Cohesion: 0.20
 Nodes (9): avatarColors, demoCardName, demoCardTail, driverNames, hash, passengerNames, pickAvatarColor, pickupNotes (+1 more)
 
-### Community 74 - "otp_semantics_test.dart"
+### Community 74 - "package:flutter_test/flutter_test.dart"
 Cohesion: 0.06
-Nodes (24): formatted, main, _monthYearIn, pumpWidget, found, _hasTextField, _labels, main (+16 more)
+Nodes (26): found, _hasTextField, _labels, main, out, pumpOtp, root, walk (+18 more)
 
 ### Community 75 - "GET.teksi"
 Cohesion: 0.18
@@ -480,17 +479,21 @@ Nodes (15): createState, icon, initState, label, _lastRatedRide, onTap, Passenge
 Cohesion: 0.22
 Nodes (8): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7a - FalkorDB export (only if --falkordb or --falkordb-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
 
-### Community 82 - "notifier.dart"
-Cohesion: 0.17
-Nodes (11): createNotifier, _DeviceNotifier, NotificationPermission, Notifier, openSettings, readyAfterInitialize, requestPermission, show (+3 more)
+### Community 82 - "dart:async"
+Cohesion: 0.25
+Nodes (4): done, finish, geolocation, readDeviceLocation
 
 ### Community 83 - "README.md"
 Cohesion: 0.31
 Nodes (3): `graphify/` — codebase knowledge graph, Project skills, `ui-ux-pro-max/` — UI/UX design intelligence
 
-### Community 84 - "dart:math"
+### Community 84 - "no_hardcoded_strings_test.dart"
 Cohesion: 0.29
-Nodes (4): _klcc, main, _midValley, _penang
+Nodes (5): _allowed, _inSlot, _inText, main, _slots
+
+### Community 85 - "date_format_test.dart"
+Cohesion: 0.29
+Nodes (4): formatted, main, _monthYearIn, pumpWidget
 
 ### Community 86 - "live-ride.sh"
 Cohesion: 0.48
@@ -517,8 +520,8 @@ Cohesion: 0.50
 Nodes (3): note(), PATH, session-start.sh script
 
 ### Community 92 - "contrast_test.dart"
-Cohesion: 0.20
-Nodes (9): _channel, contrast, hi, la, lb, lo, _luminance, main (+1 more)
+Cohesion: 0.12
+Nodes (13): _channel, contrast, hi, la, lb, lo, _luminance, main (+5 more)
 
 ### Community 93 - "wait-for-tools.sh"
 Cohesion: 0.83
@@ -537,8 +540,8 @@ Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
 ### Community 100 - "push_web.dart"
-Cohesion: 0.09
-Nodes (17): done, finish, geolocation, readDeviceLocation, auth, _decodeVapidKey, endpoint, json (+9 more)
+Cohesion: 0.12
+Nodes (13): auth, _decodeVapidKey, endpoint, json, keys, p256dh, permission, readPushAddress (+5 more)
 
 ### Community 105 - "labels.dart"
 Cohesion: 0.09
@@ -549,7 +552,7 @@ Cohesion: 0.22
 Nodes (6): public.wallet_transactions, rides_settle_on_completion, wallet_transactions_append_only, wallet_transactions_apply_delta, wallet_transactions_one_per_ride_role_idx, wallet_transactions_user_idx
 
 ### Community 107 - "push.dart"
-Cohesion: 0.14
+Cohesion: 0.15
 Nodes (9): address, auth, isDeliverable, p256dh, platform, PushAddress, registerForPush, token (+1 more)
 
 ### Community 118 - "Android"
@@ -559,6 +562,10 @@ Nodes (9): Android, Building by hand, Publishing, Releasing, Running the workflo
 ### Community 122 - "20260822170000_push_on_row_change.sql"
 Cohesion: 0.29
 Nodes (3): offers_push_passenger, private.push_on_offer(), rides_push_status
+
+### Community 123 - "l10n_test.dart"
+Cohesion: 0.29
+Nodes (5): en, json, _keysOf, main, ms
 
 ### Community 125 - "UI/UX accessibility audit"
 Cohesion: 0.33
@@ -576,22 +583,26 @@ Nodes (5): APNs — iOS, and the one with no real downside, HMS Push — Huawei 
 Cohesion: 0.60
 Nodes (3): public.push_tokens, push_tokens_touch, push_tokens_user_idx
 
+### Community 129 - "dart:io"
+Cohesion: 0.33
+Nodes (4): blockOf, code, main, ranges
+
 ## Knowledge Gaps
-- **2845 isolated node(s):** `PATH`, `CoreLocation`, `UserNotifications`, `XCTest`, `Backend` (+2840 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3160 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **29 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **2852 isolated node(s):** `PATH`, `CoreLocation`, `UserNotifications`, `XCTest`, `Backend` (+2847 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3165 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **30 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `SessionStore` connect `SessionStore` to `rides.dart`, `intro_screen.dart`, `session.dart`, `simulation.dart`, `router.dart`, `offers_sheet.dart`, `destination_search_screen.dart`, `onboarding_screen.dart`, `main.dart`, `notifier_test.dart`, `screens.dart`, `driver_beacon.dart`, `marketplace_test.dart`, `auth_deeplink_test.dart`, `driver_beacon_test.dart`, `profile_setup_screen.dart`, `profile_sync.dart`, `wallet_screen.dart`, `order_feed_sheet.dart`, `duty_presence_test.dart`, `duty_presence.dart`, `rate_screen.dart`, `order_detail_screen.dart`, `price_sheet.dart`, `../../models/models.dart`?**
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
 - **Why does `validate()` connect `validate_data.py` to `iOS`, `reasoning_contract.py`?**
   _High betweenness centrality (0.057) - this node is a cross-community bridge._
 - **Why does `Running it` connect `iOS` to `validate_data.py`?**
   _High betweenness centrality (0.057) - this node is a cross-community bridge._
-- **Why does `iOS` connect `iOS` to `Android`?**
-  _High betweenness centrality (0.057) - this node is a cross-community bridge._
 - **What connects `PATH`, `CoreLocation`, `UserNotifications` to the rest of the system?**
-  _2845 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2852 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `app_localizations.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.003913894324853229 - nodes in this community are weakly interconnected._
 - **Should `app_localizations_en.dart` be split into smaller, more focused modules?**
