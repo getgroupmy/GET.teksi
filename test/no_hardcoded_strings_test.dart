@@ -55,6 +55,27 @@ final _inSlot = RegExp(
 /// A bare Text('…'). The leading guard keeps it off `RichText(` and the like.
 final _inText = RegExp("(?:^|[^\\w.])Text\\(\\s*(['\"])([^'\"\\\$]{2,})\\1");
 
+/// A Text('…') whose string *does* interpolate, which the two patterns above
+/// both exclude by construction — they stop at the first `\$`.
+///
+/// That exclusion hid three strings for as long as this gate has existed:
+/// "you get {amount}" on the active-ride card, "net {amount}" in the order
+/// feed, and "{gross} in fares · {fee} service fee" under the earnings total.
+/// Each is a sentence in English, shown to a driver, in an app whose other
+/// language is the one most of its drivers speak.
+///
+/// Interpolation is how a user-facing string most often looks, so excluding it
+/// excluded the likeliest place to find one. What is left after the
+/// interpolations are removed is the prose; three or more letters of it is a
+/// sentence rather than a separator.
+final _inInterpolatedText = RegExp(
+  "(?:^|[^\\w.])Text\\(\\s*(['\"])((?:[^'\"\\\\]|\\\\.)*?)\\1",
+  dotAll: true,
+);
+
+final _interpolation = RegExp(r'\$\{[^}]*\}|\$\w+');
+final _letters = RegExp('[^A-Za-z]');
+
 void main() {
   test('no screen renders a hardcoded string', () {
     // A set: the slot pattern and the bare-Text pattern both match a line
@@ -93,4 +114,74 @@ void main() {
           'translated:\n${offenders.join('\n')}',
     );
   });
+
+  test('no screen renders a hardcoded string around an interpolation', () {
+    final offenders = prose(
+      [
+        ...Directory('lib/screens').listSync(recursive: true),
+        ...Directory('lib/widgets').listSync(recursive: true),
+      ].whereType<File>().where((f) => f.path.endsWith('.dart')),
+    );
+
+    expect(
+      offenders,
+      isEmpty,
+      reason:
+          'these are sentences with a value dropped into them, so they render '
+          'as English in every locale exactly as the ones above do — the only '
+          'difference is that the patterns above stop at the first '
+          'interpolation:\n${offenders.join('\n')}',
+    );
+  });
+
+  group('the gate itself', () {
+    test('catches a sentence written around an interpolation', () {
+      final file = File('${Directory.systemTemp.createTempSync().path}/x.dart')
+        ..writeAsStringSync(
+          "Text('you get \${money(net)}', style: s),\n"
+          "Text('\${a} in fares · \${b} service fee'),\n",
+        );
+      expect(prose([file]), hasLength(2));
+    });
+
+    test('and leaves alone what is not one', () {
+      final file = File('${Directory.systemTemp.createTempSync().path}/y.dart')
+        ..writeAsStringSync(
+          // A separator, a bare value, and a ternary inside the
+          // interpolation — the last one leaves an unbalanced brace in the
+          // match, which is how a fragment of code is told from a sentence.
+          "Text('\${distance} · \${duration}'),\n"
+          "Text('\${money(fare)}'),\n"
+          "Text('\${positive ? '+' : '−'}\${money(amount)}'),\n",
+        );
+      expect(prose([file]), isEmpty);
+    });
+  });
+}
+
+/// The files' `Text('…')` strings that are a sentence with a value dropped
+/// into them, as `path:line: literal`.
+List<String> prose(Iterable<File> files) {
+  final found = <String>[];
+  for (final file in files) {
+    final source = file.readAsStringSync();
+    for (final match in _inInterpolatedText.allMatches(source)) {
+      final literal = match.group(2)!;
+      if (!literal.contains(r'$')) continue; // the patterns above cover these
+      // An unbalanced brace means the match stopped inside an interpolation
+      // that itself contains a quote — `'${positive ? '+' : '−'}…'` — so what
+      // is left is a fragment of Dart rather than anything anyone reads.
+      if ('{'.allMatches(literal).length != '}'.allMatches(literal).length) {
+        continue;
+      }
+      final remainder = literal
+          .replaceAll(_interpolation, ' ')
+          .replaceAll(_letters, '');
+      if (remainder.length < 3) continue;
+      if (_allowed.contains(literal)) continue;
+      final line = '\n'.allMatches(source.substring(0, match.start)).length + 1;
+      found.add('${file.path}:$line: $literal');
+    }
+  }
+  return found;
 }

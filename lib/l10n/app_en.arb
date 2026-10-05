@@ -987,6 +987,21 @@
   "notificationsUnavailableSubtitle": "Not available on this device",
   "notificationsBlockedHint": "Your browser is blocking notifications for this site. Change it there and come back.",
   "switchToPassengerTooltip": "Switch to passenger",
+  "youGet": "you get {amount}",
+  "@youGet": {
+    "description": "The driver's share, under the fare on the active-ride card.",
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "netIs": "net {amount}",
+  "@netIs": {
+    "description": "The driver's share of an order in the feed.",
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "faresAndFee": "{gross} in fares · {fee} service fee",
+  "@faresAndFee": {
+    "description": "Under the net total on the earnings screen.",
+    "placeholders": { "gross": { "type": "String" }, "fee": { "type": "String" } }
+  },
   "usePromoSemantics": "Use {code}",
   "@usePromoSemantics": {
     "description": "Screen-reader label for a promo card's Use button. Three of them sit in a list and all read \"Use\" otherwise.",

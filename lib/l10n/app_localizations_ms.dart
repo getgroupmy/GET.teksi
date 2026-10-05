@@ -1665,6 +1665,21 @@ class AppLocalizationsMs extends AppLocalizations {
   String get switchToPassengerTooltip => 'Tukar kepada penumpang';
 
   @override
+  String youGet(String amount) {
+    return 'anda dapat $amount';
+  }
+
+  @override
+  String netIs(String amount) {
+    return 'bersih $amount';
+  }
+
+  @override
+  String faresAndFee(String gross, String fee) {
+    return '$gross tambang · $fee yuran perkhidmatan';
+  }
+
+  @override
   String usePromoSemantics(String code) {
     return 'Guna $code';
   }

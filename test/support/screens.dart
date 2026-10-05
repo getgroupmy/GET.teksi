@@ -97,6 +97,124 @@ Ride buildRide() {
   );
 }
 
+/// A ride the signed-in user is actually in, so the sheets that only exist
+/// part-way through one get rendered.
+///
+/// Four of the app's six sheets — price, offers, tracking, active-ride — are
+/// chosen by the home screens from the user's live ride, and a fixture that
+/// publishes somebody else's ride has none. So the screen-walking gates draw
+/// the idle sheet and the order feed twenty-three screens' worth of times and
+/// have never laid out the other four. The one of the four that something did
+/// eventually walk into — the price sheet, reached by ride_flow_test.dart —
+/// had a Row with no flex in it.
+///
+/// [as] decides which side owns it. A ride past `searching` carries the driver
+/// it was accepted by, because the tracking and active-ride sheets are mostly
+/// a picture of that driver and without one they would draw almost nothing.
+Ride buildLiveRide({
+  required String userId,
+  required Role as,
+  required RideStatus status,
+}) {
+  final now = DateTime.now();
+  final base = buildRide();
+  final accepted = status != RideStatus.searching;
+  return Ride(
+    id: uuid4(),
+    passengerId: as == Role.passenger ? userId : uuid4(),
+    passengerName: base.passengerName,
+    passengerAvatarColor: base.passengerAvatarColor,
+    passengerRating: base.passengerRating,
+    service: base.service,
+    vehicleClass: base.vehicleClass,
+    pickup: base.pickup,
+    dropoff: base.dropoff,
+    askingPrice: base.askingPrice,
+    recommendedPrice: base.recommendedPrice,
+    distanceKm: base.distanceKm,
+    durationMinutes: base.durationMinutes,
+    paymentMethod: base.paymentMethod,
+    passengerCount: base.passengerCount,
+    options: base.options,
+    status: status,
+    createdAt: now.subtract(const Duration(minutes: 6)),
+    updatedAt: now,
+    priceRaises: base.priceRaises,
+    comment: base.comment,
+    routeGeometry: base.routeGeometry,
+    finalPrice: accepted ? 1900 : null,
+    driverId: accepted ? (as == Role.driver ? userId : uuid4()) : null,
+    // Long on purpose. A driver card is a name beside a rating beside a
+    // plate, and a short name proves nothing about whether they fit.
+    driverName: accepted ? 'Mohd Shahrul Nizam bin Abdul Rahman' : null,
+    driverAvatarColor: accepted ? 0xFF2196F3 : null,
+    driverRating: accepted ? 4.92 : null,
+    driverVehicle: accepted
+        ? const Vehicle(
+            make: 'Perodua',
+            model: 'Bezza 1.3 Premium',
+            year: 2021,
+            color: 'Granite Grey',
+            plate: 'WXY 1234',
+            vehicleClass: VehicleClass.comfort,
+            seats: 4,
+          )
+        : null,
+    driverCoord: accepted ? klcc : null,
+    driverBearing: accepted ? 42 : null,
+    acceptedAt: accepted ? now.subtract(const Duration(minutes: 4)) : null,
+    arrivedAt: status == RideStatus.waiting || status == RideStatus.inProgress
+        ? now.subtract(const Duration(minutes: 2))
+        : null,
+    startedAt: status == RideStatus.inProgress
+        ? now.subtract(const Duration(minutes: 1))
+        : null,
+  );
+}
+
+/// Bids on [ride], for the offers sheet.
+///
+/// Three, not one: the sheet draws each as a card with a price, an ETA and a
+/// driver, and marks the ones that matched the asking price differently from
+/// a counter-offer. One card would leave both of those branches unlaid-out,
+/// which is the mistake `_populate` was written to stop making.
+List<Offer> buildOffers(String rideId) {
+  final now = DateTime.now();
+  final drivers = [
+    ('Mohd Shahrul Nizam bin Abdul Rahman', 1850, true, 4.92, 1204),
+    ('Siti Nurhaliza binti Mohd Taib', 2100, false, 4.71, 318),
+    ('Lim Wei Jian', 1700, false, 5.0, 12),
+  ];
+  return [
+    for (final (name, price, matched, rating, given) in drivers)
+      Offer(
+        id: uid('of'),
+        rideId: rideId,
+        driverId: uuid4(),
+        driverName: name,
+        driverAvatarColor: 0xFF2196F3,
+        driverRating: rating,
+        driverRidesGiven: given,
+        vehicle: const Vehicle(
+          make: 'Perodua',
+          model: 'Bezza 1.3 Premium',
+          year: 2021,
+          color: 'Granite Grey',
+          plate: 'WXY 1234',
+          vehicleClass: VehicleClass.comfort,
+          seats: 4,
+        ),
+        price: price,
+        etaMinutes: 4,
+        distanceKm: 1.2,
+        createdAt: now.subtract(const Duration(seconds: 30)),
+        expiresAt: now.add(const Duration(minutes: 2)),
+        status: OfferStatus.pending,
+        matchedAskingPrice: matched,
+      ),
+  ];
+}
+
 /// A finished ride, for the screens that show a list of them.
 ///
 /// [asDriver] decides which side of the ride the signed-in user is on, which
@@ -261,6 +379,24 @@ class ScreenFixture {
     draft = DraftStore();
     rideId = rides.publishRide(buildRide()).id;
     if (populate) _populate(user.id);
+  }
+
+  /// Put the signed-in user in a live ride, so a home screen draws the sheet
+  /// for that state instead of the idle one. Returns the ride.
+  Ride giveLiveRide({
+    required Role as,
+    required RideStatus status,
+    bool withOffers = false,
+  }) {
+    final ride = rides.publishRide(
+      buildLiveRide(userId: session.requireUser.id, as: as, status: status),
+    );
+    if (withOffers) {
+      for (final offer in buildOffers(ride.id)) {
+        rides.createOffer(offer);
+      }
+    }
+    return ride;
   }
 
   /// The lists.

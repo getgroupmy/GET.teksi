@@ -103,20 +103,25 @@ class TrackingSheet extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      // Wrap, not Row. The name already ellipsises, so at
+                      // double the text size what no longer fits is the
+                      // rating chip itself — and a truncated rating is a
+                      // different number, not a shorter one. Wrap moves it
+                      // to the next line instead of overflowing.
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 8,
+                        runSpacing: 4,
                         children: [
-                          Flexible(
-                            child: Text(
-                              ride.driverName ?? l.driverLabel,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
+                          Text(
+                            ride.driverName ?? l.driverLabel,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const SizedBox(width: 8),
                           RatingChip(value: ride.driverRating ?? 5),
                         ],
                       ),
@@ -221,12 +226,20 @@ class TrackingSheet extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      ride.paymentMethod == PaymentMethod.cash
-                          ? l.payInCash
-                          : ride.paymentMethod.labelIn(l),
-                      style: TextStyle(fontSize: 13, color: c.textDim),
+                    // Flexible on the label, not on the fare beside it: a
+                    // truncated payment method is still legible, a truncated
+                    // amount is a different number.
+                    Flexible(
+                      child: Text(
+                        ride.paymentMethod == PaymentMethod.cash
+                            ? l.payInCash
+                            : ride.paymentMethod.labelIn(l),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 13, color: c.textDim),
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       money(ride.fare, decimals: false),
                       style: const TextStyle(
