@@ -11,12 +11,17 @@ class Avatar extends StatelessWidget {
     required this.color,
     this.size = 44,
     this.ring = false,
+    this.semanticLabel,
   });
 
   final String name;
   final int color;
   final double size;
   final bool ring;
+
+  /// What this avatar should say when nothing beside it names the person.
+  /// Left null it says nothing, because the initials it draws are a picture.
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +34,32 @@ class Avatar extends StatelessWidget {
         shape: BoxShape.circle,
         border: ring ? Border.all(color: context.c.accent, width: 2.5) : null,
       ),
-      child: Text(
-        initials(name),
-        style: TextStyle(
-          color: const Color(0xFF0B0D0C),
-          fontWeight: FontWeight.w800,
-          fontSize: size * 0.36,
+      // The initials are a stand-in for a face, not words. A screen reader
+      // read them out as if they were: "N A Nurul Ain binti Abdullah" on the
+      // menu, where the name is right beside them. Where no name is beside
+      // one, [semanticLabel] gives it something of its own to say — and
+      // excludes the initials even then, or they would be merged onto it.
+      child: _label(
+        Text(
+          initials(name),
+          style: TextStyle(
+            color: const Color(0xFF0B0D0C),
+            fontWeight: FontWeight.w800,
+            fontSize: size * 0.36,
+            letterSpacing: 0.2,
+          ),
         ),
       ),
     );
   }
+
+  Widget _label(Widget initialsText) => semanticLabel == null
+      ? ExcludeSemantics(child: initialsText)
+      : Semantics(
+          label: semanticLabel,
+          excludeSemantics: true,
+          child: initialsText,
+        );
 }
 
 class RatingChip extends StatelessWidget {
@@ -62,6 +83,12 @@ class RatingChip extends StatelessWidget {
         Flexible(
           child: Text(
             value.toStringAsFixed(1),
+            // Aloud this was a bare "4.9" — the star beside it carries the
+            // meaning visually and an icon says nothing, so a screen reader
+            // read a number with nothing to attach it to. The same problem
+            // the earnings rating had in #27, in the widget twelve files use.
+            semanticsLabel: AppLocalizations.of(context)!
+                .ratingValue(value.toStringAsFixed(1)),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

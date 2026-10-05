@@ -501,5 +501,6 @@
   "usePromoSemantics": "Guna {code}",
   "youGet": "anda dapat {amount}",
   "netIs": "bersih {amount}",
-  "faresAndFee": "{gross} tambang · {fee} yuran perkhidmatan"
+  "faresAndFee": "{gross} tambang · {fee} yuran perkhidmatan",
+  "ratingValue": "Penilaian {value}"
 }

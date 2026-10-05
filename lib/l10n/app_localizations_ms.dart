@@ -1665,6 +1665,11 @@ class AppLocalizationsMs extends AppLocalizations {
   String get switchToPassengerTooltip => 'Tukar kepada penumpang';
 
   @override
+  String ratingValue(String value) {
+    return 'Penilaian $value';
+  }
+
+  @override
   String youGet(String amount) {
     return 'anda dapat $amount';
   }
