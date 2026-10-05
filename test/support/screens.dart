@@ -107,6 +107,7 @@ Ride buildFinishedRide({
   required bool asDriver,
   required RideStatus status,
   DateTime? finishedAt,
+  bool rated = true,
 }) {
   final now = DateTime.now();
   final ended = finishedAt ?? now.subtract(const Duration(days: 2));
@@ -166,7 +167,10 @@ Ride buildFinishedRide({
     // make DriverHome lay out differently — it makes it throw "No GoRouter
     // found in context" before laying out at all, taking the top-bar and
     // semantics gates down with it.
-    ratingByPassenger: status == RideStatus.completed
+    //
+    // `rated: false` is for the one harness that does have a router:
+    // ride_flow_test.dart, whose subject is that very push.
+    ratingByPassenger: rated && status == RideStatus.completed
         ? RideRating(
             stars: 5,
             tags: const ['Clean car', 'Safe driving'],
@@ -176,7 +180,7 @@ Ride buildFinishedRide({
             createdAt: started.add(const Duration(minutes: 70)),
           )
         : null,
-    ratingByDriver: status == RideStatus.completed
+    ratingByDriver: rated && status == RideStatus.completed
         ? RideRating(
             stars: 5,
             tags: const ['On time', 'Polite'],
