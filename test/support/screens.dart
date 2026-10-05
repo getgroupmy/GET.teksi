@@ -193,11 +193,33 @@ class ScreenFixture {
   late RidesStore rides;
   late DraftStore draft;
 
+  /// Whether [reset] has built the stores yet, so a second call can take the
+  /// previous ones down. RidesStore runs the simulated marketplace on a three
+  /// second periodic timer; replacing the field without disposing leaves that
+  /// timer running against a store nothing can reach, and the test ends with
+  /// "A Timer is still pending even after the widget tree was disposed" —
+  /// which names the symptom and not this.
+  bool _built = false;
+
   /// A published ride, for the screens addressed by one.
   late String rideId;
 
   /// Call from `setUp`.
-  Future<void> reset() async {
+  ///
+  /// [populate] fills the lists. Leaving it false is the day-one account: a
+  /// signed-in user with no history, no notifications, no saved places and an
+  /// untouched wallet, which is what ten screens draw an `EmptyState` for and
+  /// what nothing had ever laid out. `_populate` exists because the gates
+  /// were measuring empty screens and calling it coverage; filling them fixed
+  /// that half and made the other half unreachable, since every gate resets
+  /// the same way.
+  ///
+  /// The published ride stays either way. It is what the screens addressed by
+  /// a ride id are built from, and a missing one is a different state with a
+  /// test of its own in error_states_test.dart.
+  Future<void> reset({bool populate = true}) async {
+    if (_built) rides.dispose();
+    _built = true;
     SharedPreferences.setMockInitialValues({});
     await Store.init();
     session = SessionStore();
@@ -234,7 +256,7 @@ class ScreenFixture {
     rides = RidesStore(session);
     draft = DraftStore();
     rideId = rides.publishRide(buildRide()).id;
-    _populate(user.id);
+    if (populate) _populate(user.id);
   }
 
   /// The lists.

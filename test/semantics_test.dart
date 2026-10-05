@@ -3,6 +3,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'support/screens.dart';
+import 'support/semantics.dart';
 
 /// What every screen hands a screen reader.
 ///
@@ -25,52 +26,6 @@ import 'support/screens.dart';
 ///   * an input missing from the tree, which is unusable rather than merely
 ///     unlabelled, because Flutter routes typing through the semantics node
 ///     when a screen reader is attached.
-
-/// Every node in the tree, in traversal order.
-List<SemanticsNode> _flatten(SemanticsNode root) {
-  final out = <SemanticsNode>[];
-  void walk(SemanticsNode node) {
-    out.add(node);
-    node.visitChildren((child) {
-      walk(child);
-      return true;
-    });
-  }
-
-  walk(root);
-  return out;
-}
-
-/// Whether [node] says anything a screen reader could read out.
-///
-/// A node earns its label from any of these, so all three count: `label` for
-/// a `Semantics` wrapper or a tooltip, `value` for a field's contents, and
-/// `tooltip` where the platform keeps it separate.
-bool _announcesSomething(SemanticsNode node) =>
-    node.label.trim().isNotEmpty ||
-    node.value.trim().isNotEmpty ||
-    node.tooltip.trim().isNotEmpty;
-
-/// The nodes a screen reader would stop on and call a control.
-List<SemanticsNode> _controls(SemanticsNode root) => _flatten(root)
-    .where(
-      (n) =>
-          n.flagsCollection.isButton ||
-          n.flagsCollection.isLink ||
-          n.flagsCollection.isTextField,
-    )
-    .toList();
-
-/// A description that says where to look, rather than just that something is
-/// wrong. The rect is the only locator a dropped node leaves behind.
-String _describe(SemanticsNode node) {
-  final kinds = [
-    if (node.flagsCollection.isButton) 'button',
-    if (node.flagsCollection.isLink) 'link',
-    if (node.flagsCollection.isTextField) 'text field',
-  ].join('/');
-  return '$kinds at ${node.rect} (id ${node.id})';
-}
 
 void main() {
   final app = ScreenFixture();
@@ -109,9 +64,9 @@ void main() {
           app.screens()[name]!(),
         );
 
-        final silent = _controls(root).where((n) => !_announcesSomething(n));
+        final silent = controls(root).where((n) => !announcesSomething(n));
         expect(
-          silent.map(_describe).toList(),
+          silent.map(describeNode).toList(),
           isEmpty,
           reason:
               'On $name a screen reader would reach these and have nothing '
@@ -134,7 +89,7 @@ void main() {
         // Only screens that actually have a field: asserting a text field on
         // a screen with none would be asserting the opposite of the truth.
         final fieldsOnScreen = find.byType(EditableText).evaluate().length;
-        final fieldsInTree = _flatten(root)
+        final fieldsInTree = flattenSemantics(root)
             .where((n) => n.flagsCollection.isTextField)
             .length;
 
@@ -167,7 +122,7 @@ void main() {
           ),
         ),
       );
-      final silent = _controls(root).where((n) => !_announcesSomething(n));
+      final silent = controls(root).where((n) => !announcesSomething(n));
       expect(
         silent,
         isNotEmpty,
@@ -191,7 +146,7 @@ void main() {
         reason: 'the field should be drawn, or this proves nothing',
       );
       expect(
-        _flatten(root).where((n) => n.flagsCollection.isTextField),
+        flattenSemantics(root).where((n) => n.flagsCollection.isTextField),
         isEmpty,
         reason:
             'a field hidden behind Opacity was still exposed, so the second '
