@@ -121,30 +121,48 @@ class PriceSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
+          // Neither side was flexible, and the right-hand one is not a short
+          // class name — carEconomy is "Everyday cars, 4 seats", and in Malay
+          // "Kereta harian, 4 tempat duduk". Beside the distance and duration
+          // that is a long line for a 361 pixel row, and nothing had ever
+          // measured it: this sheet only appears once a draft has both ends,
+          // which the screen-walking gates never produce.
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${distanceLabel(trip.distanceKm)} · ${durationLabel(l, trip.durationMinutes)}',
-                style: TextStyle(fontSize: 13, color: c.textDim),
+              Flexible(
+                child: Text(
+                  '${distanceLabel(trip.distanceKm)} · ${durationLabel(l, trip.durationMinutes)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 13, color: c.textDim),
+                ),
               ),
-              InkWell(
-                onTap: () => _chooseClass(context, draft),
-                child: Row(
-                  children: [
-                    Text(
-                      draft.vehicleClass.labelIn(l),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
+              const SizedBox(width: 8),
+              Flexible(
+                child: InkWell(
+                  onTap: () => _chooseClass(context, draft),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          draft.vehicleClass.labelIn(l),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
-                    ),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      size: 16,
-                      color: c.textDim,
-                    ),
-                  ],
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 16,
+                        color: c.textDim,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
