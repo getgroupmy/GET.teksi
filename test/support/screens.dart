@@ -285,8 +285,10 @@ class ScreenFixture {
         ),
       );
     }
-    // A cancelled ride too: it carries a reason the completed ones do not,
-    // and that reason is a second line of text in the same row.
+    // A cancelled ride too. History draws it differently from a completed
+    // one — a cancel icon in danger red, the word "Cancelled" where the fare
+    // label goes, and the fare struck through — so without one in the fixture
+    // that whole branch of the row never renders.
     rides.publishRide(
       buildFinishedRide(
         userId: userId,
