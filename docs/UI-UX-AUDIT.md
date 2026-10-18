@@ -519,15 +519,86 @@ even when its target is already visible, and twice never returned; and the
 default per-test timeout of ten minutes turned a twenty second run into
 twenty minutes.
 
-### What these ten have in common
+### 18. The driver account screens the menu offered and the guard refused
+
+Finding 8 was the role guard matching by prefix, so `/profile`, `/places` and
+`/promos` were all read as the passenger section. This is the same over-match
+one level down, and it survived that fix.
+
+The guard's own comment says it keeps each role **on its own home screen**.
+What it actually tested was the whole `/d` section, with onboarding carved
+out. MenuScreen offers Earnings and Vehicle & documents on `user.isDriver` —
+whether the *account* has a driver profile — and not on the role in use right
+now. So a driver riding as a passenger saw both rows, tapped one, and was
+sent to the passenger home. Two visible rows that did nothing but navigate
+away from where they were tapped.
+
+Reachable with no setup at all: the fixture's own user has a driver profile
+and the role starts as passenger, which is the state every gate that walks
+the screens was already in. All of them drew those two rows. None of them
+tapped one.
+
+Fixed by naming the three `/d` routes that belong to the driver account
+rather than the driver role — onboarding, earnings, vehicle — and leaving the
+rest of the section guarded, which `test/route_guard_test.dart` now holds
+from both sides: a passenger can open the account screens and still cannot
+open the driver home or a driver's order.
+
+### 19. The browser's Back button, which nothing had pressed
+
+`test/ride_flow_test.dart` walks the router forwards. Backwards is a
+different mechanism, and the app ships on the web, where Back is a button
+every user has.
+
+On the web a location change is a browser history entry. go_router reports
+`replace: false` for all of them bar the first, so a redirect writes history
+exactly like a tap does. That makes a guarded location behind you a trap:
+Back pops its entry and hands the app that location, the guard refuses it and
+the app reports somewhere else, and the report pushes a new entry in place of
+the one just spent. The gesture ends with the stack as deep as it began, so
+the next press does the same, and the press after that.
+
+Measured on two journeys, both one tap from the home screen:
+
+- **after switching role** — the passenger home is behind you and now refused;
+- **after signing in** — all four auth steps are behind you and all refused.
+
+In both, Back never left the page. Not after five presses, not after fifty.
+
+**This one is not fixed, and three candidate fixes were measured rather than
+reasoned about.** `context.replace()` reports the same way `go` does, so it
+changes nothing. `routerNeglect: true` makes every report a replace, so the
+history never holds more than one entry and Back leaves the app from
+everywhere — it would break the pushed screens, which work today.
+`onEnter`/`Block.stop()` halts the navigation, but the provider has already
+moved to the location Back supplied, so the unchanged stack is re-synced as a
+push; it has no effect either. go_router 18.1.0 changes none of this.
+
+`Block.stop()` is worth dwelling on, because it looked like the fix. Against
+a hand-seeded history it worked perfectly. It only worked because the
+seeded entries carried a null `state`, which
+`_platformReportsNewRouteInformation` reads as "this did not come from us" —
+it clears `_valueInEngine`, and that makes the app's next report a replace.
+Every real browser entry carries the state go_router wrote with it. The
+probe, not the library, was producing the fix. A commit with a forty-line
+comment explaining a repair that measurement refutes was two minutes away,
+and the only thing that caught it was running the real journey instead of the
+model. `test/browser_history_test.dart` now pins that difference in a test of
+its own, so the next person to try `Block.stop()` finds out in seconds.
+
+What is left is a product decision, recorded under *Not addressed*: the
+refusal is what creates the trap, so the question is whether a role home may
+be entered by whoever asks for it.
+
+### What these twelve have in common
 
 Every one was invisible to a gate that reported covering the thing it was in.
 The shape repeats: a gate walks *screens*, and what it misses is **states** —
 a screen as the other role sees it, as a new account sees it, as it looks when
-something failed, part-way through a journey, mid-ride, after a tap, and with
-the driver online rather than off. Each new gate here is the same walk with a
-different fixture, and six of the ten found a real defect the moment a fixture
-reached that state for the first time.
+something failed, part-way through a journey, mid-ride, after a tap, with the
+driver online rather than off, and arrived at backwards rather than forwards. Each new gate here is the same walk with a
+different fixture, and eight of the twelve found a real defect the moment a
+fixture reached that state for the first time.
 
 Three of the gates that reported covering those areas were themselves green
 while missing what they were written for: the glyph scan's range started
@@ -545,16 +616,16 @@ fails when it should.
 - Light mode was built and opened in a browser for the first time during this
   pass; the settings and fare screens were checked visually after the fix.
 - Chip hit box measured in the running app: **104 × 52** (was ~33 tall).
-- Full suite: **798 tests**, `flutter analyze --fatal-infos --fatal-warnings`
+- Full suite: **816 tests**, `flutter analyze --fatal-infos --fatal-warnings`
   clean. (79 at the time of the original audit, 379 when findings 1–7 were
-  written, 583 at findings 8–14.)
+  written, 583 at findings 8–14, 798 at findings 8–17.)
 
-Gates added by findings 8–17, each proven to fail against the defect it was
+Gates added by findings 8–19, each proven to fail against the defect it was
 written for before being relied on:
 
 | Gate | Asks |
 |---|---|
-| `route_guard_test.dart` | can each role reach the routes its menu links to |
+| `route_guard_test.dart` | can each role reach the routes its menu links to, and only those |
 | `no_glyph_icons_test.dart` | does any screen draw a picture with a character |
 | `auth_deeplink_test.dart` | is an auth step reachable without what it needs |
 | `semantics_label_leak_test.dart` | is a declared label what actually gets read |
@@ -564,9 +635,11 @@ written for before being relied on:
 | `ride_sheets_test.dart` | do the four mid-ride sheets lay out, and announce themselves |
 | `shared_widget_semantics_test.dart` | what Avatar and RatingChip say, which is what twelve files say |
 | `modal_sheets_test.dart` | do all twenty tap-to-open sheets lay out, and announce themselves |
+| `browser_history_test.dart` | does the browser's Back button ever leave the page |
 
-Findings 8–17 came from rendering the built app in a browser and from reading
-Chromium's accessibility tree, not from the skill. The skill's contribution is
+Findings 8–19 came from rendering the built app in a browser, from reading
+Chromium's accessibility tree, and from modelling the browser's history
+contract, not from the skill. The skill's contribution is
 findings 1–7.
 
 ### What "all 23 screens" was worth when findings 6 and 7 were written
@@ -634,6 +707,21 @@ quiet the gate once a month at an hour nobody is watching.
   semantics-DOM explanation, and telling a framework artefact from a real
   ordering bug needs a screen reader and a person listening. Recorded rather
   than claimed either way.
+
+- **Whether a role home may be entered by whoever asks for it.** This is the
+  product decision behind finding 19, and the only thing standing between a
+  dead Back button and a fix. The trap is created by the refusal: if `/p` and
+  `/d` were enterable by any signed-in user — the role following the URL
+  rather than the URL being refused for disagreeing with the role — Back
+  would land on the passenger home, show it, and go on back. There is no
+  redirect left to push an entry.
+
+  Not done here because it is a change to what a role *is*, not a bug fix.
+  `prefs.role` would stop being a permission and become what it reads as, a
+  preference for which home to open on; the two home screens do not consult
+  it, but `driverOnline` does. Both loops in finding 19 end the moment that
+  decision goes either way, and `test/browser_history_test.dart` will say so
+  by failing.
 
 - **Landscape and tablet layouts.** The app is portrait-locked
   (`SystemChrome.setPreferredOrientations`) and constrained to a 480 px

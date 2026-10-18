@@ -141,8 +141,7 @@ class GoRouterConfig {
     // Signed in: the auth flow is behind us.
     if (onAuthRoute) return _session.prefs.role == Role.driver ? '/d' : '/p';
 
-    // Keep each role on its own home screen. Driver onboarding is exempt —
-    // a passenger must be able to open it to become a driver at all.
+    // Keep each role on its own home screen.
     //
     // By section, not by prefix. `startsWith('/p')` also matches /profile,
     // /places and /promos, so a signed-in driver who tapped Profile in the
@@ -153,13 +152,29 @@ class GoRouterConfig {
     bool inSection(String section) =>
         path == section || path.startsWith('$section/');
 
-    final isDriverRoute = inSection('/d') && path != '/d/onboarding';
+    final isDriverRoute = inSection('/d') && !_accountRoutes.contains(path);
     final isPassengerRoute = inSection('/p');
     if (_session.prefs.role == Role.driver && isPassengerRoute) return '/d';
     if (_session.prefs.role == Role.passenger && isDriverRoute) return '/p';
 
     return null;
   }
+
+  /// The `/d` routes that belong to the driver *account* rather than to the
+  /// driver role, and so are none of the role guard's business.
+  ///
+  /// The guard keeps each role on its own home screen. Reading that as the
+  /// whole `/d` section applies it to more than the homes: the menu offers
+  /// Earnings and Vehicle & documents on `user.isDriver`, the account's
+  /// driver profile, and not on the role being used right now. So a driver
+  /// riding as a passenger saw both rows, tapped one, and was sent to the
+  /// passenger home — the row did nothing except move them.
+  ///
+  /// Which is the `startsWith('/p')` bug above one level down: a prefix
+  /// standing in for an idea narrower than itself. Onboarding was already
+  /// exempt, for its own reason — a passenger has to be able to open it to
+  /// become a driver at all.
+  static const _accountRoutes = {'/d/onboarding', '/d/earnings', '/d/vehicle'};
 
   /// Back to the step that produces the number, when a route that needs one
   /// was reached without it.
