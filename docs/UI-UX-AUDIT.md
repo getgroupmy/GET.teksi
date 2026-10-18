@@ -565,18 +565,20 @@ Measured on two journeys, both one tap from the home screen:
 
 In both, Back never left the page. Not after five presses, not after fifty.
 
-**This one is not fixed, and three candidate fixes were measured rather than
-reasoned about.** `context.replace()` reports the same way `go` does, so it
-changes nothing. `routerNeglect: true` makes every report a replace, so the
-history never holds more than one entry and Back leaves the app from
-everywhere — it would break the pushed screens, which work today.
-`onEnter`/`Block.stop()` halts the navigation, but the provider has already
-moved to the location Back supplied, so the unchanged stack is re-synced as a
-push; it has no effect either. go_router 18.1.0 changes none of this.
+**The role switch is fixed. Signing in is not, and cannot be at this layer.**
+
+Four candidate fixes were tried and measured rather than reasoned about, and
+all four failed. `context.replace()`, `pushReplacement` and `go` all report
+identically — measured, `replace=false` for every one. `routerNeglect: true`
+makes every report a replace, so the history never holds more than one entry
+and Back leaves the app from everywhere, which would break the pushed screens
+that work today. `onEnter`/`Block.stop()` halts the navigation, but the
+provider has already moved to the location Back supplied, so the unchanged
+stack is re-synced as a push. go_router 18.1.0 changes none of it.
 
 `Block.stop()` is worth dwelling on, because it looked like the fix. Against
-a hand-seeded history it worked perfectly. It only worked because the
-seeded entries carried a null `state`, which
+a hand-seeded history it worked perfectly. It only worked because the seeded
+entries carried a null `state`, which
 `_platformReportsNewRouteInformation` reads as "this did not come from us" —
 it clears `_valueInEngine`, and that makes the app's next report a replace.
 Every real browser entry carries the state go_router wrote with it. The
@@ -586,9 +588,35 @@ and the only thing that caught it was running the real journey instead of the
 model. `test/browser_history_test.dart` now pins that difference in a test of
 its own, so the next person to try `Block.stop()` finds out in seconds.
 
-What is left is a product decision, recorded under *Not addressed*: the
-refusal is what creates the trap, so the question is whether a role home may
-be entered by whoever asks for it.
+What fixed the role switch was none of those. **It was removing the refusal.**
+A role's half of the app is no longer refused to the other role: entering it
+says which role is in use, and `prefs.role` follows. With no redirect there is
+nothing to push an entry, so Back lands on the passenger home, shows it, and
+the history is spent.
+
+Nothing was being protected. Switching role is a button on both home screens
+and a third in the menu, so both halves were already one tap apart for anybody
+with a driver profile. The guard only ever governed whoever arrived by URL or
+by history — which is to say, it governed the Back button and nothing else.
+`prefs.role` is now what it reads as, a preference for which half you are in,
+rather than a permission.
+
+Two things that had to come with it. The role has to be kept *in step*, not
+merely stop being enforced: `SessionStore.isDriverOnDuty` reads it, and that
+is the one condition the position beacon and the foreground service agree on,
+so a role left pointing at the other half would stop a driver going on duty.
+And a URL must not hand out the role: without a driver profile the role stays
+put, because `becomeDriver` is what makes somebody a driver. Both are gated.
+
+**Signing in still traps, and the role change does not reach it.** What sits
+behind a freshly signed-in user is the auth flow — `/intro` and three entries
+all reported at `/auth/phone`, since `push` does not change the URL — and a
+signed-in user may not be shown the OTP screen. That refusal is correct. It
+is the history entry that should not exist, and nothing at this layer can
+remove one. It is much the milder of the two: signing in happens once, where
+switching role was a button on the home screen. Recorded under *Not
+addressed*, and pinned as the one remaining test that will fail the day it is
+fixed.
 
 ### What these twelve have in common
 
@@ -616,9 +644,9 @@ fails when it should.
 - Light mode was built and opened in a browser for the first time during this
   pass; the settings and fare screens were checked visually after the fix.
 - Chip hit box measured in the running app: **104 × 52** (was ~33 tall).
-- Full suite: **816 tests**, `flutter analyze --fatal-infos --fatal-warnings`
+- Full suite: **821 tests**, `flutter analyze --fatal-infos --fatal-warnings`
   clean. (79 at the time of the original audit, 379 when findings 1–7 were
-  written, 583 at findings 8–14, 798 at findings 8–17.)
+  written, 583 at findings 8–14, 798 at findings 8–17, 816 at finding 18.)
 
 Gates added by findings 8–19, each proven to fail against the defect it was
 written for before being relied on:
@@ -708,20 +736,19 @@ quiet the gate once a month at an hour nobody is watching.
   ordering bug needs a screen reader and a person listening. Recorded rather
   than claimed either way.
 
-- **Whether a role home may be entered by whoever asks for it.** This is the
-  product decision behind finding 19, and the only thing standing between a
-  dead Back button and a fix. The trap is created by the refusal: if `/p` and
-  `/d` were enterable by any signed-in user — the role following the URL
-  rather than the URL being refused for disagreeing with the role — Back
-  would land on the passenger home, show it, and go on back. There is no
-  redirect left to push an entry.
+- **The browser's Back button immediately after signing in.** The remaining
+  half of finding 19. The auth flow leaves four history entries behind it and
+  every one of them is correctly refused to a signed-in user, so each press
+  of Back spends an entry and the refusal pushes one back. go_router reports
+  every location change as a `pushState`, so there is no way from inside the
+  app to drop a history entry or to redirect without writing one; four
+  candidate fixes were measured and none works.
 
-  Not done here because it is a change to what a role *is*, not a bug fix.
-  `prefs.role` would stop being a permission and become what it reads as, a
-  preference for which home to open on; the two home screens do not consult
-  it, but `driverOnline` does. Both loops in finding 19 end the moment that
-  decision goes either way, and `test/browser_history_test.dart` will say so
-  by failing.
+  The role-switch half of this is fixed, by retiring the refusal rather than
+  by finding a history trick. The same move is not available here: showing a
+  signed-in user the OTP screen is not a fix. What would work is upstream —
+  a go_router that reports a redirect as a replace — and
+  `test/browser_history_test.dart` will fail, by design, the day that lands.
 
 - **Landscape and tablet layouts.** The app is portrait-locked
   (`SystemChrome.setPreferredOrientations`) and constrained to a 480 px

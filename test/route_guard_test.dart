@@ -16,7 +16,8 @@ import 'package:provider/provider.dart';
 
 import 'support/screens.dart';
 
-/// Which screens each role is allowed to reach.
+/// Which screens each role can reach, and what entering one says about the
+/// role in use.
 ///
 /// The redirect keeps a driver on the driver home and a passenger on the
 /// passenger home, which is right. It decided that by prefix — `/p` for the
@@ -156,24 +157,81 @@ void main() {
     });
   }
 
-  // And the guard it is there for still works: the roles stay apart. Widening
-  // the exemption to the whole of /d would pass every test above.
-  testWidgets('a passenger is still kept off the driver home', (tester) async {
-    await openAs(tester, Role.passenger, '/d');
-    expect(find.byType(PlacesScreen), findsNothing);
-    expect(app.session.prefs.role, Role.passenger);
-  });
+  /// What replaced the refusal.
+  ///
+  /// A role's half of the app used to be refused to the other role, and that
+  /// refusal was the only thing making the browser's Back button useless —
+  /// see `test/browser_history_test.dart`. It protected nothing: switching
+  /// role is a button on both home screens and a third in the menu, so both
+  /// halves were already one tap apart. Entering a half now says which role
+  /// is in use, and `prefs.role` follows.
+  ///
+  /// It has to follow, not merely stop being enforced: `isDriverOnDuty` reads
+  /// it, and the position beacon and the foreground service both agree on
+  /// that. A role pointing at the half you are not in would stop a driver
+  /// going on duty.
+  for (final (from, to, location) in [
+    (Role.passenger, Role.driver, '/d'),
+    (Role.driver, Role.passenger, '/p'),
+  ]) {
+    testWidgets('opening $location as a ${from.name} makes them a ${to.name}', (
+      tester,
+    ) async {
+      await openAs(tester, from, location);
+      expect(
+        app.session.prefs.role,
+        to,
+        reason:
+            'the role did not follow the location. isDriverOnDuty reads it, '
+            'so a role left pointing at the other half stops the duty '
+            'beacon from ever starting.',
+      );
+    });
+  }
 
-  testWidgets('a passenger is still kept out of a driver order', (
+  testWidgets('and a driver order is driver work, so it switches too', (
     tester,
   ) async {
     await openAs(tester, Role.passenger, '/d/order/${app.rideId}');
+    expect(find.byType(OrderDetailScreen), findsOneWidget);
+    expect(app.session.prefs.role, Role.driver);
+  });
+
+  // The account screens are the exception, and this is what names them. They
+  // are offered to anyone whose account has a driver profile, so opening one
+  // must not quietly put a passenger behind the wheel.
+  for (final location in ['/d/earnings', '/d/vehicle', '/d/onboarding']) {
+    testWidgets('opening $location leaves a passenger a passenger', (
+      tester,
+    ) async {
+      await openAs(tester, Role.passenger, location);
+      expect(
+        app.session.prefs.role,
+        Role.passenger,
+        reason:
+            '$location belongs to the driver account, not to driving. '
+            'Reading the whole /d section as the driver half would switch '
+            'a passenger here.',
+      );
+    });
+  }
+
+  // Only a profile makes somebody a driver, and the role must not be handed
+  // out by a URL. Without this, typing /d would set role: driver on an
+  // account with no vehicle on file, and isDriverOnDuty would be one
+  // `driverOnline` away from true for somebody who cannot drive.
+  testWidgets('an account with no driver profile is not made a driver', (
+    tester,
+  ) async {
+    app.session.signOut();
+    app.session.signIn('+60123456789', name: 'Nurul Ain binti Abdullah');
+    expect(app.session.requireUser.isDriver, isFalse);
+
+    await openAs(tester, Role.passenger, '/d');
     expect(
-      find.byType(OrderDetailScreen),
-      findsNothing,
-      reason:
-          'driver work is still the driver role\'s. Only the account screens '
-          'the menu links to are exempt, not everything under /d.',
+      app.session.prefs.role,
+      Role.passenger,
+      reason: 'a URL cannot make somebody a driver; becomeDriver does',
     );
   });
 }

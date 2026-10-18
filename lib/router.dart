@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,6 +37,7 @@ class GoRouterConfig {
       initialLocation: '/p',
       refreshListenable: _notifier,
       redirect: _redirect,
+      onEnter: _onEnter,
       routes: [
         GoRoute(path: '/intro', builder: (_, _) => const IntroScreen()),
         GoRoute(path: '/auth/phone', builder: (_, _) => const PhoneScreen()),
@@ -141,39 +144,88 @@ class GoRouterConfig {
     // Signed in: the auth flow is behind us.
     if (onAuthRoute) return _session.prefs.role == Role.driver ? '/d' : '/p';
 
-    // Keep each role on its own home screen.
-    //
-    // By section, not by prefix. `startsWith('/p')` also matches /profile,
-    // /places and /promos, so a signed-in driver who tapped Profile in the
-    // menu was redirected to the driver home — along with Saved places and
-    // Promotions, and the Promotions button on the wallet. A section is the
-    // route itself or something under it: '/p' and '/p/search', never
-    // '/profile'.
+    // A role's half of the app is no longer refused to the other role. The
+    // role follows the location instead — see _onEnter — because refusing
+    // was what made the browser's Back button a trap.
+    return null;
+  }
+
+  /// Entering a role's half of the app is a statement about which role is in
+  /// use, so the preference follows the location rather than refusing it.
+  ///
+  /// It used to refuse: a driver asking for `/p` was sent to `/d`, and a
+  /// passenger asking for `/d` to `/p`. That reads as safe and was the one
+  /// thing making the browser's Back button useless. On the web a location
+  /// change is a history entry and go_router reports `replace: false` for
+  /// all but the first, so a redirect writes history exactly like a tap. A
+  /// refused location behind you is then a trap: Back spends its entry, the
+  /// guard redirects, and the redirect pushes a new entry in its place. The
+  /// stack ends as deep as it began, so the next press does the same. After
+  /// switching role, Back never left the page — measured to fifty presses.
+  ///
+  /// Nothing was being protected. Switching role is a button on both home
+  /// screens and a third in the menu, so both halves were already one tap
+  /// apart for anybody with a driver profile; the guard only governed whoever
+  /// arrived by URL or by history. `prefs.role` is now what it reads as — a
+  /// preference for which half you are in — rather than a permission.
+  ///
+  /// It has to be kept in step rather than merely stopped being enforced:
+  /// `SessionStore.isDriverOnDuty` reads it, and that is what the position
+  /// beacon and the foreground service agree on. A role left pointing at the
+  /// half you are not in would stop a driver going on duty.
+  ///
+  /// `Allow.then` runs after the navigation commits. Setting the role fires
+  /// `refreshListenable`, which re-parses — and the second pass finds the
+  /// role already matching and allows without a callback, so it ends there.
+  FutureOr<OnEnterResult> _onEnter(
+    BuildContext context,
+    GoRouterState current,
+    GoRouterState next,
+    GoRouter router,
+  ) {
+    final role = _roleOwning(next.matchedLocation);
+    if (role == null || _session.prefs.role == role) return const Allow();
+    // Only a profile makes somebody a driver. Without one the role stays put
+    // and DriverHomeScreen sends them to onboarding, which is what it already
+    // did for this state.
+    if (role == Role.driver && _session.user?.isDriver != true) {
+      return const Allow();
+    }
+    return Allow(then: () => _session.setRole(role));
+  }
+
+  /// Which role's half of the app a location is in, or null for the parts
+  /// that belong to neither.
+  ///
+  /// By section, not by prefix. `startsWith('/p')` also matches /profile,
+  /// /places and /promos, so a signed-in driver who tapped Profile in the
+  /// menu was redirected to the driver home — along with Saved places and
+  /// Promotions, and the Promotions button on the wallet. A section is the
+  /// route itself or something under it: '/p' and '/p/search', never
+  /// '/profile'.
+  static Role? _roleOwning(String path) {
     bool inSection(String section) =>
         path == section || path.startsWith('$section/');
 
-    final isDriverRoute = inSection('/d') && !_accountRoutes.contains(path);
-    final isPassengerRoute = inSection('/p');
-    if (_session.prefs.role == Role.driver && isPassengerRoute) return '/d';
-    if (_session.prefs.role == Role.passenger && isDriverRoute) return '/p';
-
+    if (inSection('/p')) return Role.passenger;
+    if (inSection('/d') && !_accountRoutes.contains(path)) return Role.driver;
     return null;
   }
 
   /// The `/d` routes that belong to the driver *account* rather than to the
-  /// driver role, and so are none of the role guard's business.
+  /// driver half of the app, so opening one says nothing about which role is
+  /// in use.
   ///
-  /// The guard keeps each role on its own home screen. Reading that as the
-  /// whole `/d` section applies it to more than the homes: the menu offers
-  /// Earnings and Vehicle & documents on `user.isDriver`, the account's
-  /// driver profile, and not on the role being used right now. So a driver
-  /// riding as a passenger saw both rows, tapped one, and was sent to the
-  /// passenger home — the row did nothing except move them.
+  /// The menu offers Earnings and Vehicle & documents on `user.isDriver`, the
+  /// account's driver profile, and not on the role being used right now. So a
+  /// driver riding as a passenger sees both rows, and reading the whole `/d`
+  /// section as the driver's half would have tapping one switch them to
+  /// driving — or, while the section was refused outright, send them to the
+  /// passenger home, which is what it did until this was named.
   ///
-  /// Which is the `startsWith('/p')` bug above one level down: a prefix
-  /// standing in for an idea narrower than itself. Onboarding was already
-  /// exempt, for its own reason — a passenger has to be able to open it to
-  /// become a driver at all.
+  /// Onboarding is here for its own reason: a passenger has to be able to
+  /// open it to become a driver at all, and opening it does not make them
+  /// one. `becomeDriver` does, when the form is submitted.
   static const _accountRoutes = {'/d/onboarding', '/d/earnings', '/d/vehicle'};
 
   /// Back to the step that produces the number, when a route that needs one

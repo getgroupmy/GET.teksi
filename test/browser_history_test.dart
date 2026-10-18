@@ -291,10 +291,10 @@ void main() {
     testWidgets('on a cold load of a location the guard refuses', (
       tester,
     ) async {
-      // A shared link into the driver home, opened by a passenger. The
+      // A bookmarked auth step, opened by somebody already signed in. The
       // redirect is right here — there is no history to walk back into, and
       // the entry it replaces is the empty one every app starts with.
-      final h = await start(tester, Role.passenger, '/d');
+      final h = await start(tester, Role.passenger, '/auth/otp');
       expect(here(), '/p');
       expect(
         h.length,
@@ -303,44 +303,14 @@ void main() {
       );
       expect(h.canGoBack, isFalse);
     });
-  });
 
-  group('KNOWN DEFECT: Back is dead after these, and these tests say so', () {
-    // Read the assertions carefully: they assert the bug. Each one measures
-    // that the history never drains, which is a dead Back button — press it
-    // for ever and the page never changes.
-    //
-    // They are written this way because there is no fix available at this
-    // layer, and a defect nobody can reproduce is a defect that gets argued
-    // about. The mechanism:
-    //
-    //   Back pops its entry and hands the app that location. The guard
-    //   refuses it and the app reports somewhere else. go_router reports a
-    //   location change with `replace: false`, so the report is a pushState,
-    //   and the stack ends the gesture as deep as it began.
-    //
-    // Three fixes were tried against this and measured, not reasoned about:
-    //
-    //   `context.replace()`  reports the same way `go` does. No effect.
-    //   `routerNeglect: true`  makes every report a replace, so the history
-    //                          never holds more than one entry and Back
-    //                          leaves the app from everywhere — it would
-    //                          break 'Back works', above.
-    //   `onEnter`/`Block.stop()`  halts the navigation, but the provider has
-    //                          already moved to the location Back supplied,
-    //                          so the unchanged stack is re-synced as a
-    //                          push. No effect. It only appeared to work
-    //                          against entries carrying a null state, which
-    //                          'an entry with no state' above now pins.
-    //
-    // go_router 18.1.0 changes nothing here either. What is left is a product
-    // decision — whether a role home may be entered by whoever asks for it,
-    // which would retire the guard that does the refusing — and that is the
-    // user's to make, not this file's.
-    //
-    // **When one of these fails, the defect is fixed.** Delete the test and
-    // put the journey in 'Back works' instead.
-    testWidgets('after switching role', (tester) async {
+    testWidgets('after switching role, which is what the fix was for', (
+      tester,
+    ) async {
+      // The passenger home is behind us and the role is now driver. It used
+      // to be refused, and the refusal pushed an entry for every press, so
+      // Back never moved. The role follows the location instead, so Back
+      // lands on /p, shows it, and the history is spent.
       final h = await start(tester, Role.passenger, '/p');
       app.session.setRole(Role.driver);
       config.router.go('/d');
@@ -349,42 +319,98 @@ void main() {
 
       expect(
         await pressBackUntilOut(tester, h),
-        isNull,
-        reason:
-            'FIXED? Back now leaves the app after a role switch. Delete this '
-            'test and assert the drain in "Back works" instead.',
+        1,
+        reason: 'one press back to /p, and the history is empty',
       );
-      expect(here(), '/d', reason: 'and the screen never changed');
-    });
-
-    testWidgets('after signing in', (tester) async {
-      final h = await start(tester, Role.passenger, '/intro', signedOut: true);
-      config.router.go('/auth/phone');
-      await settle(tester);
-      config.router.push('/auth/otp', extra: '+60123456789');
-      await settle(tester);
-      config.router.push('/auth/profile', extra: ('+60123456789', null));
-      await settle(tester);
-      app.session.signIn('+60123456789', name: 'Nurul Ain binti Abdullah');
-      config.router.go('/p');
-      await settle(tester);
       expect(here(), '/p');
       expect(
-        h.length,
-        greaterThan(1),
-        reason: 'the auth steps are behind us in the history',
-      );
-
-      expect(
-        await pressBackUntilOut(tester, h),
-        isNull,
+        app.session.prefs.role,
+        Role.passenger,
         reason:
-            'FIXED? Back now leaves the app after signing in. Delete this '
-            'test and assert the drain in "Back works" instead.',
+            'and the role came back with it, or isDriverOnDuty would be '
+            'pointing at the half the user is not in',
       );
-      expect(here(), '/p', reason: 'and the screen never changed');
     });
   });
+
+  group(
+    'KNOWN DEFECT: Back is dead after signing in, and this test says so',
+    () {
+      // Read the assertion carefully: it asserts the bug. It measures that the
+      // history never drains, which is a dead Back button — press it for ever
+      // and the page never changes. The mechanism:
+      //
+      //   Back pops its entry and hands the app that location. The guard
+      //   refuses it and the app reports somewhere else. go_router reports a
+      //   location change with `replace: false`, so the report is a pushState,
+      //   and the stack ends the gesture as deep as it began.
+      //
+      // The role switch had the same shape and is fixed, in 'Back works' above:
+      // the role follows the location now, so there is no refusal left to push
+      // an entry. **That fix does not reach this one, and it cannot.** What is
+      // behind a freshly signed-in user is the auth flow — /intro and three
+      // entries reported at /auth/phone, since `push` does not change the URL —
+      // and a signed-in user may not be shown the OTP screen. The refusal there
+      // is correct. It is the history entry that should not exist, and nothing
+      // at this layer can remove one.
+      //
+      // Four fixes were tried against this and measured, not reasoned about:
+      //
+      //   `context.replace()`  reports the same way `go` does. No effect.
+      //   `pushReplacement`    likewise: every imperative navigation reports
+      //                        through the same path.
+      //   `routerNeglect: true`  makes every report a replace, so the history
+      //                          never holds more than one entry and Back
+      //                          leaves the app from everywhere — it would
+      //                          break 'Back works', above.
+      //   `onEnter`/`Block.stop()`  halts the navigation, but the provider has
+      //                          already moved to the location Back supplied,
+      //                          so the unchanged stack is re-synced as a
+      //                          push. No effect. It only appeared to work
+      //                          against entries carrying a null state, which
+      //                          'an entry with no state' above now pins.
+      //
+      // go_router 18.1.0 changes nothing here either.
+      //
+      // It is the milder of the two by a long way. Signing in happens once;
+      // switching role was a button on both home screens.
+      //
+      // **When this fails, the defect is fixed.** Delete the test and put the
+      // journey in 'Back works' instead.
+      testWidgets('after signing in', (tester) async {
+        final h = await start(
+          tester,
+          Role.passenger,
+          '/intro',
+          signedOut: true,
+        );
+        config.router.go('/auth/phone');
+        await settle(tester);
+        config.router.push('/auth/otp', extra: '+60123456789');
+        await settle(tester);
+        config.router.push('/auth/profile', extra: ('+60123456789', null));
+        await settle(tester);
+        app.session.signIn('+60123456789', name: 'Nurul Ain binti Abdullah');
+        config.router.go('/p');
+        await settle(tester);
+        expect(here(), '/p');
+        expect(
+          h.length,
+          greaterThan(1),
+          reason: 'the auth steps are behind us in the history',
+        );
+
+        expect(
+          await pressBackUntilOut(tester, h),
+          isNull,
+          reason:
+              'FIXED? Back now leaves the app after signing in. Delete this '
+              'test and assert the drain in "Back works" instead.',
+        );
+        expect(here(), '/p', reason: 'and the screen never changed');
+      });
+    },
+  );
 }
 
 /// One browser history entry: the URL, and the state the app stored with it.

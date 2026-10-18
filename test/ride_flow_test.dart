@@ -242,9 +242,14 @@ void main() {
 
   group('the gate itself', () {
     testWidgets('here reports the router, not the screen', (tester) async {
-      // A passenger asking for the driver home is redirected. If `here` read
-      // the rendered widget it would say /d and this would pass wrongly.
-      await start(tester, Role.passenger, '/d');
+      // A signed-in user asking for an auth step is redirected home. If
+      // `here` read the rendered widget it would say /auth/otp and this
+      // would pass wrongly.
+      //
+      // This used to ask for the driver home as a passenger, which was
+      // redirected until the role started following the location instead —
+      // see test/browser_history_test.dart for why it had to stop.
+      await start(tester, Role.passenger, '/auth/otp');
       expect(here(), '/p');
     });
   });
